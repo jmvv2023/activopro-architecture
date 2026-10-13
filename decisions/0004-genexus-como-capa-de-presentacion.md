@@ -27,9 +27,11 @@ micro escribe en MySQL del núcleo, cada columna tiene un único escritor docume
   transacciones GeneXus.
 - **ms-ocr:** GeneXus llama y recoge; la extracción vive en el micro.
 - **ms-verifactu:** el micro **es el SIF de VeriFactu de ActivoPro**. Gestiona huella, colas,
-  reintentos y envío a la AEAT, y **escribe el resultado directamente en MySQL** del tenant.
-  GeneXus envía la petición y muestra los datos (con botón de refresco). **Supabase se elimina**
-  de VeriFactu.
+  reintentos y envío a la AEAT, y **escribe el resultado directamente en MySQL** del tenant,
+  en su tabla propia `verifactu_registro`. GeneXus envía la petición y muestra los datos (con
+  botón de refresco). Supabase **se mantiene** (corrección del 13/10/2026): Rule Store, lotes
+  y trazabilidad para el monitor de VeriFactu, y transversalidad con el nuevo ActivoPro. La
+  fuente de verdad de la cadena es MySQL.
 
 ## Por qué el micro escribe en MySQL (y no GeneXus)
 
@@ -40,8 +42,10 @@ escriba el micro como **primera versión**.
 
 ## Consecuencias y deuda asumida
 
-- Hay dos procesos que escriben en la tabla `facturas`: GeneXus (contabilización) y el micro
-  (columnas de VeriFactu). Debe quedar documentado qué columnas son de cada uno y no solaparse.
+- El micro escribe en su propia tabla `verifactu_registro`, no en `facturas`: así el micro y
+  GeneXus no escriben nunca en la misma tabla.
+- Supabase no debe poder parar la facturación: si cae, el micro sigue con la última versión de
+  reglas conocida (issue #8 del micro).
 - **Mejora pendiente:** hacer el micro más independiente del esquema de ActivoPro (tablas
   propias / contrato estable) para que sea operativo también con la nueva plataforma, en la
   línea del modelo canónico de ms-einvoice.

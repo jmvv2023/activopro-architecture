@@ -51,7 +51,11 @@ validada en 5 escenarios. Las simplificadas no usan la serie de `VENTA` ni la co
 - La intención era que GeneXus escribiera la respuesta en MySQL, pero no fue capaz de gestionarla
   (GX16 sin `JsonReader`, conflictos con `Commit on exit`). Por eso **el micro escribe en
   MySQL**. Primera versión aceptada (ADR-0004).
-- **Supabase eliminado.** Certificado en el payload: `ms-certificados` fuera de la ruta crítica.
+- Supabase deja de ser fuente de verdad de la cadena (pasa a MySQL), pero **se mantiene** para
+  el Rule Store, los lotes y la trazabilidad que alimenta el monitor. Se llegó a plantear
+  eliminarlo; el 13/10/2026 se decidió conservarlo por transversalidad con el nuevo ActivoPro.
+- Certificado en el payload: `ms-certificados` fuera de la ruta crítica.
+- Despliegue previsto en Oxygen, junto a GeneXus. Fly descartado.
 - Respuesta a GeneXus en XML. Cadena de huellas en `verifactu_registro`.
 - Se eliminan columnas duplicadas (`msFacVeriCSV`, `msFacVeriEst`, `msFacVeriHash`): los
   resultados convergen en las columnas `Fac*`, y las `msFacVeri*` restantes son de
