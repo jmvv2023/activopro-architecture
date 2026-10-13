@@ -17,6 +17,15 @@ AEAT; autenticación con certificado en la conexión (sin firma XAdES de cada re
   cadena retroactivamente.
 - Los **albaranes no llevan huella**. Una factura generada desde albarán se envía una sola vez.
 - Filtro de impuestos: `FacImpCod = 'I'` en los `for each` sobre `facturasfacimp`.
+- Las **simplificadas** tienen serie propia (parámetro de empresa `SERSIMPL`); no usan la serie
+  de `VENTA`. Cuenta genérica de cliente: `4300` / `999999`.
+- Numeración por serie y ejercicio (`NumSerie`: `EmpCod + EjerCod + NumSerTip + NumSerPre`).
+  Reiniciar cada ejercicio es válido; la cadena VeriFactu sí continúa entre ejercicios.
+- Interruptor por empresa `MSVERACT` (`S` micro / `N` GeneXus nativo).
+- **Pendiente:** usar `FacFec` y no `FacMod` como fecha de expedición, tanto en
+  `FacturaEmitidaVeri` como en el micro.
+
+Historia completa: `verifactu-evolucion.md`.
 
 ## Validado en preproducción AEAT
 

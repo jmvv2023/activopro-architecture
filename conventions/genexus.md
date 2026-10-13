@@ -7,6 +7,9 @@ Una sesión autónoma no puede editar ni compilar la KB. Esto sirve para diseña
 - "Build with this only" no despliega: hay que copiar los `.class` a mano a
   `WEB-INF/classes` del contexto Tomcat y recargar desde el manager.
 - Procedimientos nuevos requieren Build All.
+- **Columnas nuevas:** el `ALTER` debe aplicarse en los ~160 schemas antes de desplegar el
+  código que las usa. La KB y las BDs reales pueden estar desfasadas (precedente sep 2026:
+  `facturas` con 82 columnas en la KB y 93 en las BDs). Comprobar siempre ambas.
 - En el servidor los ficheros son de `tomcat9`: `sudo cp` + `chmod 644` a un directorio propio
   para descargarlos.
 - Versionado Major.Minor.Release.Build. Control de versiones en GeneXus Server
