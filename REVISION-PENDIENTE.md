@@ -13,12 +13,12 @@ Borradores generados el 13/10/2026 a partir de conversaciones y notas. Solo se h
    errores (`vf_error_catalog`)? ¿Ya migrados a MySQL o al propio micro?
 4. **ADR-0007 — versionado del SIF.** Validar la propuesta (SemVer, versión por registro,
    CHANGELOG, tags).
+5. **Columnas de `facturas` por escritor:** listar qué columnas escribe ms-verifactu y cuáles
+   GeneXus, para `system-map.md`.
 6. **Producción hoy:** ¿todos los clientes con VeriFactu van por el flujo nativo de GeneXus
    (`MSVERACT = N`) hasta que el micro pase a producción?
 7. **`SERSIMPL` sin configurar:** se propuso autogenerar (`VENTA` + `SIM`) si la empresa tiene
    VeriFactu S1/S2 y dar error si no. ¿Es lo que quedó implementado?
-5. **Columnas de `facturas` por escritor:** listar qué columnas escribe ms-verifactu y cuáles
-   GeneXus, para `system-map.md`.
 
 ## Datos a verificar
 
