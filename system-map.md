@@ -17,7 +17,7 @@ MySQL → reinicio LibreOffice → arranque Tomcat. Backups con retención de 1 
 
 | Micro | Repo | Stack | Dónde | Relación con el núcleo |
 |---|---|---|---|---|
-| ms-verifactu | `jmvv2023/ms-activopro-verifactu` | Node | Local :3003 → Oxygen (pendiente) | Recibe facturas de GeneXus, calcula huella/QR, envía a AEAT. Escribe en MySQL del tenant (`verifactu_registro`, columnas `msFacVeri*`). |
+| ms-verifactu | `jmvv2023/ms-activopro-verifactu` | Node | Local :3003 → Oxygen (pendiente; bloqueado por versionado, ADR-0007) | SIF de VeriFactu de ActivoPro. Recibe facturas de GeneXus, calcula huella/QR, gestiona colas y reintentos, envía a AEAT y escribe el resultado en MySQL del tenant (ADR-0004). Sin Supabase. |
 | ms-einvoice | `ms-activopro-einvoice` (verificar owner) | Node, SaxonJS | En desarrollo | Factura electrónica B2B (SPFE). Schema central `ms_einvoice` + outbox `ms_spfe_outbox` por tenant. |
 | ms-ocr | `jmvv2023/ms-activopro-ocr` | Python FastAPI, SQLite | `ocr.activopro.net` (IONOS) | GeneXus (`OCR_ExtractJson`, `OCR_BuscarTercero`) vía patrón asíncrono POST/GET. |
 | ms-docgenerator | verificar | Node, Puppeteer, Handlebars | `pdf.activopro.net` | Genera PDFs de factura/albarán/presupuesto. Plantillas montadas como volumen. |
@@ -40,7 +40,7 @@ Mantener esta tabla al día: es lo que permite saber qué rompe un cambio de esq
 
 | Tabla (schema del tenant) | Lee | Escribe |
 |---|---|---|
-| `facturas` | verifactu, einvoice (adaptador), docgenerator | verifactu (columnas `msFacVeri*`, `Fac*` de VeriFactu — **ver conflicto en ADR-0004**) |
+| `facturas` | verifactu, einvoice (adaptador), docgenerator | verifactu (columnas `msFacVeri*` y `Fac*` de VeriFactu); GeneXus (resto). Lista exacta de columnas por escritor: pendiente de documentar |
 | `verifactu_registro` | verifactu | verifactu |
 | `ms_spfe_outbox` | einvoice | GeneXus (vía `sp_spfe_encolar()`) |
 | `adjmovctas` | — | GeneXus (`print_attach`) |

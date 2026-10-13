@@ -5,12 +5,16 @@ Borradores generados el 13/10/2026 a partir de conversaciones y notas. Solo se h
 
 ## Decisiones a confirmar
 
-1. **ADR-0004 — ms-verifactu, versión A o B.** Hay dos diseños en las notas (asíncrono con el
-   MS escribiendo en MySQL y sin Supabase, frente a síncrono con el MS sin tocar `facturas` y
-   Rule Store en Supabase). Indicar cuál está vigente.
+1. ~~ADR-0004 — ms-verifactu, versión A o B.~~ Resuelto el 13/10/2026: el micro es el SIF y
+   escribe en MySQL; Supabase se elimina.
 2. **ADR-0005 — Frente A.** ¿Se deja de archivar el PDF con VeriFactu activo? Pendiente de
    hablar con Nestor.
-3. **Supabase en VeriFactu:** si se elimina, ¿dónde va el Rule Store / catálogo de errores?
+3. **Supabase eliminado de VeriFactu:** ¿dónde viven ahora el Rule Store y el catálogo de
+   errores (`vf_error_catalog`)? ¿Ya migrados a MySQL o al propio micro?
+4. **ADR-0007 — versionado del SIF.** Validar la propuesta (SemVer, versión por registro,
+   CHANGELOG, tags).
+5. **Columnas de `facturas` por escritor:** listar qué columnas escribe ms-verifactu y cuáles
+   GeneXus, para `system-map.md`.
 
 ## Datos a verificar
 

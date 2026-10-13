@@ -31,4 +31,6 @@ en el repo GeneXus / issue correspondiente).
 
 ## Arquitectura
 
-Ver ADR-0004 (conflicto pendiente) y el `CLAUDE.md` de ms-verifactu.
+ms-verifactu es el SIF de ActivoPro y escribe el resultado en MySQL (ADR-0004). Antes de
+producción falta el versionado del SIF (ADR-0007). Detalle técnico en el `CLAUDE.md` de
+ms-verifactu.

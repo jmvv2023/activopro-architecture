@@ -25,8 +25,7 @@ En ms-verifactu, MySQL es la fuente de verdad de la cadena de huellas.
 
 ## Consecuencias
 
-- Supabase queda para el nuevo ActivoPro y para reporting. En VeriFactu su papel está
-  en revisión (ver ADR-0004).
+- Supabase queda para el nuevo ActivoPro y para reporting. En VeriFactu se elimina (ADR-0004).
 - Cualquier micro que necesite datos del núcleo los lee/escribe en MySQL del tenant.
 
 ## Origen
