@@ -86,6 +86,19 @@ La cadena va por NIF emisor: en schemas con varias `EmpCod`, la semilla se hace 
 
 ## Arquitectura
 
-ms-verifactu es el SIF de ActivoPro y escribe el resultado en MySQL (ADR-0004). Antes de
-producción falta el versionado del SIF (ADR-0007). Detalle técnico en el `CLAUDE.md` de
-ms-verifactu.
+ms-verifactu es el SIF de ActivoPro y escribe el resultado en MySQL (ADR-0004). Versionado
+del SIF: ADR-0007. Detalle técnico y estado en el `CLAUDE.md` y los issues de ms-verifactu.
+
+## Entornos (decisión del 14/10/2026)
+
+- **Aislamiento por máquina:** las pruebas se hacen en local (micro + MySQL de pruebas en el
+  equipo de desarrollo) y producción en Oxygen. `MSVERURL = http://127.0.0.1:3003` en ambos:
+  cada GeneXus llama al micro de su propia máquina. El micro no se expone a Internet (el
+  certificado del cliente y su contraseña viajan en cada petición).
+- **Endpoint de la AEAT y URL del QR por `AEAT_ENV`** (`pre` en local, `pro` en Oxygen),
+  nunca desde Supabase. `AEAT_ENV` es obligatorio: sin él el micro no arranca.
+- **Supabase es una copia para el monitor, nunca una dependencia.** MySQL es la fuente de
+  verdad; Supabase recibe una copia de cada registro con su `entorno`, y el monitor separa
+  pruebas de producción. Rellenar huecos de la copia desde MySQL queda para más adelante.
+- **Antes de producción** se borran las trazas de pruebas de Supabase y la cadena de
+  `mconta0048`.
