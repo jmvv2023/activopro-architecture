@@ -45,8 +45,9 @@ Todos estos cambios se probaron en el entorno de pruebas (facturas 656 y 670).
 - Estados del presupuesto: H Solicitado → al aceptar se desdobla en I Aceptado (original,
   archivado) y K Pendiente de entrega (copia que genera albaranes A). Facturar desde la bandeja
   de presupuestos pasa el presupuesto a L Finalizado. J = No aceptado.
-- Pendiente: buscar en los tenants facturas ya creadas con el combo deshabilitado (no están en
-  VeriFactu); claridad de la pantalla Albarán (el combo no debe aceptar por defecto en
+- Facturas ya creadas con el combo: sin impacto en VeriFactu (el único cliente con VeriFactu no
+  usa ese camino).
+- Pendiente: claridad de la pantalla Albarán (el combo no debe aceptar por defecto en
   "Solicitado", columnas de cantidad entregada/pendiente, avisos antes de guardar); protección
   contra doble clic; errores de guardado que no se muestran.
 - Si algún día un cliente con almacén quiere presupuestos, el stock se añade como paso aparte.

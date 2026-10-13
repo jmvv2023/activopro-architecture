@@ -43,9 +43,8 @@ albaranes** (`Alba_factura16`) y **Facturar desde la bandeja de presupuestos**
 (`Fact_Presupuestor`). El combo Facturar = Sí de la pantalla Albarán creaba facturas que no
 llegaban a VeriFactu y se ha deshabilitado (ADR-0009).
 
-**Pendiente:** buscar en los tenants facturas creadas con ese combo antes de deshabilitarlo. Son
-albaranes en estado B cuyo `FacAsi` apunta a una copia de presupuesto en estado K o L, y no
-están registradas en VeriFactu.
+Las facturas creadas con ese combo no afectan a VeriFactu: el único cliente con VeriFactu no
+lo usa.
 
 ## Tabla `verifactu_registro` (en cada schema de tenant)
 
