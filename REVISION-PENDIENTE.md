@@ -9,8 +9,12 @@ Borradores generados el 13/10/2026 a partir de conversaciones y notas. Solo se h
    escribe en MySQL; Supabase se elimina.
 2. **ADR-0005 — Frente A.** ¿Se deja de archivar el PDF con VeriFactu activo? Pendiente de
    hablar con Nestor.
-3. **Supabase eliminado de VeriFactu:** ¿dónde viven ahora el Rule Store y el catálogo de
-   errores (`vf_error_catalog`)? ¿Ya migrados a MySQL o al propio micro?
+3. **Supabase en VeriFactu — el código de GitHub no coincide con lo decidido.** En `main`
+   (último commit 02/10/2026) el micro sigue usando Supabase para: Rule Store
+   (`vf_rule_versions`, `vf_hash_fields`), **hash anterior de la cadena** (`vf_registros`, con
+   el comentario "migración a MySQL verifactu_registro pendiente"), trazabilidad y lotes
+   asíncronos (`vf_lotes`). No hay código que escriba en `verifactu_registro`; MySQL solo se usa
+   en `/health`. `vf_error_catalog` no aparece en el código. ¿Hay código local sin subir?
 4. **ADR-0007 — versionado del SIF.** Validar la propuesta (SemVer, versión por registro,
    CHANGELOG, tags).
 5. **Columnas de `facturas` por escritor:** listar qué columnas escribe ms-verifactu y cuáles

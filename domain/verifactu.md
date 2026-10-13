@@ -47,6 +47,30 @@ llegaban a VeriFactu y se ha deshabilitado (ADR-0009).
 albaranes en estado B cuyo `FacAsi` apunta a una copia de presupuesto en estado K o L, y no
 están registradas en VeriFactu.
 
+## Tabla `verifactu_registro` (en cada schema de tenant)
+
+Tabla propia del micro, separada de `facturas`, para que el micro y GeneXus no escriban en la
+misma tabla. Es la fuente de verdad de la cadena de huellas.
+
+| Campo | Tipo | Notas |
+|---|---|---|
+| `id` | bigint PK auto_increment | |
+| `emp_cod` | smallint | Empresa dentro del schema |
+| `nif_emisor` | varchar(20), indexado | La cadena va por NIF |
+| `serie` | varchar(3) | |
+| `numero` | int | |
+| `fecha` | date | |
+| `tipo_factura` | varchar(2) | F1, F2, R4, R5… |
+| `hash_data` | varchar(1000) | Cadena usada para calcular la huella |
+| `hash_code` | varchar(64) | Huella SHA-256 |
+| `csv` | varchar(20) | CSV devuelto por la AEAT |
+| `qr_url` | varchar(500) | |
+| `estado` | varchar(20), por defecto `pendiente` | |
+| `error_codigo` / `error_desc` | int / varchar(500) | |
+| `intentos` | tinyint, por defecto 0 | |
+| `subsanacion` | char(1), por defecto `N` | Las subsanaciones son registros nuevos al final de la cadena |
+| `created_at` / `updated_at` | datetime | |
+
 ## Activar VeriFactu en un cliente
 
 1. Ejecutar el script de migración en su schema: `ALTER TABLE` de las columnas, `CREATE TABLE
