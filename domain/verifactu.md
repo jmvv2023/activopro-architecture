@@ -17,8 +17,12 @@ AEAT; autenticación con certificado en la conexión (sin firma XAdES de cada re
   cadena retroactivamente.
 - Los **albaranes no llevan huella**. Una factura generada desde albarán se envía una sola vez.
 - Filtro de impuestos: `FacImpCod = 'I'` en los `for each` sobre `facturasfacimp`.
-- Las **simplificadas** tienen serie propia (parámetro de empresa `SERSIMPL`); no usan la serie
-  de `VENTA`. Cuenta genérica de cliente: `4300` / `999999`.
+- Las **simplificadas** tienen serie propia: parámetro de empresa `SERSIMPL` en la tabla
+  `pdefecto` ("Serie Simplificada para Verifactu", p. ej. `SIM`). No usan la serie de `VENTA`
+  ni la concatenan. Si está vacío y la empresa tiene VeriFactu (`S1`/`S2`), se muestra un aviso
+  y no se factura; no se autogenera. En la facturación por lotes desde presupuestos
+  (`Fact_Presupuestor`) se bloquea toda la tanda si hay algún no cliente y falta la serie.
+  Cuenta genérica de cliente: `4300` / `999999` (`CGENFAC`).
 - Numeración por serie y ejercicio (`NumSerie`: `EmpCod + EjerCod + NumSerTip + NumSerPre`).
   Reiniciar cada ejercicio es válido; la cadena VeriFactu sí continúa entre ejercicios.
 - Interruptor por empresa `MSVERACT` (`S` micro / `N` GeneXus nativo).
@@ -32,11 +36,30 @@ Historia completa: `verifactu-evolucion.md`.
 F1, F2, R4, R5, encadenamiento en MySQL, factura desde albarán sin doble envío, reenvío manual
 con botón `SendVerifactu`.
 
-## Gap conocido
+## Caminos de facturación válidos
 
-Presupuesto aceptado que termina en albaranes y se factura por el camino Aceptado + Facturar = Sí
-**no** se envía a VeriFactu. El camino albarán → Facturar sí funciona (ver notas de presupuestos
-en el repo GeneXus / issue correspondiente).
+Solo dos caminos generan facturas que se envían a VeriFactu: **Facturar desde la bandeja de
+albaranes** (`Alba_factura16`) y **Facturar desde la bandeja de presupuestos**
+(`Fact_Presupuestor`). El combo Facturar = Sí de la pantalla Albarán creaba facturas que no
+llegaban a VeriFactu y se ha deshabilitado (ADR-0009).
+
+**Pendiente:** buscar en los tenants facturas creadas con ese combo antes de deshabilitarlo. Son
+albaranes en estado B cuyo `FacAsi` apunta a una copia de presupuesto en estado K o L, y no
+están registradas en VeriFactu.
+
+## Activar VeriFactu en un cliente
+
+1. Ejecutar el script de migración en su schema: `ALTER TABLE` de las columnas, `CREATE TABLE
+   verifactu_registro` y `GRANT` al usuario del micro.
+2. **Cliente nuevo en VeriFactu:** nada más. Con `verifactu_registro` vacía para su NIF, el micro
+   envía `hashAnterior` vacío, que es lo que la AEAT espera en el primer registro de una cadena.
+3. **Cliente que ya ha enviado facturas a la AEAT** (pasa del flujo nativo al micro): sembrar
+   `verifactu_registro` con la última factura aceptada (`FacHashCode` de la última con
+   `FacIdSIF = 'A1'`). Sin semilla, la AEAT responde con error 2007. Es el mismo proceso que se
+   hizo en preproducción.
+4. Cambiar `MSVERACT` a `S` para esa empresa.
+
+La cadena va por NIF emisor: en schemas con varias `EmpCod`, la semilla se hace por cada NIF.
 
 ## Arquitectura
 

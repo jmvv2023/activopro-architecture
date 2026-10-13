@@ -15,10 +15,10 @@ Borradores generados el 13/10/2026 a partir de conversaciones y notas. Solo se h
    CHANGELOG, tags).
 5. **Columnas de `facturas` por escritor:** listar qué columnas escribe ms-verifactu y cuáles
    GeneXus, para `system-map.md`.
-6. **Producción hoy:** ¿todos los clientes con VeriFactu van por el flujo nativo de GeneXus
-   (`MSVERACT = N`) hasta que el micro pase a producción?
-7. **`SERSIMPL` sin configurar:** se propuso autogenerar (`VENTA` + `SIM`) si la empresa tiene
-   VeriFactu S1/S2 y dar error si no. ¿Es lo que quedó implementado?
+6. ~~Producción hoy.~~ Resuelto: un solo cliente con VeriFactu, por el flujo nativo; será el
+   primero en pasar al micro.
+7. ~~`SERSIMPL` sin configurar.~~ Resuelto: parámetro en `pdefecto`; si falta con VeriFactu,
+   aviso y no se factura.
 
 ## Datos a verificar
 
@@ -34,8 +34,6 @@ borradores. Conviene rotarlas, porque ya han pasado por historiales de chat.
 
 ## Fuera de alcance de esta primera pasada
 
-- Presupuestos (GeneXus): análisis en curso; cuando se cierre el diseño, ADR en este repo
-  (afecta a núcleo, verifactu y docgenerator).
 - Nuevo ActivoPro: ya tiene su propio `CLAUDE.md` en `activopro-platform`.
 - Chats dentro de los proyectos "micros" y "nuevo ActivoPro" no se han recorrido uno a uno;
   se han usado sus notas resumidas.

@@ -26,6 +26,14 @@ Una sesión autónoma no puede editar ni compilar la KB. Esto sirve para diseña
 - Las Transactions recargan atributos desde la BD; `error()` en reglas sobre variables no es fiable.
 - `Event After Trn` no siempre se dispara según el ciclo de la Transaction.
 - Las recompilaciones pueden perder propiedades de controles (p. ej. `Multi` de `uploadify1`).
+- Variables nuevas: declararlas siempre con su tipo (basado en atributo cuando aplique). Si no,
+  GeneXus asume un tipo (`C(40)`, `N(10.2)`) y métodos como `IsEmpty()` dejan de reconocerse.
+- Tras recompilar, recargar por completo las pantallas abiertas: un formulario de la versión
+  anterior provoca 403 al enviar eventos.
+- `BC.Save()`: comprobar `Success()` y mostrar el error. Varios fallos silenciosos (facturas que
+  no llegaban a crearse) venían de no hacerlo.
+- Nunca credenciales en el código de los objetos (precedente: contraseña SMTP en
+  `WpImPresupuesto`). Van en parámetros o configuración del servidor.
 
 ## UI
 
