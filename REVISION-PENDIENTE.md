@@ -10,7 +10,7 @@ Borradores generados el 13/10/2026 a partir de conversaciones y notas. Solo se h
 2. **ADR-0005 — Frente A.** ¿Se deja de archivar el PDF con VeriFactu activo? Pendiente de
    hablar con Nestor.
 3. ~~Supabase en VeriFactu.~~ Resuelto: se mantiene (Rule Store, lotes, monitor); MySQL es la
-   fuente de verdad de la cadena. Pendiente técnico en el issue #8 del micro.
+   fuente de verdad de la cadena. Supabase es solo una copia para el monitor (ADR-0004); pendiente técnico en el issue #8 del micro.
 4. ~~ADR-0007.~~ Aceptado: SemVer, implementado en la 1.0.0.
 5. ~~Columnas por escritor.~~ Resuelto: el micro escribe en `verifactu_registro`; `facturas` es
    de GeneXus.
@@ -18,6 +18,10 @@ Borradores generados el 13/10/2026 a partir de conversaciones y notas. Solo se h
    primero en pasar al micro.
 7. ~~`SERSIMPL` sin configurar.~~ Resuelto: parámetro en `pdefecto`; si falta con VeriFactu,
    aviso y no se factura.
+
+8. ~~Rectificativas.~~ Resuelto el 14/10/2026: por diferencias (ADR-0010). Queda pendiente el
+   flujo nativo de GeneXus (ver `domain/verifactu.md`).
+9. **Código AEAT de registro duplicado:** confirmar en el documento de validaciones.
 
 ## Datos a verificar
 

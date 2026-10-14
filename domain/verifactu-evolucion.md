@@ -63,6 +63,27 @@ validada en 5 escenarios. Las simplificadas no usan la serie de `VENTA` ni la co
 - F1, F2, R4 y R5 validadas en preproducción.
 - Antes de producción: versionado del SIF (ADR-0007).
 
+## Fase 4 — Micro 1.0.0, preparación para producción (13–15/10/2026)
+
+- **Decisiones:**
+  - Tabla propia `verifactu_registro`.
+  - Supabase como copia del monitor, con columna `entorno`.
+  - `AEAT_ENV` obligatorio para fijar endpoint y QR.
+  - Aislamiento por máquina: pruebas en local y producción en Oxygen.
+  - SemVer (ADR-0007).
+  - El micro resuelve los fallos y GeneXus solo reenvía (ADR-0011).
+- **Errores encontrados al probar en preproducción** y corregidos:
+  - `&ImporteTotal`/`&CuotaTotal` eran variables enteras en GeneXus y truncaban los totales.
+    El micro ahora valida que el desglose cuadre con los totales.
+  - Acentos rotos: GeneXus envía ISO-8859-1/CP1252. Se añadió un parser propio.
+  - Una `INTERNAL_API_KEY` errónea daba 401 silenciosos. Se añadieron logs por petición y el
+    motivo en la respuesta.
+  - F2/R5 con destinatario: error AEAT 1190.
+  - La clave única `uk_factura` impedía guardar el reenvío de un rechazado.
+  - Faltaban las marcas de alta por rechazo (`Subsanacion`/`RechazoPrevio`) y la detección de
+    duplicados por `EstadoRegistroDuplicado`.
+  - Rectificativas declaradas `S` en negativo y sin `FacturasRectificadas` (ADR-0010).
+
 ## Lecciones
 
 1. Toda columna nueva en una tabla del núcleo exige el `ALTER` en todos los schemas **antes** de
@@ -70,3 +91,8 @@ validada en 5 escenarios. Las simplificadas no usan la serie de `VENTA` ni la co
 2. Un solo dueño por dato: evitar que dos sistemas mantengan el mismo estado en columnas distintas.
 3. El interruptor por empresa (`MSVERACT`) permite convivir y volver atrás. Mantenerlo hasta
    que el micro esté estable en producción.
+4. Que la AEAT acepte un registro no quiere decir que sea correcto: no valida el signo ni la
+   coherencia entre los tipos de rectificativa. Hay que contrastar con la especificación, no
+   solo con preproducción.
+5. Cuando un valor no se puede verificar en una fuente oficial (p. ej. el código de duplicado),
+   se detecta por la estructura de la respuesta y el valor queda solo como respaldo.
