@@ -103,10 +103,16 @@ Respuesta en XML (`Estado` `C`/`E` y `Error/Codigo`):
 | `C` + `Tipo = aviso` | Aceptada con errores (avisos) | Nada; **no** reenviar |
 | `E` + `9001` | Sin acceso a la cadena en MySQL; no se ha enviado | Reenviar |
 | `E` + `9002` | Cadena del emisor ocupada; no se ha enviado | Reenviar |
-| `E` + `9003` | Registrada en la cadena y pendiente de envío (huella y QR válidos) | Reenviar o esperar a la siguiente factura |
+| `E` + `9003` | Registrada en la cadena; **envío a la AEAT en curso** (huella y QR válidos). El micro lo envía solo | Mostrar "en curso" (no es error; la factura se puede imprimir) |
 | `E` + `Tipo = datos` | Rechazada por la AEAT (su código) o datos incoherentes (`0000`) | Corregir; reenviar igual vuelve a fallar |
 
 `9001`–`9003` son códigos internos del micro; la AEAT no los usa.
+
+**Control de flujo de la AEAT** (espec. de servicios web, 6.4.4.1): tras cada envío se espera
+`TiempoEsperaEnvio` (60 s al inicio; lo actualiza la AEAT) o a acumular 1.000 registros. El
+micro lo aplica por NIF emisor: lo que llega antes queda `pendiente` y sale en segundo plano,
+junto con los demás pendientes del NIF en un solo envío. El certificado para ese envío se
+conserva solo en memoria, 24 h; tras un reinicio, sale con la siguiente petición del emisor.
 
 ## Rechazos, alta por rechazo y duplicados
 
@@ -142,8 +148,8 @@ La cadena va por NIF emisor: en schemas con varias `EmpCod`, la semilla se hace 
 - Flujo **nativo** de GeneXus (`FacturaEmitidaVeri`, `MSVERACT = N`): sigue declarando las
   rectificativas como `S` con la base rectificada en negativo. El cliente en producción no ha
   emitido ninguna; resolverlo o pasar el cliente al micro antes de que emita una.
-- Issues del micro: #8 (que una caída de Supabase no pare la facturación), #27 (reintentar
-  pendientes sin petición de GeneXus), #19 (rellenar huecos de la copia en Supabase).
+- Issue #19 del micro (rellenar huecos de la copia en Supabase): al preparar el monitor,
+  después de cerrar el micro.
 
 ## Arquitectura
 
@@ -160,7 +166,10 @@ del SIF: ADR-0007. Detalle técnico y estado en el `CLAUDE.md` y los issues de m
   nunca desde Supabase. `AEAT_ENV` es obligatorio: sin él el micro no arranca.
 - **Supabase es una copia para el monitor, nunca una dependencia.** MySQL es la fuente de
   verdad; Supabase recibe una copia de cada registro con su `entorno`, y el monitor separa
-  pruebas de producción. Rellenar huecos de la copia desde MySQL queda para más adelante.
+  pruebas de producción. Si Supabase cae o no está configurado, se factura igual.
+- **Las reglas del registro están en el código del micro** (campos y orden de la huella,
+  identificación del SIF), no en el Rule Store de Supabase: forman parte del registro y de la
+  declaración responsable, así que solo cambian con una nueva versión (ADR-0007, issue #8).
 - Logs del micro: una línea por factura (`[factura]`), por respuesta de la AEAT (`[aeat]`) y por
   petición rechazada (`[peticion]`); el XML completo solo con `LOG_XML=1`.
 - **Antes de producción** se borran las trazas de pruebas de Supabase y la cadena de

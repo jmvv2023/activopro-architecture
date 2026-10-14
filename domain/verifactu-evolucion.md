@@ -83,6 +83,12 @@ validada en 5 escenarios. Las simplificadas no usan la serie de `VENTA` ni la co
   - Faltaban las marcas de alta por rechazo (`Subsanacion`/`RechazoPrevio`) y la detección de
     duplicados por `EstadoRegistroDuplicado`.
   - Rectificativas declaradas `S` en negativo y sin `FacturasRectificadas` (ADR-0010).
+- **Antes de producción (15/10/2026):**
+  - Las reglas del registro pasan del Rule Store de Supabase al código. Supabase ya no puede
+    bloquear la facturación (#8).
+  - Se aplica el control de flujo de la AEAT, con envío de pendientes en segundo plano y en
+    lote (#27). Hasta entonces el micro enviaba cada factura en cuanto llegaba, y preproducción
+    lo aceptaba igual.
 
 ## Lecciones
 

@@ -21,26 +21,34 @@ GeneXus queda fuera de la gestión de fallos. **Lo único que hace es reenviar.*
 
 - Guarda cada registro como `pendiente`, con su XML, **antes** de enviarlo a la AEAT. La huella
   y el QR ya son válidos en ese momento.
-- Envía con un único intento y actualiza el estado. Los pendientes anteriores del mismo NIF se
-  reenvían en orden con la siguiente factura.
+- Envía con un único intento y actualiza el estado. Los pendientes anteriores del mismo NIF van
+  en el mismo envío, en orden.
 - Es idempotente: reenviar una factura nunca duplica el registro (NIF + serie + número +
   fecha + tipo).
 - Serializa por NIF emisor con `GET_LOCK` y usa un pool de conexiones.
 - Devuelve a GeneXus `C`/`E` y un código interno cuando no hay respuesta de la AEAT:
   - `9001`: sin acceso a la cadena en MySQL.
   - `9002`: cadena ocupada.
-  - `9003`: registrado y pendiente de envío.
+  - `9003`: registrado; envío a la AEAT en curso.
+- Respeta el **control de flujo de la AEAT** por NIF (`TiempoEsperaEnvio` o 1.000 registros):
+  lo que llega antes queda pendiente y sale en segundo plano, en un solo envío con los demás
+  pendientes del NIF. GeneXus muestra `9003` como "en curso" (ampliación del 15/10/2026,
+  issue #27 del micro).
+- Para ese envío en segundo plano, el micro conserva el certificado del último envío de cada
+  NIF **solo en memoria** (24 h). Tras un reinicio, los pendientes salen con la siguiente
+  petición del emisor.
 
 La tabla de respuestas está en `domain/verifactu.md`.
 
 ## Consecuencias
 
-- Un fallo transitorio nunca rompe la cadena: el registro queda como pendiente y sale después.
-- Un pendiente solo se reenvía cuando llega otra petición del mismo emisor, ya sea una factura
-  nueva o un reenvío. El reintento en segundo plano está planteado en el issue #27 del micro, y
-  el problema es cómo disponer del certificado sin una petición.
+- Un fallo transitorio nunca rompe la cadena: el registro queda pendiente y sale solo.
+- El usuario no tiene que hacer nada con un `9003`: la factura ya tiene huella y QR válidos.
+- El certificado del cliente vive en la memoria del micro: no se expone el micro a Internet
+  (aislamiento por máquina, `domain/verifactu.md`).
 
 ## Origen
 
 Decisión de José María (13/10/2026): "genexus solo reenviar… la forma más limpia y menos
-compleja".
+compleja". Envío en segundo plano y control de flujo: 15/10/2026 ("lo que se ha quedado
+pendiente debe salir lo antes posible, y si es posible antes de que se entere el usuario").

@@ -29,8 +29,8 @@ micro escribe en MySQL del núcleo, cada columna tiene un único escritor docume
 - **ms-verifactu:** el micro **es el SIF de VeriFactu de ActivoPro**. Gestiona huella, colas,
   reintentos y envío a la AEAT, y **escribe el resultado directamente en MySQL** del tenant,
   en su tabla propia `verifactu_registro`. GeneXus envía la petición y muestra los datos (con
-  botón de refresco). Supabase **se mantiene** (corrección del 13/10/2026): Rule Store, lotes
-  y trazabilidad para el monitor de VeriFactu, y transversalidad con el nuevo ActivoPro. La
+  botón de refresco). Supabase **se mantiene** (corrección del 13/10/2026) como copia para el
+  monitor de VeriFactu y por transversalidad con el nuevo ActivoPro; nunca como dependencia. La
   fuente de verdad de la cadena es MySQL.
 
 ## Por qué el micro escribe en MySQL (y no GeneXus)
@@ -44,8 +44,9 @@ escriba el micro como **primera versión**.
 
 - El micro escribe en su propia tabla `verifactu_registro`, no en `facturas`: así el micro y
   GeneXus no escriben nunca en la misma tabla.
-- Supabase no debe poder parar la facturación: si cae, el micro sigue con la última versión de
-  reglas conocida (issue #8 del micro).
+- Supabase no puede parar la facturación: las reglas del registro (huella e identificación del
+  SIF) están en el código del micro, y la copia para el monitor nunca bloquea (issue #8 del
+  micro, 15/10/2026). El Rule Store de Supabase deja de usarse.
 - **Mejora pendiente:** hacer el micro más independiente del esquema de ActivoPro (tablas
   propias / contrato estable) para que sea operativo también con la nueva plataforma, en la
   línea del modelo canónico de ms-einvoice.
