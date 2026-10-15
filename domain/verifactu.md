@@ -129,7 +129,9 @@ conserva solo en memoria, 24 h; tras un reinicio, sale con la siguiente petició
 ## Rechazos, alta por rechazo y duplicados
 
 - Un registro **rechazado** sigue siendo eslabón de la cadena. La AEAT no tiene esa factura.
-- Reenviar una factura rechazada genera un registro nuevo al final de la cadena: es un **alta
+- Reenviar una factura rechazada **sin cambios** devuelve el mismo rechazo: no se crea eslabón
+  ni se envía nada (la AEAT lo volvería a rechazar; issue #52 del micro).
+- Si el registro **ha cambiado**, el reenvío genera un registro nuevo al final de la cadena: es un **alta
   por rechazo** (espec. AEAT de servicios web, 9.1.3) y lleva `Subsanacion = S` +
   `RechazoPrevio = X`. No cambia la factura de ActivoPro, solo el registro (p. ej. cuando el
   fallo era del micro). La "subsanación" de un registro ya aceptado (`RechazoPrevio = N`) no
