@@ -108,6 +108,18 @@ Respuesta en XML (`Estado` `C`/`E` y `Error/Codigo`):
 
 `9001`–`9003` son códigos internos del micro; la AEAT no los usa.
 
+**Estado en GeneXus de las facturas "en curso" (15/10/2026).** El micro envía el `9003` en
+segundo plano, pero en `facturas` queda lo que respondió en el momento: el micro nunca escribe
+en `facturas` (ADR-0004). Por eso:
+
+- `VF_EnviarMS` guarda el `9003` como `FacVeriEst = 'EnCurso'` (no `Incorrecto`), con
+  `msFacVeriPendEnv = 'S'`.
+- GeneXus **refresca** las facturas `EnCurso` volviendo a llamar a `VF_EnviarMS_Caller`. Es un
+  reenvío idempotente: no crea un registro nuevo y el micro devuelve `C` con el CSV en cuanto
+  la factura se ha enviado. Se hace al abrir la pantalla de facturas y con el evento
+  `updateVF`. No puede ser un proceso periódico de GeneXus, porque `VF_EnviarMS` toma el
+  schema de la sesión (`EMPBASE`).
+
 **Control de flujo de la AEAT** (espec. de servicios web, 6.4.4.1): tras cada envío se espera
 `TiempoEsperaEnvio` (60 s al inicio; lo actualiza la AEAT) o a acumular 1.000 registros. El
 micro lo aplica por NIF emisor: lo que llega antes queda `pendiente` y sale en segundo plano,
