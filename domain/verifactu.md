@@ -32,6 +32,11 @@ AEAT; autenticación con certificado en la conexión (sin firma XAdES de cada re
 - Numeración por serie y ejercicio (`NumSerie`: `EmpCod + EjerCod + NumSerTip + NumSerPre`).
   Reiniciar cada ejercicio es válido; la cadena VeriFactu sí continúa entre ejercicios.
 - Interruptor por empresa `MSVERACT` (`S` micro / `N` GeneXus nativo).
+- **Modalidad** por empresa, parámetro `VERIFTPO` en `pdefecto` (`PdeCod`/`PdePar`): `S2` = VERI*FACTU,
+  `S1` = NO VERI*FACTU. Desde la 2.0 **solo VERI*FACTU** (`TipoUsoPosibleSoloVerifactu = S`): `S1`
+  queda deshabilitado en GeneXus porque estaba incompleto (sin alarmas ni resumen de eventos
+  cada 6 h) y nadie lo usa. Se hará en el micro (issue #2). A 18/10/2026 la única empresa con
+  VeriFactu en producción es `mconta0048` (Enumbers), en `S2`.
 - **Pendiente:** usar `FacFec` y no `FacMod` como fecha de expedición, tanto en
   `FacturaEmitidaVeri` como en el micro.
 
@@ -186,5 +191,7 @@ del SIF: ADR-0007. Detalle técnico y estado en el `CLAUDE.md` y los issues de m
   declaración responsable, así que solo cambian con una nueva versión (ADR-0007, issue #8).
 - Logs del micro: una línea por factura (`[factura]`), por respuesta de la AEAT (`[aeat]`) y por
   petición rechazada (`[peticion]`); el XML completo solo con `LOG_XML=1`.
-- **Antes de producción** se borran las trazas de pruebas de Supabase y la cadena de
-  `mconta0048`.
+- **Antes de producción** se borran las trazas de pruebas de Supabase (las que no son
+  `entorno = 'pro'`). La cadena de pruebas solo se vacía en la **copia local** de `mconta0048`:
+  en producción ese schema es Enumbers, empresa real, y su cadena se **siembra** con la última
+  huella del flujo nativo, nunca se borra.

@@ -36,6 +36,6 @@
 ## Tests
 
 - Cada micro debe poder ejecutar sus tests sin acceso a PROD (`npm test` / `pytest`).
-- Datos de prueba sobre `mconta0048` o fixtures.
+- Datos de prueba sobre la **copia local** de `mconta0048` o fixtures (en producción es una empresa real).
 - Antes de afirmar que un fix no funciona, comprobar cachés y la versión desplegada
   (lección de ms-ocr: `/debug/version`, `_cache_hit`).

@@ -10,7 +10,8 @@ ERP/contabilidad SaaS multi-tenant de Enumbers Digital Solutions SLU (Sabadell).
 
 - **Núcleo actual:** GeneXus 16 U8 (Java) sobre Tomcat 9 + MySQL 8. ~160 clientes en producción.
 - **Multi-tenant por schema:** cada cliente tiene su schema `mconta####`. Algunos schemas
-  contienen más de una empresa (`EmpCod`). Tenant de pruebas: `mconta0048`.
+  contienen más de una empresa (`EmpCod`). `mconta0048` es **Enumbers (B23918170), empresa real**
+  en producción; las pruebas se hacen sobre una **copia local** de ese schema.
 - **Microservicios** alrededor del núcleo (ver `system-map.md`), cada uno en su propio repo.
 - **Nuevo ActivoPro** (React + Supabase) en desarrollo en el monorepo `activopro-platform`,
   sin clientes todavía. Coexistencia temporal con GeneXus (ver ADR-0003).
@@ -32,7 +33,7 @@ micro, va en el repo de ese micro. Si afecta a dos o más micros, o al núcleo, 
 ## Reglas globales (no negociables)
 
 1. **Nunca acceso a producción desde una sesión autónoma.** Sin credenciales de PROD, sin
-   despliegues. Se trabaja contra tests y `mconta0048` / datos de prueba. El despliegue lo hace
+   despliegues. Se trabaja contra tests y la copia local de `mconta0048` / datos de prueba. El despliegue lo hace
    José María.
 2. **Nunca secretos en Git.** `.env` fuera del repo, `.env.example` con placeholders.
    (Precedente: incidente de `.env` subido en ms-activopro-import, ver `conventions/microservices.md`.)
