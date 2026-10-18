@@ -39,6 +39,17 @@ y no deben mezclarse.
 - La columna nueva exige el script en todos los schemas antes de desplegar.
 - Facilita trazar incidencias de huella (registros generados con código antiguo).
 
+## Nota (18/10/2026): la primera versión de producción es la 2.0.0
+
+La serie de versiones del SIF A1 ya estaba en uso: GeneXus envía `1.0.1` (`getSIFId`) y la
+declaración responsable vigente es la v1.1. El micro no puede salir con una versión inferior,
+así que sale como **2.0.0**. Además:
+
+- Hay **una sola versión para todo el SIF A1**. Va en el `package.json` del micro, en `getSIFId`
+  de GeneXus (registros NO VERI*FACTU, `VERIFTPO = S1`) y en la declaración responsable
+  (www.activopro.net/responsable).
+- En Oxygen se despliega el **tag** de la versión, no `main`.
+
 ## Origen
 
 Decisión de José María (13/10/2026).
