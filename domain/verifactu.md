@@ -7,12 +7,18 @@ AEAT; autenticación con certificado en la conexión (sin firma XAdES de cada re
 
 - **TipoFactura:** `F1` normal; `F2` simplificada cuando `FacCtaCod` = cuenta por defecto
   (`999999`); `R4` rectificativa normal y `R5` rectificativa simplificada cuando `FacNumRec > 0`.
-- **Rectificativas = anulación en negativo.** Una rectificativa de ActivoPro es la misma factura
-  en negativo (fac 25 = 100 → R 25 = −100) y anula totalmente la original; si hace falta, se
-  emite después una factura nueva. Para la AEAT es una rectificativa **por diferencias**
-  (`TipoRectificativa = I`), sin `ImporteRectificacion`, con `FacturasRectificadas` (la
-  original). Nunca `FacturasSustituidas` (solo F3; con R4 da el error AEAT 1116). GeneXus manda
-  `S` y el micro la declara `I` (ADR-0010).
+- **Rectificativas: terminología.** En ActivoPro una factura emitida **no se modifica nunca**.
+  Para cambiarla se *sustituye*: una rectificativa que es su copia exacta en negativo, con
+  referencia a la original (fac 25 = 100 → R 25 = −100), y, con el saldo a 0, una factura nueva.
+  En GeneXus y en el negocio esto se llama **"sustitución"**. En el registro VeriFactu es
+  **`TipoRectificativa = I`** (diferencias), porque la R lleva la diferencia. La `S` de la AEAT
+  significa otra cosa: importes **finales** tras rectificar (aquí 0) más `ImporteRectificacion`
+  con los de la original. No coincidiría con la factura emitida (ADR-0010).
+  - Siempre `FacturasRectificadas` (la original). Nunca `FacturasSustituidas` (solo F3; con R4 da
+    el error AEAT 1116). Sin `ImporteRectificacion`. GeneXus manda `S` y el micro la declara `I`.
+  - `FechaOperacion` = fecha de la factura original (FAQ AEAT; micro #68).
+  - No es un `RegistroAnulacion`: ese es para registros de facturas que nunca debieron existir
+    (error de alta), no para anular una factura real.
 - **F2 y R5 no llevan `Destinatarios`** aunque GeneXus envíe el cliente (error AEAT 1190).
 - Una factura enviada a VeriFactu (aceptada o rechazada) **no se edita** en ActivoPro: se anula
   con una rectificativa y, si procede, se hace una nueva.

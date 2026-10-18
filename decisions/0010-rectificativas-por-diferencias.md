@@ -15,7 +15,8 @@ En ActivoPro, una rectificativa es la misma factura en negativo y anula totalmen
 la ha declarado "por sustitución": `TipoRectificativa = S`, con `BaseRectificada` y
 `CuotaRectificada` iguales a los importes de la propia rectificativa, en negativo.
 
-La AEAT define los dos tipos así (FAQ del SII, que comparte campos con VeriFactu):
+La AEAT define los dos tipos así (FAQ de VeriFactu, procedimientos de facturación, y FAQ del SII,
+que usa los mismos campos):
 
 - **`S` (sustitución):** la rectificativa lleva los importes **finales** correctos, y
   `ImporteRectificacion` lleva los de la original, en positivo.
@@ -50,6 +51,23 @@ Opción A, resuelta en el micro sin tocar GeneXus (issue y PR #46/#47 del micro)
 - Opcional: que GeneXus mande `I` directamente, para que el contrato sea más claro. El micro ya
   admite los dos valores.
 - Validado en preproducción el 14/10/2026 con una R4 (692, exenta) y una R5.
+
+## Nota sobre la terminología (18/10/2026)
+
+En GeneXus y en el negocio, ActivoPro llama **"sustitución"** a todo el proceso: la factura
+emitida no se toca, se anula con su copia exacta en negativo y se emite una nueva. Es una
+sustitución **de negocio**. En el registro VeriFactu se codifica con `TipoRectificativa = I`.
+Que el código de GeneXus diga "sustitución" **no** es motivo para volver a `S`.
+
+Fuente: FAQ VERI\*FACTU de la AEAT, «Procedimientos de facturación»
+(https://sede.agenciatributaria.gob.es/Sede/iva/sistemas-informaticos-facturacion-verifactu/preguntas-frecuentes/procedimientos-facturacion.html):
+
+- `S`: los importes de la rectificativa son los **correctos tras la rectificación**. Se informan
+  además la base y la cuota rectificadas.
+- `I`: se informa **directamente el importe de la rectificación** (la diferencia), sin más campos.
+- «¿Qué fecha de operación debe hacerse constar en una factura rectificativa? La fecha de
+  realización de la operación correspondiente a la factura original que se está rectificando.»
+  El micro la envía en `FechaOperacion` desde el #68.
 
 ## Origen
 
