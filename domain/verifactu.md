@@ -37,8 +37,9 @@ AEAT; autenticación con certificado en la conexión (sin firma XAdES de cada re
   queda deshabilitado en GeneXus porque estaba incompleto (sin alarmas ni resumen de eventos
   cada 6 h) y nadie lo usa. Se hará en el micro (issue #2). A 18/10/2026 la única empresa con
   VeriFactu en producción es `mconta0048` (Enumbers), en `S2`.
-- **Pendiente:** usar `FacFec` y no `FacMod` como fecha de expedición, tanto en
-  `FacturaEmitidaVeri` como en el micro.
+- **Fecha de expedición:** desde el 18/10/2026 `VF_EnviarMS` usa `FacFec` (antes `FacMod`). Los
+  registros que ya generó el flujo nativo constan en la AEAT con la fecha de `FacMod`, así que
+  la semilla de la cadena se saca de `FacHashData` (guía de despliegue del micro, 4.2).
 
 Historia completa: `verifactu-evolucion.md`.
 
@@ -155,8 +156,8 @@ conserva solo en memoria, 24 h; tras un reinicio, sale con la siguiente petició
 2. **Cliente nuevo en VeriFactu:** nada más. Con `verifactu_registro` vacía para su NIF, el micro
    envía `hashAnterior` vacío, que es lo que la AEAT espera en el primer registro de una cadena.
 3. **Cliente que ya ha enviado facturas a la AEAT** (pasa del flujo nativo al micro): sembrar
-   `verifactu_registro` con la última factura aceptada (`FacHashCode` de la última con
-   `FacIdSIF = 'A1'`). Sin semilla, la AEAT responde con error 2007. Es el mismo proceso que se
+   `verifactu_registro` con el último registro nativo, con los datos **tal como se enviaron**
+   (número, fecha y tipo sacados de `FacHashData`; ver `docs/despliegue.md` 4.2 del micro). Sin semilla, la AEAT responde con error 2007. Es el mismo proceso que se
    hizo en preproducción.
 4. Cambiar `MSVERACT` a `S` para esa empresa.
 
