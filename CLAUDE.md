@@ -14,7 +14,8 @@ ERP/contabilidad SaaS multi-tenant de Enumbers Digital Solutions SLU (Sabadell).
   en producción; las pruebas se hacen sobre una **copia local** de ese schema.
 - **Microservicios** alrededor del núcleo (ver `system-map.md`), cada uno en su propio repo.
 - **Nuevo ActivoPro** (React + Supabase) en desarrollo en el monorepo `activopro-platform`,
-  sin clientes todavía. Coexistencia temporal con GeneXus (ver ADR-0003).
+  sin clientes todavía. Coexistencia temporal con GeneXus (ver ADR-0003). Plataforma destino:
+  Postgres gestionado con `tenant_id` + RLS y backend TypeScript (ADR-0013).
 
 ## Dónde está cada cosa
 
@@ -26,6 +27,7 @@ ERP/contabilidad SaaS multi-tenant de Enumbers Digital Solutions SLU (Sabadell).
 | Reglas fiscales: VeriFactu, SPFE, multi-tenant | `domain/` |
 | Cómo se construye un micro, gotchas de GeneXus | `conventions/` |
 | Migraciones de clientes (proceso y lecciones) | `clients/` |
+| Inventarios y análisis puntuales (fotos fechadas del estado) | `analysis/` |
 
 Regla para decidir dónde va un documento: si la decisión cambiaría al reescribir solo un
 micro, va en el repo de ese micro. Si afecta a dos o más micros, o al núcleo, va aquí.
