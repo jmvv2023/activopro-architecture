@@ -35,6 +35,13 @@ En conversaciones y notas antiguas aparecen en claro una **service_role key de S
 2026) y la **contraseña del usuario MySQL de ms-verifactu**. Ninguna se ha copiado a estos
 borradores. Conviene rotarlas, porque ya han pasado por historiales de chat.
 
+- **(03/11/2026) Inyección SQL en `cambia_usupss`** (procedimiento del schema de tenant): concatena
+  `bd`, `usu` y `pass` en el SQL. Averiguar quién lo llama y con qué datos, y corregirlo con
+  parámetros en el `PREPARE`. Detalle en `analysis/legacy/2026-11-modelo-datos-tenant.md`.
+- **(03/11/2026) Funciones del nuevo ActivoPro sin control de acceso** ejecutables por `anon`
+  (`serie_siguiente_numero` y otras). Sin impacto (sin clientes), pero no reutilizar.
+  Detalle en `analysis/2026-11-inventario-nuevo-activopro.md`.
+
 ## Fuera de alcance de esta primera pasada
 
 - Nuevo ActivoPro: el repo real es `jmvv2023/activopro` (solo front, sin `CLAUDE.md`); el monorepo
