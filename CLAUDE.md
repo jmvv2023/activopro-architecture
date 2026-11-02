@@ -13,8 +13,8 @@ ERP/contabilidad SaaS multi-tenant de Enumbers Digital Solutions SLU (Sabadell).
   contienen más de una empresa (`EmpCod`). `mconta0048` es **Enumbers (B23918170), empresa real**
   en producción; las pruebas se hacen sobre una **copia local** de ese schema.
 - **Microservicios** alrededor del núcleo (ver `system-map.md`), cada uno en su propio repo.
-- **Nuevo ActivoPro** (React + Supabase) en desarrollo en el monorepo `activopro-platform`,
-  sin clientes todavía. Coexistencia temporal con GeneXus (ver ADR-0003). Plataforma destino:
+- **Nuevo ActivoPro** (React + Supabase) en desarrollo en `jmvv2023/activopro` (solo front; el
+  esquema vive en el proyecto Supabase `activopro`, sin migraciones en Git), sin clientes todavía. Coexistencia temporal con GeneXus (ver ADR-0003). Plataforma destino:
   Postgres gestionado con `tenant_id` + RLS y backend TypeScript (ADR-0013).
 
 ## Dónde está cada cosa
