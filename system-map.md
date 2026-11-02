@@ -31,8 +31,11 @@ MySQL → reinicio LibreOffice → arranque Tomcat. Backups con retención de 1 
 
 - `jmvv2023/activopro-monorepo`: **público** — manual (Starlight) y webs de Enumbers y ActivoPro.
   No poner aquí nada interno.
-- `activopro-platform`: nuevo ActivoPro (apps/web, supabase/, docs/). Los micros existentes
-  **no** entran ahí (ADR-0001).
+- `activopro-platform`: monorepo previsto para el nuevo ActivoPro (apps/web, supabase/, docs/) en
+  ADR-0001; **no llegó a crearse**. Hoy el nuevo ActivoPro es `jmvv2023/activopro` (solo front,
+  React/Refine) y su esquema vive en el proyecto Supabase `activopro` sin migraciones en Git
+  (ver `analysis/2026-11-inventario-nuevo-activopro.md`). La estructura de repos de la plataforma
+  destino (ADR-0013) está pendiente de decidir. Los micros existentes **no** entran en ella (ADR-0001).
 
 ## Tablas del núcleo que tocan los micros
 

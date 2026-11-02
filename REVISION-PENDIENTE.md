@@ -37,6 +37,7 @@ borradores. Conviene rotarlas, porque ya han pasado por historiales de chat.
 
 ## Fuera de alcance de esta primera pasada
 
-- Nuevo ActivoPro: ya tiene su propio `CLAUDE.md` en `activopro-platform`.
+- Nuevo ActivoPro: el repo real es `jmvv2023/activopro` (solo front, sin `CLAUDE.md`); el monorepo
+  `activopro-platform` no llegó a crearse.
 - Chats dentro de los proyectos "micros" y "nuevo ActivoPro" no se han recorrido uno a uno;
   se han usado sus notas resumidas.

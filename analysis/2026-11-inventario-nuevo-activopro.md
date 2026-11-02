@@ -8,7 +8,7 @@ Foto del estado del nuevo ActivoPro (repo `jmvv2023/activopro` + proyecto Supaba
 - 31 ficheros de páginas: terceros, catálogo, documentos (presupuestos/pedidos/albaranes), facturas, contabilidad (asientos, balance, resultado), tesorería, remesas, suscripciones, fiscal (Mod.303), dashboard, configuración, admin, login, selección de empresa.
 - Las pantallas más grandes: `facturas/form.tsx` (1.408 líneas), `configuracion/index.tsx` (1.233), `fiscal/modelos/mod303.tsx` (691), `documentos/form.tsx` (688).
 - Acceso a datos: 60 RPCs distintas llamadas desde el front y lecturas directas a 3 catálogos (`tipos_impuesto`, `formas_pago_tipo`, `unidades_medida`).
-- **No hay carpeta `supabase/` ni migraciones en el repo.** El repo real es `jmvv2023/activopro` (solo front); no coincide con el monorepo `activopro-platform` (apps/web, supabase/, docs/) que describe `system-map.md`.
+- **No hay carpeta `supabase/` ni migraciones en el repo.** El repo real es `jmvv2023/activopro` (solo front); el monorepo `activopro-platform` previsto en ADR-0001 no llegó a crearse.
 
 **Qué se conserva:** pantallas, componentes, convenciones de UI. **Qué cambia:** la capa de datos (llamadas RPC → cliente de la API del backend) y el proveedor de auth/datos de Refine.
 
