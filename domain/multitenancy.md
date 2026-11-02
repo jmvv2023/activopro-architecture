@@ -1,5 +1,8 @@
 # Multi-tenancy en ActivoPro
 
+> Describe el núcleo GeneXus actual. La plataforma nueva usa tablas compartidas con
+> `tenant_id` y RLS forzada, no schema por cliente (ADR-0013).
+
 - Cada cliente tiene **su propio schema** MySQL `mconta####`. No comparten tablas; solo el
   login dirige a un schema u otro.
 - Algunos schemas contienen **varias empresas** (`EmpCod`). Todo lo que sea por emisor
