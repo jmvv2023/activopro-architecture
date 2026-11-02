@@ -80,3 +80,40 @@ En total, **83 de las 237 tablas están vacías** incluso en uno de los tenants 
 
 1. **Tenant y empresa.** Un schema puede contener varias empresas (`EmpCod`). En la plataforma nueva, ¿el tenant es el cliente que contrata (y las empresas cuelgan de él) o cada empresa es un tenant? La propuesta es `tenant_id` = cliente que contrata y `empresa_id` dentro de él, con RLS por tenant y permisos por empresa. Hay que decidirlo antes de diseñar el modelo nuevo.
 2. **Alcance real de uso.** Recuento de filas por tabla en todos los tenants, para saber qué módulos se usan y cuáles no.
+
+## Uso de tablas en todos los schemas (03/11/2026)
+
+Recuento sobre los schemas `mconta%` disponibles (22 schemas): `uso-tablas-todos-los-tenants.csv`.
+
+**Volumen total: ~21,4 millones de filas**, repartidas así:
+
+| Tipo | Filas | Tratamiento |
+|---|---|---|
+| Catálogos y configuración replicados en cada schema (localidades, divisas, CNAE, IAE, tipos de IVA/IGIC/IRPF, definiciones de informes, seguridad de programas…) | ~5,1 M | En la plataforma nueva son datos globales: se cargan una vez, no por tenant. Hay que comprobar qué parte de la configuración de informes ha personalizado algún cliente |
+| Derivados (`ctacorriente`, `saldos`, `saldoslevel1`) | ~4,0 M | No se migran; se recalculan y sirven de oráculo de paridad |
+| Temporales (`tmp*`) y log de accesos (`acceso`) | ~0,2 M | No se migran |
+| **Datos de negocio reales** | **~12,0 M** | Lo que migra el ETL |
+
+**Tablas:**
+- 46 tablas vacías en todos los schemas: no se migran.
+- 27 tablas con datos en solo 1 o 2 schemas.
+
+**Uso por módulo** (número de schemas con datos, de 22):
+
+| Módulo | Schemas | Comentario |
+|---|---|---|
+| Contabilidad (`movctas`) | 21 | Núcleo para todos |
+| Inmovilizado (`activofijo`) | 18 | Muy usado; pendiente en el nuevo ActivoPro |
+| Cartera de pagos y cobros | 16–18 | |
+| Facturación (`facturas`) | 15 | Unos 6 schemas son solo contabilidad |
+| SEPA (mandatos) | 14 | Pero remesas de cobro solo en 4 |
+| Artículos y tarifas | 13 | |
+| Centros de coste / analítica (`sdocentros`, `tasiimpcen`) | 6–9 | 763.000 filas en `sdocentros`; no está en el nuevo ActivoPro |
+| Operaciones intracomunitarias (`tivaintra`) | 9 | |
+| Préstamos | 7 | |
+| Stock (`artistock`) | 12 | |
+| Lotes (`faclinlote`, `lote`) | 2 | 2 millones de filas concentradas en 2 schemas |
+| Gastos de viaje | 1 | Configurado en 11, usado en 1 |
+| VeriFactu (`verifactu_registro`) | 1 | |
+
+**Multi-empresa:** `empresas` suma 75 filas en 22 schemas, es decir, unas 3,4 empresas por schema. Varias empresas por schema es lo habitual, no la excepción, y eso apoya modelar el tenant como el cliente que contrata, con sus empresas dentro.
