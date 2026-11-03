@@ -76,15 +76,16 @@ Se conservan las reglas actuales (detalle en `domain/contabilidad-legacy.md`):
 - En GeneXus, **todas** las líneas de `movctas` (760.233 de 760.233 en mconta0037) tienen cuenta al debe y cuenta al haber; el importe va a un solo lado. Una es la cuenta del apunte y la otra su contrapartida, que el mayor muestra en la columna CTRPDA.
 - La contrapartida no siempre se puede deducir (en un asiento de varias líneas, la del cliente es la venta y no el IVA), así que se **guarda en cada apunte**. Los asientos automáticos la fijan al generarse; en los manuales se propone y el usuario la puede cambiar.
 
-### Asientos automáticos y flexibilidad
+### Asientos automáticos: las mismas puertas que hoy, ninguna nueva
 
-Principio: **la plataforma no impide, avisa y registra**, salvo en las invariantes legales y contables (el asiento cuadra, periodos y ejercicios cerrados, registros VeriFactu inalterables). Hay clientes y asesores que necesitan hacer ajustes a su manera (también fiscales); es su responsabilidad, pero la herramienta debe permitirlo de forma trazable.
+Criterio de José María (03/11/2026): no se puede ser del todo rígido (clientes y asesores hacen ajustes, también fiscales, bajo su responsabilidad), pero tampoco dejar hacer de todo, porque los descuadres acaban llegando al cierre del ejercicio. **Se mantienen las puertas abiertas que existen hoy y no se abren nuevas**, para no acabar en ajustes a medida.
 
-- El asiento generado por un documento (factura, cobro, amortización…) **pertenece al documento**: si el documento cambia, el asiento se regenera. No se edita directamente, para que asiento, libro de IVA, SII y VeriFactu no diverjan.
-- **Ajustes:** los ajustes se hacen con asientos manuales, totalmente editables, que pueden referenciar el asiento que ajustan. Es la vía normal para la ingeniería contable y fiscal de clientes y asesores.
-- **Desvincular** (vía de escape): un administrador de empresa puede convertir un asiento automático en manual. La plataforma avisa de las consecuencias, el documento queda marcado como "contabilización manual", el asiento pasa a ser editable y queda registrado quién, cuándo y por qué. No se permite si el documento tiene registro VeriFactu enviado ni en periodos cerrados.
-- **Diferencias entre documentos** (por ejemplo, factura de proveedor contra albarán por redondeos o entregas parciales): se avisa, el usuario puede aceptar la diferencia y el proceso se completa, con la diferencia registrada. La tolerancia que se acepta sin aviso es un parámetro de empresa. Nunca debe quedar un documento a medias que haya que marcar a mano.
-- **Precisión:** los precios unitarios admiten más de 2 decimales (los proveedores usan 3 o más); los importes de línea y totales se redondean a 2.
+- **Asientos manuales:** libres, como hoy. Es la vía para los ajustes contables y fiscales.
+- **Asientos de documentos que hoy son de solo consulta** (facturación, remesas de cobro y de pago, albaranes de tercero; diarios 16, 34, 35, 36 y 37): no editables. Se corrigen desde el documento, que regenera el asiento.
+- **Asientos automáticos que hoy son editables** (banco, caja, amortizaciones, existencias, nóminas…): siguen siendo editables, y la edición queda registrada en el audit log.
+- Cada origen de asiento tiene en el catálogo un indicador de editable sí/no que reproduce el comportamiento actual. Cambiarlo es una decisión de producto, no una opción por cliente.
+- **No se añaden** una acción genérica de "desvincular" ni la aceptación de diferencias entre documentos con tolerancia. Si se plantean, se tratan aparte como decisión de producto.
+- **Precisión:** los precios unitarios admiten más de 2 decimales (los proveedores usan 3 o más); los importes de línea y totales se redondean a 2. No es una puerta nueva: evita diferencias de redondeo.
 
 ### Códigos de cuenta
 
@@ -111,7 +112,7 @@ Principio: **la plataforma no impide, avisa y registra**, salvo en las invariant
 - Tabla de correspondencia diario → origen + atributos de IVA (se construye con `domain/contabilidad-legacy.md` y se valida en el modo sombra con libros de IVA y modelos).
 - Diarios 14 y 50 guardan solo el deducible y la cuota se calcula: el ETL la reconstruye.
 - Los asientos del diario 99 (importados) no actualizan los saldos de GeneXus: el comparador los excluye o los trata aparte.
-- Al migrar: los asientos automáticos que en GeneXus se modificaron a mano (diarios editables) se importan como desvinculados de su documento cuando no coincidan con lo que el documento generaría; el modo sombra los identifica.
+- Al migrar: los asientos automáticos de orígenes editables que se modificaron a mano en GeneXus se importan tal cual, como editados; el modo sombra los identifica al comparar con lo que generaría el documento.
 
 ## Origen
 
