@@ -113,6 +113,8 @@ Criterio de José María (03/11/2026): no se puede ser del todo rígido (cliente
 
 ## Pendiente
 
+- **Tipos impositivos y sus cuentas** (siguiente hilo, libro de IVA): GeneXus usa una subcuenta por tipo impositivo y clase de operación (p. ej. en mconta0114, de Canarias: `4727` IGIC soportado, `4728` importaciones, `4729` ISP, `4777`/`4779` repercutido, `4707`/`4757` liquidación, con una subcuenta por cada tipo: 0, 1, 2,75, 3, 5, 6,5, 7, 9,5, 13,5, 15, 20 y 35 %; y las equivalentes de IVA en `472x`/`477x`). La correspondencia vive en `ivatipos`/`ivatiposctas` e `igictipos`/`igictiposctas`; se modela como configuración de la empresa (tipo impositivo → cuenta) al abordar el libro de IVA. El plan de cuentas de una empresa de Canarias tiene la misma estructura que el resto: el modelo no cambia.
+
 - Tabla de correspondencia diario → origen + atributos de IVA (se construye con `domain/contabilidad-legacy.md` y se valida en el modo sombra con libros de IVA y modelos).
 - **IVA no deducible:** en GeneXus la línea de IVA no deducible no es contable (no va a saldos, salvo ISP). El ETL la carga con importe 0 y la cuota en el registro de IVA.
 - Diarios 14 y 50 guardan solo el deducible y la cuota se calcula: el ETL la reconstruye.
