@@ -138,7 +138,7 @@ No se construye todavía: aprovisionamiento automático, monitorización por bas
 
 ## Pendiente
 
-- ADR del camino: estrategia de migración desde GeneXus (propuesta en discusión: modo sombra con ETL nocturno MySQL → modelo nuevo y comparación automática de salidas por tenant).
+- ~~ADR del camino~~: resuelto en ADR-0016.
 - Validar con el asesor legal la redacción contractual de baja, impago y conservación en backups.
 - Elegir plataforma gestionada para el backend.
 
