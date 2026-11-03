@@ -74,11 +74,12 @@ En total, **83 de las 237 tablas están vacías** incluso en uno de los tenants 
 - La corrección es pasar `usu` y `pass` como parámetros del `PREPARE` (`EXECUTE s USING …`) y validar `bd` contra la lista de schemas.
 - Afecta a producción y al núcleo: lo decide José María (regla 4 de `CLAUDE.md`).
 
-`usuarios.UsuPss` es `char(40)`, que encaja con un hash SHA-1 en hexadecimal o con texto plano. Ninguna de las dos opciones es aceptable para la plataforma nueva (ADR-0013 delega la identidad en un proveedor gestionado). En la migración de usuarios no se pueden traer las contraseñas: los usuarios migrados tendrán que establecer una nueva.
+`usuarios.UsuPss` (`char(40)`) contiene un MD5 sin sal en base64 (16 bytes): el mismo usuario tiene el mismo valor en todas las empresas. No es aceptable para la plataforma nueva (ADR-0013 delega la identidad en un proveedor gestionado). En la migración de usuarios no se pueden traer las contraseñas: los usuarios migrados tendrán que establecer una nueva.
 
 ## Preguntas abiertas
 
-1. **Tenant y empresa.** Un schema puede contener varias empresas (`EmpCod`). En la plataforma nueva, ¿el tenant es el cliente que contrata (y las empresas cuelgan de él) o cada empresa es un tenant? Propuesta (03/11/2026): `tenant_id` = cliente que contrata, con RLS; `empresa_id` en todas las tablas de negocio, sin permisos por empresa de momento (hoy quien entra en un schema lo ve todo).
+1. ~~**Tenant y empresa.**~~ Propuesto en ADR-0014 (los usuarios son por empresa; se mantiene la pertenencia usuario–empresa).
+   Detalle original: Un schema puede contener varias empresas (`EmpCod`). En la plataforma nueva, ¿el tenant es el cliente que contrata (y las empresas cuelgan de él) o cada empresa es un tenant? Propuesta (03/11/2026): `tenant_id` = cliente que contrata, con RLS; `empresa_id` en todas las tablas de negocio, sin permisos por empresa de momento (hoy quien entra en un schema lo ve todo).
 2. **Alcance real de uso.** Recuento de filas por tabla en todos los tenants, para saber qué módulos se usan y cuáles no.
 
 ## Uso de tablas en producción (03/11/2026)
