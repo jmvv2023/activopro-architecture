@@ -110,6 +110,7 @@ Criterio de José María (03/11/2026): no se puede ser del todo rígido (cliente
 ## Pendiente
 
 - Tabla de correspondencia diario → origen + atributos de IVA (se construye con `domain/contabilidad-legacy.md` y se valida en el modo sombra con libros de IVA y modelos).
+- **IVA no deducible:** en GeneXus la línea de IVA no deducible no es contable (no va a saldos, salvo ISP). El ETL la carga con importe 0 y la cuota en el registro de IVA.
 - Diarios 14 y 50 guardan solo el deducible y la cuota se calcula: el ETL la reconstruye.
 - Los asientos del diario 99 (importados) no actualizan los saldos de GeneXus: el comparador los excluye o los trata aparte.
 - Al migrar: los asientos automáticos de orígenes editables que se modificaron a mano en GeneXus se importan tal cual, como editados; el modo sombra los identifica al comparar con lo que generaría el documento.

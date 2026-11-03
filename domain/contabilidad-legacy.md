@@ -86,6 +86,7 @@ Indica en qué lado (`D`/`H`) está la cuenta "principal" del asiento. En los as
 - `saldos` guarda por cuenta y ejercicio los acumulados de apertura (`AcCtaApD/H`) y cierre (`AcCtaCiD/H`); `saldoslevel1`, los de cada mes.
 - El asiento de cierre de todas las cuentas (diario 93) **no** actualiza saldos.
 - Los asientos del diario 99 (importados) **no** actualizan saldos. El comparador del modo sombra lo tiene en cuenta.
+- Las líneas con IVA **no deducible** (`MovIvaDed = 'ND'` en `movctaslevel1`) **no** se acumulan en saldos (`PCrea`, desde 2011), salvo en ISP (diarios 42, 43 y 47). Algunas llevan la cuota en el importe y otras van a 0; en ambos casos son informativas, no contables. Un asiento con una de esas líneas con importe parece descuadrado si se suman sus líneas, pero en saldos cuadra.
 
 ## Periodos y fechas permitidas
 
