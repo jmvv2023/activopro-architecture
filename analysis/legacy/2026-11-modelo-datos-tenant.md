@@ -13,7 +13,7 @@ Ficheros de apoyo en esta carpeta:
 - 235 tablas en `latin1` y 2 en `utf8mb4` (`pdefectomsg`, `pressii`).
 - 229 claves foráneas declaradas: GeneXus genera la integridad referencial en la base.
 - **0 triggers.** Solo hay 2 procedimientos almacenados, ambos de usuarios y login (`cambia_usupss`, `select_emp_usu`).
-- Claves naturales compuestas: 174 tablas tienen `EmpCod` al principio de la PK (varias empresas por schema).
+- Claves naturales compuestas: 174 tablas tienen `EmpCod` al principio de la PK (el schema admite hasta 4 empresas).
 - ~5,1 millones de filas en el tenant.
 
 ## Tablas por área funcional (mconta0037)
@@ -78,7 +78,7 @@ En total, **83 de las 237 tablas están vacías** incluso en uno de los tenants 
 
 ## Preguntas abiertas
 
-1. **Tenant y empresa.** Un schema puede contener varias empresas (`EmpCod`). En la plataforma nueva, ¿el tenant es el cliente que contrata (y las empresas cuelgan de él) o cada empresa es un tenant? La propuesta es `tenant_id` = cliente que contrata y `empresa_id` dentro de él, con RLS por tenant y permisos por empresa. Hay que decidirlo antes de diseñar el modelo nuevo.
+1. **Tenant y empresa.** Un schema puede contener varias empresas (`EmpCod`). En la plataforma nueva, ¿el tenant es el cliente que contrata (y las empresas cuelgan de él) o cada empresa es un tenant? Propuesta (03/11/2026): `tenant_id` = cliente que contrata, con RLS; `empresa_id` en todas las tablas de negocio, sin permisos por empresa de momento (hoy quien entra en un schema lo ve todo).
 2. **Alcance real de uso.** Recuento de filas por tabla en todos los tenants, para saber qué módulos se usan y cuáles no.
 
 ## Uso de tablas en producción (03/11/2026)
@@ -121,4 +121,7 @@ Recuento sobre los **162 schemas `mconta%` de producción** (metadatos de `infor
 **Consecuencias:**
 - ActivoPro es ante todo un producto de **contabilidad**: 157 schemas llevan contabilidad y solo 79 facturan. Unos 78 schemas usan contabilidad, IVA, cartera e inmovilizado sin facturación.
 - Esos schemas podrían formar una **primera ola de migración** sin depender de facturación, VeriFactu ni stock.
-- **Jerarquía:** schema (cliente que contrata) → empresas (`empresas`: 583 en 149 schemas, ~3,9 por schema) → centros (`empcen`: 781 en 156 schemas). Varias empresas por schema es lo habitual.
+- **Jerarquía:** schema (cliente que contrata) → empresas → centros.
+  - `empresas` suma 583 filas en 149 schemas, pero **no son empresas reales**: cada schema se crea con las empresas 1 a 4 preparadas. Según José María, solo unos 20 de los ~160 clientes tienen de verdad varias empresas.
+  - El ETL tiene que **distinguir empresas reales de huecos preparados**. Criterio propuesto: una empresa es real si tiene datos (apuntes, facturas…) o datos fiscales completos (NIF). Las vacías no se migran.
+  - `empcen` (781 filas en 156 schemas) puede tener el mismo efecto; pendiente de comprobar.
