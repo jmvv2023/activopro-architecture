@@ -36,6 +36,8 @@ Se adopta la opción 3:
 - **Tabla de pertenencia usuario–empresa desde el primer día.** La comprobación de empresa vive en un único punto del backend, con tests. No va en la RLS: un fallo ahí afectaría a otra empresa del mismo cliente, no a otro cliente. Si un cliente lo exigiera, puede añadirse a la RLS sin cambiar el modelo.
 - **El centro es un atributo de la empresa** (documentos, series, analítica), no un permiso.
 - **Identidad delegada** en un proveedor gestionado (ADR-0013). Un usuario es una persona con un único login, aunque hoy exista repetido en varias empresas.
+- **Login:** usuario + contraseña (y MFA cuando aplique). Una vez dentro, el usuario elige empresa en un desplegable con las empresas a las que tiene acceso; si solo tiene una, entra directamente. Puede cambiar de empresa sin volver a hacer login. Sustituye al login actual de empresa + usuario + contraseña.
+- **Roles y permisos** dentro de cada empresa: se deciden en un ADR propio.
 
 ## Migración
 
