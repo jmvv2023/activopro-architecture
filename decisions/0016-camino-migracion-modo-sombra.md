@@ -67,8 +67,8 @@ Se adopta la opción 3. Es una estrategia, no un calendario: las olas y los mome
 - **Ola 2 — clientes con facturación**: añade facturación, VeriFactu, SEPA y remesas, artículos y tarifas, stock.
 - **Ola 3 — casos especiales**: lotes, analítica por centros, gastos de viaje y clientes con patrones atípicos.
 - Dentro de cada ola, primero los clientes que el modo sombra da como idénticos en los módulos que usan.
-- **La unidad de migración es el tenant (cliente que contrata), no el schema** (03/11/2026): una asesoría migra con todas sus empresas a la vez, porque sus usuarios trabajan sobre todas. La ola de una asesoría la marca el módulo más exigente de sus empresas.
-- **Fiscalidad especial antes de migrar**: además de la paridad de saldos, la ola tiene en cuenta el régimen fiscal (empresas de Canarias con IGIC y modelos 420/425, fundaciones y entidades sin fines lucrativos…), que exige que esos módulos fiscales estén listos.
+- **La unidad de migración es el tenant (la empresa, un schema).** Las empresas de una asesoría pueden migrar en momentos distintos; durante la coexistencia, los usuarios de la asesoría trabajan en ActivoPro antiguo para unas y en el nuevo para otras.
+- **Territorio fiscal antes de migrar**: además de la paridad de saldos, la ola tiene en cuenta el territorio y régimen fiscal de la empresa, que exige que sus módulos fiscales estén listos: territorio común (AEAT, IVA), Canarias (IGIC, ATC, modelos 420/425), Ceuta y Melilla (IPSI), País Vasco (haciendas forales de Álava, Bizkaia y Gipuzkoa; TicketBAI en lugar de VeriFactu), Navarra (Hacienda Foral) y regímenes especiales como fundaciones y entidades sin fines lucrativos. La ola 1 empieza por empresas de territorio común.
 
 ### Cambio de un cliente
 

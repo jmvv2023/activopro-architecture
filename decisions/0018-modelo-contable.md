@@ -39,6 +39,10 @@ La ola 1 (ADR-0016) migra a los clientes que usan contabilidad sin facturación.
 | `declaracion` | Empresa × modelo × periodo | Estado (generada, presentada, reabierta), fichero, histórico de reaperturas |
 | `saldo_mensual` | Cuenta × mes | Debe y haber acumulados; derivado |
 
+### Territorio fiscal de la empresa
+
+La empresa tiene un **territorio fiscal** (común, Canarias, Ceuta y Melilla, Álava, Bizkaia, Gipuzkoa, Navarra) que determina el impuesto indirecto (IVA, IGIC o IPSI), la administración tributaria, los modelos y el sistema de facturación verificable (VeriFactu o TicketBAI). Los registros de impuesto indirecto indican el impuesto (`registro_iva.impuesto`) y admiten IVA, IGIC e IPSI.
+
 ### Reglas en la base de datos
 
 - Un apunte tiene un solo lado. El **importe lleva signo**: las rectificativas se registran en negativo en el mismo lado (p. ej. `N/FRA.DE RECT.` con debe negativo en la cuenta del cliente). Se admite importe 0 (líneas que soportan registro de IVA con cuota 0).
