@@ -37,3 +37,40 @@ Las diferencias están todas en 2026 (julio, septiembre y octubre), en cuentas d
 - El modelo contable (ADR-0018), el ETL y el comparador funcionan con datos reales.
 - El modo sombra ya aporta valor antes de migrar a nadie: detecta incoherencias internas de GeneXus.
 - Faltan por probar con datos: apertura, regularización y cierre (mconta0048 no tiene ejercicios cerrados con esos asientos) y volumen (mconta0037).
+
+# Segunda prueba — mconta0037 (03/11/2026)
+
+Copia de mconta0037, uno de los clientes más grandes (15 ejercicios, varios cerrados).
+
+## Carga
+
+| Concepto | Cantidad |
+|---|---|
+| Empresas reales | 1 |
+| Cuentas | 2.436 |
+| Ejercicios | 15 |
+| Asientos | 239.629 |
+| Apuntes | 760.233 |
+| Registros de IVA | 258.932 |
+| Retenciones | 169 |
+| Tiempo de carga | 46 s (en un entorno de desarrollo modesto) |
+| Tiempo de comparación | 6 s |
+
+Anomalías: solo los 5 asientos descuadrados ya conocidos (ejercicios 2022–2024, cerrados): 4 de facturas recibidas (diario 11) con diferencias de céntimos en IVA soportado (4720) y 1 manual (diario 12) de 2.743,59 € en 4709.
+
+## Comparación de saldos
+
+| Componente | Comparadas | Iguales | Distintas | Explicadas por descuadre heredado |
+|---|---|---|---|---|
+| Mensual | 51.387 | 51.381 (99,99 %) | 6 | 6 |
+| Apertura | 4.342 | 4.342 (100 %) | 0 | — |
+| Regularización | 673 | 673 (100 %) | 0 | — |
+| Consistencia interna | — | — | 0 | — |
+
+**Paridad efectiva: 100 %.** Las 6 diferencias mensuales están exactamente en los 5 asientos descuadrados: en ellos, GeneXus guardó en saldos un importe distinto del de sus propios apuntes (la diferencia de cada celda coincide con la del descuadre). Son ejercicios cerrados: no se tocan; se migran marcados como descuadre heredado.
+
+## Conclusiones
+
+- Validados con datos reales y volumen: el modelo contable, la regla de cuenta y contrapartida, el signo de las rectificativas, la apertura, la regularización (cuenta 129) y la exclusión del cierre (diario 93) y de los importados (diario 99) en los saldos.
+- El comparador separa las diferencias atribuibles a descuadres heredados de los errores reales del ETL.
+- Hallazgo para soporte: en mconta0037 hay 4 facturas recibidas con descuadres de céntimos en el IVA soportado, probablemente por redondeo en deducibles o prorrata en `PAltaMovimiento`. Si se repite en otros clientes, es un defecto de GeneXus que el modo sombra puede listar.
