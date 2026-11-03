@@ -37,7 +37,7 @@ Se adopta la opción 3:
 - **El centro es un atributo de la empresa** (documentos, series, analítica), no un permiso.
 - **Identidad delegada** en un proveedor gestionado (ADR-0013). Un usuario es una persona con un único login, aunque hoy exista repetido en varias empresas.
 - **Login:** usuario + contraseña (y MFA cuando aplique). Una vez dentro, el usuario elige empresa en un desplegable con las empresas a las que tiene acceso; si solo tiene una, entra directamente. Puede cambiar de empresa sin volver a hacer login. Sustituye al login actual de empresa + usuario + contraseña.
-- **Roles y permisos** dentro de cada empresa: se deciden en un ADR propio.
+- **Roles y permisos:** ADR-0015.
 
 ## Migración
 
@@ -45,7 +45,7 @@ Se adopta la opción 3:
 - **Usuarios:** se migran los que tienen `UsuBaj = 'N'`. Un mismo `UsuCod` en varias empresas del schema se convierte en un único usuario con pertenencia a esas empresas.
 - **Usuarios de plantilla** de baja (`CONTABLE`, `EMPRESA`, `FACTURAS`, `USUARIO`…): no se migran.
 - **Contraseñas:** no se migran (MD5 sin sal). Cada usuario establece la suya en el primer acceso, mediante un enlace de activación a su email. Los usuarios sin email (`UsuMail` vacío) necesitan que el administrador del cliente lo informe antes de migrar.
-- **`SYSADM`:** pendiente de decidir (ver abajo).
+- **`SYSADM`:** es la cuenta de soporte de Enumbers; no se migra (ADR-0015).
 
 ## Consecuencias
 
@@ -56,7 +56,6 @@ Se adopta la opción 3:
 
 ## Pendiente
 
-- Quién usa hoy `SYSADM` (el administrador de cada cliente, soporte de Enumbers o ambos). En la plataforma nueva no habrá cuentas genéricas compartidas: cada persona con su login y un rol de administrador; el acceso de soporte de Enumbers, si hace falta, mediante un mecanismo propio y auditado.
 - Comprobar si `empcen` tiene también centros preparados vacíos.
 
 ## Origen
