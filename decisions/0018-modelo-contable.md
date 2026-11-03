@@ -41,7 +41,7 @@ La ola 1 (ADR-0016) migra a los clientes que usan contabilidad sin facturación.
 
 ### Reglas en la base de datos
 
-- Un apunte tiene un solo lado. Se admite importe 0 (líneas que soportan registro de IVA con cuota 0).
+- Un apunte tiene un solo lado. El **importe lleva signo**: las rectificativas se registran en negativo en el mismo lado (p. ej. `N/FRA.DE RECT.` con debe negativo en la cuenta del cliente). Se admite importe 0 (líneas que soportan registro de IVA con cuota 0).
 - **Un asiento cuadra** (Σ debe = Σ haber), comprobado al commit.
   - Excepción: asientos migrados con descuadre heredado, marcados como tales; nunca para asientos nuevos o modificados.
 - No se crean ni modifican asientos en periodos cerrados ni en ejercicios cerrados; desbloqueo solo explícito y auditado (ADR-0013, punto 11).
@@ -66,12 +66,12 @@ La ola 1 (ADR-0016) migra a los clientes que usan contabilidad sin facturación.
 ## Migración
 
 - **Títulos y subcuentas** de `tctactble` → `cuenta`. El plan modelo se identifica comparando con `defctactable`.
-- **Contrapartida**: cuenta del apunte según `MovTipo` (`D` → `MovDCta*`, `H` → `MovHCta*`); la otra es la contrapartida (pendiente de confirmar con datos).
+- **Contrapartida**: cuenta del apunte según `MovTipo` (`D` → `MovDCta*`, `H` → `MovHCta*`); la otra es la contrapartida. Confirmado en mconta0037: las líneas `D` solo tienen importe al debe y las `H` solo al haber.
 - **Asientos**: cabecera derivada de las líneas de `movctas` con el mismo ejercicio y `MovId`; fecha y diario comunes.
 - **IVA e IRPF**: `movctaslevel1` y `movctaslevel2` → `registro_iva` y `retencion`.
 - **Periodos**: `paramejerlevel1` → `periodo`.
 - **Origen de cada asiento** (factura, cobro…): se deriva del diario y de los vínculos de los documentos. En la ola 1 no hay facturación, así que la mayoría serán manuales o de cartera.
-- **Paridad**: `saldo_mensual` recalculado frente a `saldoslevel1`, por empresa, cuenta y mes.
+- **Paridad**: `saldo_mensual` recalculado frente a `saldoslevel1`, por empresa, cuenta y mes. Segunda comprobación: el mayor (saldo anterior y movimientos por cuenta y periodo) generado por ambos sistemas.
 
 ## Consecuencias
 
