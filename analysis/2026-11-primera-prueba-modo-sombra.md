@@ -73,4 +73,4 @@ Anomalías: solo los 5 asientos descuadrados ya conocidos (ejercicios 2022–202
 
 - Validados con datos reales y volumen: el modelo contable, la regla de cuenta y contrapartida, el signo de las rectificativas, la apertura, la regularización (cuenta 129) y la exclusión del cierre (diario 93) y de los importados (diario 99) en los saldos.
 - El comparador separa las diferencias atribuibles a descuadres heredados de los errores reales del ETL.
-- Hallazgo para soporte: en mconta0037 hay 4 facturas recibidas con descuadres de céntimos en el IVA soportado, probablemente por redondeo en deducibles o prorrata en `PAltaMovimiento`. Si se repite en otros clientes, es un defecto de GeneXus que el modo sombra puede listar.
+- ~~Hallazgo para soporte~~ (corregido el 03/11/2026): los descuadres de céntimos en IVA soportado eran líneas de IVA no deducible, que GeneXus no lleva a saldos. Con esa regla en el ETL, mconta0037 queda con 2 descuadres heredados y paridad mensual del 100,00 %.
