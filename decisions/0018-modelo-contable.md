@@ -41,7 +41,7 @@ La ola 1 (ADR-0016) migra a los clientes que usan contabilidad sin facturación.
 
 ### Territorio fiscal de la empresa
 
-La empresa tiene un **territorio fiscal** (común, Canarias, Ceuta y Melilla, Álava, Bizkaia, Gipuzkoa, Navarra) que determina el impuesto indirecto (IVA, IGIC o IPSI), la administración tributaria, los modelos y el sistema de facturación verificable (VeriFactu o TicketBAI). Los registros de impuesto indirecto indican el impuesto (`registro_iva.impuesto`) y admiten IVA, IGIC e IPSI.
+La empresa tiene un **territorio fiscal** (común, Canarias, Ceuta y Melilla, Álava, Bizkaia, Gipuzkoa, Navarra) que determina el impuesto indirecto (IVA, IGIC o IPSI), la administración tributaria, los modelos y el sistema de facturación verificable (VeriFactu o TicketBAI). Los registros de impuesto indirecto indican el impuesto (`registro_iva.impuesto`) y admiten IVA, IGIC e IPSI. Es parte de la **configuración de la empresa** (ADR-0015, capa 2), como hoy en ActivoPro, donde se define el régimen fiscal que le aplica; el ETL lo toma de la configuración de la empresa en GeneXus (campo exacto por identificar; candidato `empresas.EmpRegIva`).
 
 ### Reglas en la base de datos
 
