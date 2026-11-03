@@ -133,4 +133,13 @@ Unos 20 parámetros, entre ellos:
 - suplidos;
 - contrapartidas bancarias (`BANCTR1/2`).
 
+Otros relevantes para la migración (vistos en mconta0114):
+- `APLIIVA` / `APLIIGIC`: la empresa aplica IVA o IGIC (territorio fiscal).
+- `FRARECND`: "Contab fras recibidas con IVA no deduc".
+- `TOLDESC`: "Tolerancia Descuadre / Descuadre IVA" (p. ej. 0.02): tolerancia de descuadre que GeneXus ya admite.
+- `LIQUIVA`: si la empresa liquida IVA.
+- Cuentas de liquidación de IVA e IGIC (`IVAMAS`, `IVAMENOS`, `IGICMAS`, `IGICMENO`), prorrata (`IVAPROR`) y bienes de inversión (`IVAINV`).
+
+Muchos parámetros solo existen en la empresa 1 del schema; las empresas preparadas tienen un subconjunto por defecto.
+
 Son parametrización de empresa (ADR-0015, capa 2).
