@@ -44,6 +44,8 @@ borradores. Conviene rotarlas, porque ya han pasado por historiales de chat.
 
 - **(03/11/2026) Credenciales en el código de la KB:** contraseñas SMTP escritas en el código de unos 9 objetos de envío de correo (p. ej. `EnviarMail`, `EnvioMail`, `SendEmail`, `Wwmod_347`, `WPrecibos`) y credenciales de base de datos en comentarios y literales de los procedimientos de conexión (`Conectar`, `conexiondin`, `conexiondin2`). Rotarlas y moverlas a configuración (parámetros SMTP de `pdefecto` ya existen). El export XPZ no se guarda en ningún repo.
 
+- **(03/11/2026) Defecto de GeneXus: facturas recibidas con IVA no deducible generan asientos descuadrados** (debe = haber + cuota). Unos 15 clientes con cientos o miles de asientos afectados; sigue ocurriendo en 2026. Detalle en `analysis/2026-11-integridad-contable-clientes.md`. Requiere decisión explícita para tocar la contabilización (regla 4).
+
 ## Fuera de alcance de esta primera pasada
 
 - Nuevo ActivoPro: el repo real es `jmvv2023/activopro` (solo front, sin `CLAUDE.md`); el monorepo
