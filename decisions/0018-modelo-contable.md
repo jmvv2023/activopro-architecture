@@ -33,7 +33,7 @@ La ola 1 (ADR-0016) migra a los clientes que usan contabilidad sin facturación.
 | `periodo` | Ejercicio × mes | Cerrado contable, cerrado IVA; cada cierre y reapertura auditado |
 | `diario` | Global | Catálogo de tipos de asiento (lista a extraer de la KB) |
 | `asiento` | Empresa | Ejercicio, número, fecha, diario, concepto, origen (manual, factura, cobro, amortización, apertura, cierre, regularización…) y referencia al documento de origen |
-| `apunte` | Asiento | Línea, cuenta, lado (debe/haber), importe, concepto, documento, divisa |
+| `apunte` | Asiento | Línea, cuenta, lado (debe/haber), importe, **cuenta de contrapartida**, concepto, documento, divisa |
 | `registro_iva` | Apunte | Tipo (repercutido/soportado), clase, base, porcentaje, cuota, deducibilidad, clave de operación, país |
 | `retencion` | Apunte | IRPF: clave, base, porcentaje, cuota |
 | `declaracion` | Empresa × modelo × periodo | Estado (generada, presentada, reabierta), fichero, histórico de reaperturas |
@@ -47,6 +47,11 @@ La ola 1 (ADR-0016) migra a los clientes que usan contabilidad sin facturación.
 - No se crean ni modifican asientos en periodos cerrados ni en ejercicios cerrados; desbloqueo solo explícito y auditado (ADR-0013, punto 11).
 - `saldo_mensual` se actualiza en la misma transacción que los apuntes y se puede recalcular por empresa y ejercicio.
 
+### Contrapartida
+
+- En GeneXus, **todas** las líneas de `movctas` (760.233 de 760.233 en mconta0037) tienen cuenta al debe y cuenta al haber; el importe va a un solo lado. Una es la cuenta del apunte y la otra su contrapartida, que el mayor muestra en la columna CTRPDA.
+- La contrapartida no siempre se puede deducir (en un asiento de varias líneas, la del cliente es la venta y no el IVA), así que se **guarda en cada apunte**. Los asientos automáticos la fijan al generarse; en los manuales se propone y el usuario la puede cambiar.
+
 ### Asientos automáticos
 
 - El asiento generado por un documento (factura, cobro, amortización…) **pertenece al documento**: si el documento cambia, el asiento se regenera.
@@ -55,12 +60,13 @@ La ola 1 (ADR-0016) migra a los clientes que usan contabilidad sin facturación.
 
 ### Códigos de cuenta
 
-- Se guarda el código completo (título + subcuenta) para ordenar y filtrar por prefijo (grupos, rangos en informes).
+- Código completo de **10 posiciones fijas**: título en 4 (con espacio a la derecha si es de 3 dígitos) + subcuenta de 6. Ejemplos: `705 000000`, `572 000001`, `4312000000`. Es el formato que ya muestra ActivoPro en el mayor; ordena bien y permite filtrar por prefijo (grupos, rangos en informes).
 - La interfaz muestra y acepta el código como lo usa hoy cada pantalla (por ejemplo, el código de 6 dígitos del tercero).
 
 ## Migración
 
 - **Títulos y subcuentas** de `tctactble` → `cuenta`. El plan modelo se identifica comparando con `defctactable`.
+- **Contrapartida**: cuenta del apunte según `MovTipo` (`D` → `MovDCta*`, `H` → `MovHCta*`); la otra es la contrapartida (pendiente de confirmar con datos).
 - **Asientos**: cabecera derivada de las líneas de `movctas` con el mismo ejercicio y `MovId`; fecha y diario comunes.
 - **IVA e IRPF**: `movctaslevel1` y `movctaslevel2` → `registro_iva` y `retencion`.
 - **Periodos**: `paramejerlevel1` → `periodo`.
