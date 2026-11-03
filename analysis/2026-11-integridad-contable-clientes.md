@@ -61,4 +61,5 @@ Los asientos descuadrados bajan de 49.015 a **303** en total.
 - mconta0017 es una **fundación**: puede tener fiscalidad especial (entidad sin fines lucrativos).
 - mconta0114 es una empresa de **Canarias** (IGIC), llevada por una asesoría; la asesoría es la cliente de ActivoPro.
 - mconta0065, 0075, 0077, 0091, 0098 y 0105 (los 6 "a revisar") son empresas de **esa misma asesoría**. Sus descuadres residuales probablemente responden a su forma de trabajar (asientos manuales con IVA no deducible), no a errores aleatorios.
-- Consecuencia: la unidad de migración es el cliente que contrata (ADR-0014, ADR-0016). Hay que agrupar los schemas por cliente antes de planificar las olas.
+- Cada empresa sigue siendo su propio tenant aunque la lleve una asesoría; los usuarios de la asesoría tienen acceso a varios tenants (ADR-0014). La unidad de migración sigue siendo la empresa (ADR-0016).
+- En España hay varios territorios fiscales (común, Canarias, Ceuta y Melilla, País Vasco, Navarra): la ola 1 empieza por empresas de territorio común.
