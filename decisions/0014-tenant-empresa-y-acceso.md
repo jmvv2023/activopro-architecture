@@ -1,7 +1,7 @@
 ---
 id: 0014
 title: Tenant = cliente que contrata; empresa como dimensión con pertenencia usuario–empresa
-status: proposed
+status: accepted
 date: 2026-11-03
 services: [core]
 supersedes: null

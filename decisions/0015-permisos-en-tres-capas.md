@@ -1,7 +1,7 @@
 ---
 id: 0015
 title: Permisos en tres capas — plataforma (Enumbers), configuración de empresa y muy pocos roles de usuario
-status: proposed
+status: accepted
 date: 2026-11-03
 services: [core]
 supersedes: null
@@ -80,6 +80,10 @@ Se empieza con **dos roles**:
 
 - Confirmar que una fila de `usuprg1` significa "acción bloqueada" y el significado de `UsuSegAccEst`.
 - Lista de módulos contratables y de parámetros de empresa (se define con el diseño de cada módulo).
+
+## Evolución posible
+
+- Que el administrador de empresa dé de alta usuarios hasta el número contratado. Hoy no hay necesidad (03/11/2026); el modelo lo admite sin cambios: sería un permiso más, limitado por el número de usuarios contratados de la capa 1.
 
 ## Origen
 
