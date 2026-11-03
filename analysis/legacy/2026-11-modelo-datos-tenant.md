@@ -138,3 +138,20 @@ Recuento sobre los **162 schemas `mconta%` de producción** (metadatos de `infor
   - El resto (~176 usuarios) son patrones de 1–10 usuarios, varios con bloqueos fiscales (IVA/IGIC, libros, declaraciones) o de mantenimiento (`INS`/`UPD`/`DLT`).
 
 Pendiente: confirmar el significado de una fila y de `UsuSegAccEst`; decidir roles en un ADR propio.
+
+## Contabilidad: comprobaciones sobre mconta0037 (03/11/2026)
+
+**Plan de cuentas** (`tctactble`, empresa 1):
+- Mezcla títulos (sin `CtaCod`, 3 o 4 dígitos) y subcuentas (`CtaTit` + `CtaCod` de 6 dígitos).
+- Subcuentas de 10 dígitos (título de 4, p. ej. `4300 001001`) y de 9 (título de 3, p. ej. `572 000006`).
+- Código compacto en `CtaTitCod`: título + subcuenta sin ceros a la izquierda (`43001001`, `5726`, `1000`).
+- El plan se elige de un catálogo (pymes, sociedades…) al dar de alta la empresa; se pueden añadir cuentas.
+- Las cuentas de terceros son `4300` (clientes), `4000` (proveedores) y `4100` (acreedores) + 6 dígitos de identificador.
+
+**Apuntes** (`movctas`, 760.233 líneas, 239.629 asientos):
+- Ninguna línea tiene importe en el debe y en el haber a la vez: cada apunte va a un lado (`MovTipo` = `D`/`H`).
+- 14.446 líneas (1,9 %) sin importe. Hipótesis: líneas que soportan registro de IVA con cuota 0. Hay que conservarlas por paridad del libro de IVA.
+- Ningún asiento tiene líneas con fechas distintas: la fecha es del asiento.
+- **5 asientos descuadrados** (debe ≠ haber). El ETL los importa marcados como descuadre heredado: no pueden violar el constraint de cuadre y aparecen en el informe de paridad.
+- `MovDiario` toma unos 25 valores (1–4, 7–12, 14, 15, 18, 24, 31, 32, 34, 35, 42, 91–93). Es una clasificación del origen del asiento, no un único libro. Los más usados son 3 y 35. Significado pendiente (KB).
+- `MovCab` (`D`/`H`/vacío) aparece en pares D/H con el mismo recuento. Significado pendiente (KB).
