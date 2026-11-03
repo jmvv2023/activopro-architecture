@@ -1,7 +1,7 @@
 ---
 id: 0018
 title: Modelo de datos contable de la plataforma nueva (ola 1)
-status: proposed
+status: accepted
 date: 2026-11-03
 services: [core]
 supersedes: null
