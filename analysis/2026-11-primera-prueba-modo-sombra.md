@@ -30,11 +30,7 @@ Anomalías: solo 6 asientos descuadrados (ejercicio 2026, `MovId` 348–353, dia
 
 Las diferencias están todas en 2026 (julio, septiembre y octubre), en cuentas de clientes, ventas (705) e IVA repercutido (4770), y todas en asientos del diario 35 (facturas del programa de facturación), como los 6 descuadrados.
 
-Dos explicaciones posibles, pendientes de distinguir:
-1. Manipulaciones de prueba en la copia local (pruebas de facturación y rectificativas de 2026).
-2. Un defecto real al modificar o regenerar asientos de facturas en GeneXus que no actualiza los saldos (y en algún caso deja el asiento descuadrado).
-
-Para distinguirlas, comprobar la misma integridad en producción con una consulta de solo lectura (saldos de `saldoslevel1` frente a la suma de `movctas` por cuenta y mes, y asientos descuadrados).
+**Causa confirmada por José María (03/11/2026):** la copia local de mconta0048 se usa para pruebas de todo tipo, así que estos desajustes son esperables. No indican un defecto de GeneXus. Para una prueba limpia hay que partir de una copia recién restaurada desde producción.
 
 ## Conclusiones
 
