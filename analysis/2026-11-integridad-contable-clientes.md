@@ -55,3 +55,10 @@ Los asientos descuadrados bajan de 49.015 a **303** en total.
 - A revisar: mconta0065 (18 descuadres), 0075 (77), 0077 (42), 0091 (33), 0098 (60) y 0105 (15). En 0077 y 0091 coinciden con los asientos de IVA no deducible en los que la diferencia no era la cuota (p. ej. varias líneas de IVA o combinaciones con `NJ`); probablemente variantes de la misma regla.
 
 **Ola 1, clientes con paridad de saldos completa (56):** mconta0003, 0005, 0011, 0012, 0015, 0017, 0019, 0020, 0021, 0022, 0026, 0028, 0035, 0036, 0038, 0039, 0042, 0045, 0053, 0056, 0060, 0062, 0063, 0064, 0067, 0068, 0074, 0082, 0087, 0088, 0094, 0099, 0102, 0104, 0106, 0109, 0110, 0111, 0112, 0114, 0117, 0118, 0124, 0128, 0132, 0141, 0142, 0143, 0144, 0148, 0149, 0152, 0153, 0155, 0157, 0158.
+
+### Contexto de clientes (José María, 03/11/2026)
+
+- mconta0017 es una **fundación**: puede tener fiscalidad especial (entidad sin fines lucrativos).
+- mconta0114 es una empresa de **Canarias** (IGIC), llevada por una asesoría; la asesoría es la cliente de ActivoPro.
+- mconta0065, 0075, 0077, 0091, 0098 y 0105 (los 6 "a revisar") son empresas de **esa misma asesoría**. Sus descuadres residuales probablemente responden a su forma de trabajar (asientos manuales con IVA no deducible), no a errores aleatorios.
+- Consecuencia: la unidad de migración es el cliente que contrata (ADR-0014, ADR-0016). Hay que agrupar los schemas por cliente antes de planificar las olas.

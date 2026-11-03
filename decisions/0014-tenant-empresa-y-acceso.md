@@ -41,6 +41,8 @@ Se adopta la opción 3:
 
 ## Migración
 
+- **Varios schemas por cliente (asesorías), 03/11/2026:** un cliente que contrata puede tener varios schemas. Una asesoría es la cliente de ActivoPro y cada empresa que lleva es un schema (p. ej. mconta0065, 0075, 0077, 0091, 0098, 0105 y 0114 son de la misma asesoría). Todos sus schemas migran a **un único tenant** (la asesoría) con una empresa por cada empresa real de cada schema, y los usuarios de la asesoría pasan a ser un único login con acceso a esas empresas. La correspondencia schema → cliente que contrata se obtiene de `prueba_db` (usuarios con acceso a varias bases) y la confirma Enumbers.
+
 - **Empresas:** solo se migran las reales (con apuntes, facturas u otros datos, o con NIF informado). Los huecos preparados no.
 - **Usuarios:** se migran los que tienen `UsuBaj = 'N'`. Un mismo `UsuCod` en varias empresas del schema se convierte en un único usuario con pertenencia a esas empresas.
 - **Usuarios de plantilla** de baja (`CONTABLE`, `EMPRESA`, `FACTURAS`, `USUARIO`…): no se migran.
