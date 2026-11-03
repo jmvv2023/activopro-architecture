@@ -31,10 +31,10 @@ La ola 1 (ADR-0016) migra a los clientes que usan contabilidad sin facturación.
 | `cuenta` | Empresa | Título padre, subcuenta (6 dígitos), código completo, nombre, imputable sí/no, tercero asociado, activa |
 | `ejercicio` | Empresa | Fechas de inicio y fin, estado, plan |
 | `periodo` | Ejercicio × mes | Cerrado contable, cerrado IVA; cada cierre y reapertura auditado |
-| `diario` | Global | Catálogo de tipos de asiento (lista a extraer de la KB) |
-| `asiento` | Empresa | Ejercicio, número, fecha, diario, concepto, origen (manual, factura, cobro, amortización, apertura, cierre, regularización…) y referencia al documento de origen |
+| `origen_asiento` | Global | Catálogo de orígenes: manual, caja, banco, remesa, factura emitida, factura recibida, nómina, amortización, existencias, apertura, regularización, cierre, importado… |
+| `asiento` | Empresa | Ejercicio, número, fecha, origen, concepto, origen (manual, factura, cobro, amortización, apertura, cierre, regularización…) y referencia al documento de origen |
 | `apunte` | Asiento | Línea, cuenta, lado (debe/haber), importe, **cuenta de contrapartida**, concepto, documento, divisa |
-| `registro_iva` | Apunte | Tipo (repercutido/soportado), clase, base, porcentaje, cuota, deducibilidad, clave de operación, país |
+| `registro_iva` | Apunte | Tipo (repercutido/soportado), **tipo de operación** (interior, intracomunitaria, exportación, importación, aduanas, ISP, tercer país), **impuesto** (IVA/IGIC), bien de inversión, base, porcentaje, cuota, deducibilidad (total, parcial, prorrata, no deducible), clave de operación, país |
 | `retencion` | Apunte | IRPF: clave, base, porcentaje, cuota |
 | `declaracion` | Empresa × modelo × periodo | Estado (generada, presentada, reabierta), fichero, histórico de reaperturas |
 | `saldo_mensual` | Cuenta × mes | Debe y haber acumulados; derivado |
@@ -46,6 +46,30 @@ La ola 1 (ADR-0016) migra a los clientes que usan contabilidad sin facturación.
   - Excepción: asientos migrados con descuadre heredado, marcados como tales; nunca para asientos nuevos o modificados.
 - No se crean ni modifican asientos en periodos cerrados ni en ejercicios cerrados; desbloqueo solo explícito y auditado (ADR-0013, punto 11).
 - `saldo_mensual` se actualiza en la misma transacción que los apuntes y se puede recalcular por empresa y ejercicio.
+
+### Diario: se separa en dos conceptos
+
+En GeneXus, `MovDiario` (unos 60 valores fijos en el código, ver `domain/contabilidad-legacy.md`) mezcla el **origen** del asiento con el **tratamiento de IVA** (tipo de operación, IVA o IGIC, bien de inversión). En el modelo nuevo:
+
+- el origen es un campo del asiento (`origen_asiento`);
+- el tratamiento de IVA son atributos del registro de IVA.
+
+El libro de IVA, el SII y los modelos se calculan a partir de los atributos del registro de IVA, no de un código de diario. El ETL traduce cada código de diario a origen + atributos con una tabla de correspondencia. `MovCab` no se migra: se deduce del origen.
+
+### Cierre y apertura del ejercicio
+
+Se conservan las reglas actuales (detalle en `domain/contabilidad-legacy.md`):
+
+- **Cierre**, con estas condiciones previas:
+  - ejercicio aperturado;
+  - último mes contable cerrado;
+  - IVA del último mes cerrado;
+  - amortizaciones de inmovilizado y de préstamos contabilizadas.
+
+  Genera dos asientos: regularización (grupos 6 y 7 contra la 129) y cierre de todas las cuentas.
+- **Apertura**: requiere el ejercicio anterior cerrado. Traslada los saldos finales; el resultado de la 129 va a la 121 (pérdidas, subcuenta por ejercicio) o a la 123 (ganancias). Las cuentas son configurables por empresa.
+- **Deshacer** cierre y apertura sigue siendo posible, auditado.
+- **Cambio:** los asientos de apertura y cierre no necesitan la cuenta puente `999 000000`; sus apuntes no llevan contrapartida. En el ETL, la contrapartida `999 000000` de esos diarios se migra como vacía.
 
 ### Contrapartida
 
@@ -78,12 +102,12 @@ La ola 1 (ADR-0016) migra a los clientes que usan contabilidad sin facturación.
 - El asiento pasa a ser una entidad con cabecera y origen: se puede navegar de asiento a documento y viceversa.
 - Las reglas de cuadre y de periodos cerrados pasan de la aplicación a la base de datos.
 
-## Pendiente (KB)
+## Pendiente
 
-- Catálogo de diarios: significado de cada valor de `MovDiario`.
-- Significado de `MovCab`.
-- Reglas de cierre, apertura y regularización de PyG; cierre mensual y de IVA.
-- Si el usuario puede hoy editar a mano un asiento automático. Si es así, cómo se trata al migrar.
+- Tabla de correspondencia diario → origen + atributos de IVA (se construye con `domain/contabilidad-legacy.md` y se valida en el modo sombra con libros de IVA y modelos).
+- Diarios 14 y 50 guardan solo el deducible y la cuota se calcula: el ETL la reconstruye.
+- Los asientos del diario 99 (importados) no actualizan los saldos de GeneXus: el comparador los excluye o los trata aparte.
+- Asientos automáticos editables: en GeneXus, los diarios 16, 34, 35, 36 y 37 son de solo consulta; el resto de asientos generados por programas sí se pueden modificar. Queda por decidir si en la plataforma nueva todos los automáticos pasan a ser no editables.
 
 ## Origen
 
