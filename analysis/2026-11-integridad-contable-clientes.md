@@ -25,3 +25,18 @@ Un volumen así no son errores sueltos: apunta a algo sistemático. Hipótesis a
 - o un defecto concreto de GeneXus en algún proceso usado por esos clientes.
 
 Pendiente: análisis por diario y ejercicio en uno de ellos (mconta0002).
+
+## Causa de los descuadres masivos (03/11/2026)
+
+Análisis de mconta0002 en producción (solo lectura):
+
+- Los descuadres no se compensan entre asientos: son reales. Entre 50.000 y 90.000 € al año, siempre con el debe por encima del haber, desde 2011 hasta 2026.
+- Todos son **facturas recibidas** (diario 11 sobre todo; también 4 y 14).
+- En 2025, los 1.000 asientos descuadrados tienen IVA **no deducible** (`MovIvaDed = 'ND'`; 52 combinan exento y no deducible), y en los 1.000 la diferencia es **exactamente la cuota de IVA**.
+
+Conclusión: al contabilizar una factura recibida con IVA no deducible, GeneXus genera un asiento cuyo debe supera al haber en el importe de la cuota. Lo más probable es que la cuota no deducible se cargue a la vez como mayor gasto y en el apunte de IVA; queda por confirmar en qué línea sobra viendo un asiento concreto. Es un defecto de GeneXus que sigue activo en 2026 y deja descuadrados los balances de sumas y saldos de los clientes que usan IVA no deducible.
+
+Consecuencias:
+- **Migración:** sin impacto en el ETL; los asientos se migran como descuadre heredado. Estos clientes no son candidatos de la primera ola.
+- **Plataforma nueva:** el IVA no deducible se modela como mayor gasto, con el registro de IVA informando la cuota para el libro y el apunte de IVA a 0 (como ya hace GeneXus en mconta0037, con 14.446 apuntes sin importe). El asiento debe cuadrar; la base de datos lo impide si no.
+- **Soporte:** corregirlo en GeneXus toca la lógica de contabilización (regla 4 de `CLAUDE.md`): requiere decisión explícita de José María. Pendiente también decidir qué se hace con los asientos ya descuadrados de ejercicios abiertos.
