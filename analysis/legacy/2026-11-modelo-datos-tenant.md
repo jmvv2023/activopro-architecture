@@ -126,3 +126,15 @@ Recuento sobre los **162 schemas `mconta%` de producción** (metadatos de `infor
   - `empresas` suma 583 filas en 149 schemas, pero **no son empresas reales**: cada schema se crea con las empresas 1 a 4 preparadas. Según José María, solo unos 20 de los ~160 clientes tienen de verdad varias empresas.
   - El ETL tiene que **distinguir empresas reales de huecos preparados**. Criterio propuesto: una empresa es real si tiene datos (apuntes, facturas…) o datos fiscales completos (NIF). Las vacías no se migran.
   - `empcen` (781 filas en 156 schemas) puede tener el mismo efecto; pendiente de comprobar.
+
+## Permisos de usuario (03/11/2026, producción)
+
+- `mconta0999` y `mconta9999` son demos, no clientes: 162 schemas = 160 clientes + 2 demos.
+- Diferencias de estructura entre schemas: mínimas. Un schema no tiene 3 columnas (`artistock.ArtIntCod`, `empcen.CentState`, `remesapagorpag.RpagLinEjer`) y las columnas `msFacVeri*` de `facturas` solo existen en un schema (micro VeriFactu). Basta un único ETL.
+- `usuprg1` contiene bloqueos por usuario, empresa, programa y acción (hipótesis pendiente de confirmar: una fila = acción bloqueada). Patrones por usuario activo (`UsuBaj = 'N'`) en `patrones-bloqueo-usuarios.csv`:
+  - 1.053 usuarios activos y 101 patrones distintos.
+  - 608 usuarios (58 %) sin ningún bloqueo.
+  - Los 4 patrones más frecuentes cubren 877 usuarios (83 %): sin bloqueos; sin administración de usuarios/seguridad/accesos ni caja/cuadro; sin administración de usuarios/seguridad/accesos; sin administración de usuarios/seguridad.
+  - El resto (~176 usuarios) son patrones de 1–10 usuarios, varios con bloqueos fiscales (IVA/IGIC, libros, declaraciones) o de mantenimiento (`INS`/`UPD`/`DLT`).
+
+Pendiente: confirmar el significado de una fila y de `UsuSegAccEst`; decidir roles en un ADR propio.
