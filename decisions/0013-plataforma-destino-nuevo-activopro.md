@@ -126,6 +126,28 @@ No se construye todavía: aprovisionamiento automático, monitorización por bas
 - Mínimo privilegio en todas las credenciales.
 - Contratos de encargado de tratamiento (RGPD) con los proveedores.
 
+### 11. Correcciones de soporte
+
+Se mantiene la capacidad de corregir datos directamente en la base de datos, con estas reglas:
+
+- **Sesión por cliente:** la corrección se hace en una transacción con el tenant fijado (`SET LOCAL app.tenant_id`). Con RLS, cualquier sentencia solo ve y modifica las filas de ese cliente; un `UPDATE` sin `WHERE` no puede afectar a otros.
+- **Antes y después automáticos:** el audit log guarda el estado anterior y posterior de cada fila modificada, también en correcciones manuales. Deshacer un ajuste es leer el audit log; no hacen falta tablas de copia sueltas (`bk_*`, `fix_*`).
+- **Recalcular antes que ajustar:** los datos derivados (saldos, acumulados) se recalculan desde los apuntes con una función por cliente y ejercicio. Los procesos (distribuciones, generaciones) son idempotentes y se pueden relanzar si quedaron a medias.
+- **Prevenir:** constraints que impiden guardar descuadres (cuadre de asiento al commit, entre otros).
+- **Ejercicios cerrados y registros VeriFactu protegidos** en la base de datos. Desbloqueo solo explícito, por operador de Enumbers (ADR-0015) y registrado.
+- **Correcciones repetidas → scripts versionados** en el repo o herramienta de soporte.
+
+### 12. Entorno de desarrollo y copia de un cliente
+
+Requisito: poder reproducir en local la situación exacta de un cliente, rehacerla cuando se quiera y sin perder los datos de prueba propios.
+
+- **Entorno local equivalente** levantado con un comando: misma versión de Postgres, mismas migraciones del repo, catálogos globales y tenants de demo.
+- **`tenant pull <cliente>`:** un comando que exporta ese cliente de producción (herramienta de exportación por tenant del punto 8) y lo importa en local. Si ya existía, primero lo purga (misma función de purga que en producción) y lo vuelve a cargar: copia limpia cada vez. Los demás tenants locales (datos de prueba propios) no se tocan.
+- **`tenant clone <cliente> <nombre>`:** duplica un tenant local con UUIDs nuevos, para tener varias versiones del mismo cliente a la vez (por ejemplo, antes y después de una corrección).
+- **Reinicio rápido:** instantáneas de la base local para volver a un estado limpio en segundos.
+- **Alternativa en la nube:** cargar el cliente en un entorno temporal (rama de base de datos) en lugar de en el portátil, para reproducir sin descargar nada.
+- **Datos reales fuera de producción:** cada `pull` queda registrado (quién, qué cliente, cuándo), solo lo pueden hacer operadores de Enumbers, y el equipo debe tener el disco cifrado. Opción de anonimizar datos personales cuando no hagan falta para reproducir el caso.
+
 ## Consecuencias
 
 **Positivas:** una sola migración de esquema para todos los clientes; aislamiento garantizado por la base de datos; lógica de negocio testeable; despliegue automático; alta de clientes en segundos; base dedicada posible sin reescribir.
