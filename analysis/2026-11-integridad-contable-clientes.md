@@ -40,3 +40,18 @@ Consecuencias:
 - **Uso:** José María indica que estos clientes llevan la contabilidad con asientos manuales ajustados a su criterio.
 
 Efecto en mconta0037: 6 líneas no deducibles; los descuadres heredados bajan de 5 a 2 (quedan 1 manual de 2.743,59 € en 4709 y 1 de céntimos), con paridad mensual del 100,00 %.
+
+## Segunda ejecución, con la regla del IVA no deducible (03/11/2026)
+
+Los asientos descuadrados bajan de 49.015 a **303** en total.
+
+| Grupo | Clientes | Limpios | Pocas incidencias | A revisar |
+|---|---|---|---|---|
+| Ola 1 (sin facturas en ActivoPro) | 78 | **56** | 17 | 5 |
+| Con facturación | 77 | 55 | 21 | 1 |
+
+- Limpio: 0 descuadres y 0 saldos distintos: paridad de saldos del 100 %.
+- Pocas incidencias: hasta 10 descuadres y 15 saldos distintos, explicables uno a uno como en mconta0037.
+- A revisar: mconta0065 (18 descuadres), 0075 (77), 0077 (42), 0091 (33), 0098 (60) y 0105 (15). En 0077 y 0091 coinciden con los asientos de IVA no deducible en los que la diferencia no era la cuota (p. ej. varias líneas de IVA o combinaciones con `NJ`); probablemente variantes de la misma regla.
+
+**Ola 1, clientes con paridad de saldos completa (56):** mconta0003, 0005, 0011, 0012, 0015, 0017, 0019, 0020, 0021, 0022, 0026, 0028, 0035, 0036, 0038, 0039, 0042, 0045, 0053, 0056, 0060, 0062, 0063, 0064, 0067, 0068, 0074, 0082, 0087, 0088, 0094, 0099, 0102, 0104, 0106, 0109, 0110, 0111, 0112, 0114, 0117, 0118, 0124, 0128, 0132, 0141, 0142, 0143, 0144, 0148, 0149, 0152, 0153, 0155, 0157, 0158.
