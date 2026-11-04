@@ -154,3 +154,10 @@ Son parametrización de empresa (ADR-0015, capa 2).
 - Autoliquidaciones: un único registro en un apunte con las dos cuentas de IVA (p. ej. 4773/4723); GenResIva lo cuenta en ambos grupos.
 - Resultado (`tpo = 999`) = Σ devengado − Σ deducible; `tpo = 902` es la compensación de periodos anteriores.
 - `liqiva` es lo presentado: registros modificados después de cerrar el trimestre hacen que los apuntes ya no reproduzcan la liquidación (ver ADR-0019).
+
+## Asiento de liquidación de IVA (TrbResIva → PAltaMovimiento, rama AUTOIVA)
+
+- Se genera con «Contabilizar/Descargar 303», junto con el fichero, el cierre del IVA de los meses (`CerrarPeriodo`) y `LiqIvaAlta`. Diario 10, fecha fin de periodo.
+- Parte de las cuotas del resumen (`TmpIva`, ya retocado con el lápiz), netas por cuenta: 477x al debe y 472x al haber contra la cuenta de liquidación. Esta es IVAMAS (4750) si el resultado tras compensar es ≥ 0, o IVAMENOS (4700) si no (`pdefecto`).
+- Si se vuelve a cerrar, modifica el mismo asiento (`PUpdMovimiento`).
+- En los datos de mconta0037, el asiento no incluye la compensación de periodos anteriores: el usuario la contabiliza aparte a mano (D 4750 / H 4700, «COMPENSACIO IVA»). El código tiene la rama 902 para hacerlo, pero no se refleja en los asientos.
