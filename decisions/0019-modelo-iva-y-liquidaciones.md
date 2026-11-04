@@ -60,11 +60,12 @@ La **liquidación cerrada es inmutable y es lo presentado**:
 ## Consecuencias
 
 - El 303, el 390, el libro registro y el SII se calculan agrupando atributos, sin números de diario.
-- El modo sombra compara cada trimestre con `liqiva`. Las diferencias por registros modificados después de liquidar son esperables y se listan, no se corrigen.
+- El modo sombra compara cada trimestre con `liqiva`. Las diferencias son esperables y se listan, no se corrigen. Pueden venir de registros modificados después de liquidar o de retoques manuales antes de cerrar: en la pantalla de liquidación (`TrbResIva`) cada línea del resumen se puede editar (`TmpIva`) y `liqiva` guarda el valor retocado sin el calculado, así que no se distinguen.
 
 Pendiente de decidir:
 1. Deducibilidad parcial (`DP`): GeneXus guarda en el registro solo la cuota deducible y el informe muestra aparte la parte no deducible (fila 0103, calculada como cuota íntegra − cuota deducible, línea a línea). Propuesta: guardar también la cuota no deducible de forma explícita en el registro.
-2. Correspondencia tipo impositivo → cuenta (`ivatiposctas`/`igictiposctas`) al contabilizar desde la plataforma nueva.
+2. Retoques manuales de la liquidación (la misma puerta que hoy): propuesta de guardar por línea el valor calculado, el ajuste, el usuario y el motivo, en lugar de sobrescribir; las casillas salen de calculado + ajuste.
+3. Correspondencia tipo impositivo → cuenta (`ivatiposctas`/`igictiposctas`) al contabilizar desde la plataforma nueva.
 
 Siguiente paso: casillas del 303 y fichero AEAT, comparado byte a byte con ficheros generados por GeneXus. Después: prorrata/DP, grupos ≥ 100 (exentas, exportaciones, entregas intracomunitarias), 390, IGIC 420, 347 y 349.
 
