@@ -67,7 +67,11 @@ Pendiente de decidir:
 2. Retoques manuales de la liquidación (la misma puerta que hoy): propuesta de guardar por línea el valor calculado, el ajuste, el usuario y el motivo, en lugar de sobrescribir; las casillas salen de calculado + ajuste.
 3. Correspondencia tipo impositivo → cuenta (`ivatiposctas`/`igictiposctas`) al contabilizar desde la plataforma nueva.
 
-Siguiente paso: casillas del 303 y fichero AEAT, comparado byte a byte con ficheros generados por GeneXus. Después: prorrata/DP, grupos ≥ 100 (exentas, exportaciones, entregas intracomunitarias), 390, IGIC 420, 347 y 349.
+Hecho (activopro-platform PR #8): casillas del 303 (`app.casillas_303`), fichero AEAT (`src/fiscal/modelo303.ts`) y liquidación por versiones (`liquidacion_impuesto`). El fichero generado con los datos de la plataforma es idéntico byte a byte al de GeneXus de 3T2026 (mconta0037). El fichero se obtiene solo con «Contabilizar/Descargar 303» en GeneXus, que además contabiliza; en la plataforma, el fichero de cualquier versión cerrada se puede volver a descargar sin reabrir nada.
+
+Tipos especiales sin validar: en `IVA_303_2017` las casillas 150, 165 y 153 leen las tres la subcuenta 000000 (0 %), y el 5 % (000500) no tiene casilla. Hay que cotejarlo con el diseño de registro oficial antes de soportar 0 %, 2 %, 5 % y 7,5 %; mientras tanto, la plataforma da error con esos tipos.
+
+Siguiente: asiento de liquidación al cerrar, compensación tomada de la liquidación anterior y retoques manuales (pendiente 2). Después: prorrata/DP, grupos ≥ 100 (exentas, exportaciones, entregas intracomunitarias), 390, IGIC 420, 347 y 349.
 
 ## Validación con los informes de GeneXus
 
