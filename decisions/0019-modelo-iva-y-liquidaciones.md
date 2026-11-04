@@ -1,7 +1,7 @@
 ---
 id: 0019
 title: Atributos fiscales explícitos en el registro de IVA y liquidación guardada como lo presentado
-status: proposed
+status: accepted
 date: 2026-11-04
 services: [core]
 supersedes: null
@@ -88,5 +88,7 @@ Los informes «Resumen de IVA» y «Autoliquidación de IVA» de mconta0037 para
 - «No deducible» (138,23 € en 3T2023), que es la parte no deducible de los registros con deducibilidad parcial.
 
 ## Origen
+
+Aceptado por José María el 2026-11-04.
 
 Sesión con José María del 2026-11-04; `jmvv2023/activopro-platform` PR #7.
