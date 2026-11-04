@@ -54,7 +54,8 @@ Una autoliquidación son **dos registros**, uno devengado y otro deducible. La l
 La **liquidación cerrada es inmutable y es lo presentado**:
 - al cerrar el trimestre se guardan el resumen (casillas del 303) y el fichero generado;
 - el fichero sigue el diseño de registro de la AEAT y no se edita;
-- reabrir el trimestre permite volver a cerrarlo, lo que genera una nueva liquidación.
+- reabrir el trimestre permite volver a cerrarlo, lo que genera una nueva versión de la liquidación;
+- las versiones anteriores se conservan, marcadas como sustituidas, como histórico y trazabilidad (decidido por José María el 2026-11-04). El volumen es despreciable: un resumen de unas decenas de casillas y un fichero de unos pocos KB por empresa y trimestre.
 
 ## Consecuencias
 
@@ -62,10 +63,17 @@ La **liquidación cerrada es inmutable y es lo presentado**:
 - El modo sombra compara cada trimestre con `liqiva`. Las diferencias por registros modificados después de liquidar son esperables y se listan, no se corrigen.
 
 Pendiente de decidir:
-1. Al volver a cerrar un trimestre, ¿se **conserva la versión anterior** (historial de presentaciones, útil para complementarias) o se sustituye como hoy? Propuesta: conservarla.
+1. Deducibilidad parcial (`DP`): GeneXus guarda en el registro solo la cuota deducible y el informe muestra aparte la parte no deducible (fila 0103, calculada como cuota íntegra − cuota deducible, línea a línea). Propuesta: guardar también la cuota no deducible de forma explícita en el registro.
 2. Correspondencia tipo impositivo → cuenta (`ivatiposctas`/`igictiposctas`) al contabilizar desde la plataforma nueva.
 
 Siguiente paso: casillas del 303 y fichero AEAT, comparado byte a byte con ficheros generados por GeneXus. Después: prorrata/DP, grupos ≥ 100 (exentas, exportaciones, entregas intracomunitarias), 390, IGIC 420, 347 y 349.
+
+## Validación con los informes de GeneXus
+
+Los informes «Resumen de IVA» y «Autoliquidación de IVA» de mconta0037 para 2T2019, 2T2021 y 3T2023, generados el 2026-11-04 con los datos actuales, coinciden línea a línea con lo que calcula la plataforma nueva:
+- devengado, deducible, rectificaciones y bienes de inversión, por cuenta y tipo;
+- entregas exentas y recibidas exentas;
+- «No deducible» (138,23 € en 3T2023), que es la parte no deducible de los registros con deducibilidad parcial.
 
 ## Origen
 
