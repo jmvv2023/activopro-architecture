@@ -57,6 +57,14 @@ La **liquidación cerrada es inmutable y es lo presentado**:
 - reabrir el trimestre permite volver a cerrarlo, lo que genera una nueva versión de la liquidación;
 - las versiones anteriores se conservan, marcadas como sustituidas, como histórico y trazabilidad (decidido por José María el 2026-11-04). El volumen es despreciable: un resumen de unas decenas de casillas y un fichero de unos pocos KB por empresa y trimestre.
 
+**Auditoría de la liquidación** (decidido por José María el 2026-11-04: «construyamos la auditoría con criterio»; activopro-platform PR #9):
+- Los retoques manuales (la misma puerta que hoy) son ajustes por casilla con importe, usuario, fecha y motivo. Nunca sobrescriben el valor calculado, no se borran (se anulan con motivo) y al cerrar quedan ligados a la versión. Totales y resultado no se ajustan: se recalculan.
+- Cada versión guarda las casillas calculadas y las finales.
+- El cierre vuelve a calcular el borrador y rechaza un fichero cuyas casillas ya no corresponden a los datos.
+- Cierres y reaperturas quedan en un registro de eventos que solo admite añadir; reabrir exige motivo.
+- Con el IVA del mes cerrado, sus registros de IVA quedan sellados: para cambiarlos hay que reabrir.
+- La aplicación solo lee estas tablas; se escriben con funciones que comprueban el tenant, el usuario y el motivo.
+
 ## Consecuencias
 
 - El 303, el 390, el libro registro y el SII se calculan agrupando atributos, sin números de diario.
@@ -64,14 +72,13 @@ La **liquidación cerrada es inmutable y es lo presentado**:
 
 Pendiente de decidir:
 1. Deducibilidad parcial (`DP`): GeneXus guarda en el registro solo la cuota deducible y el informe muestra aparte la parte no deducible (fila 0103, calculada como cuota íntegra − cuota deducible, línea a línea). Propuesta: guardar también la cuota no deducible de forma explícita en el registro.
-2. Retoques manuales de la liquidación (la misma puerta que hoy): propuesta de guardar por línea el valor calculado, el ajuste, el usuario y el motivo, en lugar de sobrescribir; las casillas salen de calculado + ajuste.
-3. Correspondencia tipo impositivo → cuenta (`ivatiposctas`/`igictiposctas`) al contabilizar desde la plataforma nueva.
+2. Correspondencia tipo impositivo → cuenta (`ivatiposctas`/`igictiposctas`) al contabilizar desde la plataforma nueva.
 
 Hecho (activopro-platform PR #8): casillas del 303 (`app.casillas_303`), fichero AEAT (`src/fiscal/modelo303.ts`) y liquidación por versiones (`liquidacion_impuesto`). El fichero generado con los datos de la plataforma es idéntico byte a byte al de GeneXus de 3T2026 (mconta0037). El fichero se obtiene solo con «Contabilizar/Descargar 303» en GeneXus, que además contabiliza; en la plataforma, el fichero de cualquier versión cerrada se puede volver a descargar sin reabrir nada.
 
 Tipos especiales sin validar: en `IVA_303_2017` las casillas 150, 165 y 153 leen las tres la subcuenta 000000 (0 %), y el 5 % (000500) no tiene casilla. Hay que cotejarlo con el diseño de registro oficial antes de soportar 0 %, 2 %, 5 % y 7,5 %; mientras tanto, la plataforma da error con esos tipos.
 
-Siguiente: asiento de liquidación al cerrar, compensación tomada de la liquidación anterior y retoques manuales (pendiente 2). Después: prorrata/DP, grupos ≥ 100 (exentas, exportaciones, entregas intracomunitarias), 390, IGIC 420, 347 y 349.
+Siguiente: asiento de liquidación al cerrar y compensación tomada de la liquidación anterior. Después: prorrata/DP, grupos ≥ 100 (exentas, exportaciones, entregas intracomunitarias), 390, IGIC 420, 347 y 349.
 
 ## Validación con los informes de GeneXus
 
