@@ -143,3 +143,14 @@ Otros relevantes para la migración (vistos en mconta0114):
 Muchos parámetros solo existen en la empresa 1 del schema; las empresas preparadas tienen un subconjunto por defecto.
 
 Son parametrización de empresa (ADR-0015, capa 2).
+
+## Liquidación de IVA (GenResIva, liqiva)
+
+`GenResIva` construye el resumen del trimestre; `LiqIvaAlta` lo guarda en `liqiva` al cerrar el IVA (sesión `nTAAAA|RESIVA` o `|RESIGIC`); `IVA_303_2017` genera el 303.
+
+- Grupo de cada registro: cuenta de referencia de `tctareferencia` (`CtaRefTpo = 'I'`, `CtaRefTpoIva`), con correcciones en código: 4724→6, 4773/4774/4775→2. Subcuenta que empieza por `01` → recargo de equivalencia (grupo 3). Devengado = grupos 1–3; deducible = grupos 4–7.
+- Diarios: 42 ISP; 4, 40, 23 y 41 bienes de inversión; 47 ISP inmobiliaria. `ConCod` 2 y 6 → rectificación (en `liqiva` aparece como diario 95).
+- `MovIvaDed` ND → fila 0103 (base = cuota), NJ → 0105; exentas 0102/0104, exportaciones 0101, entregas intracomunitarias 0100 (grupos ≥ 100).
+- Autoliquidaciones: un único registro en un apunte con las dos cuentas de IVA (p. ej. 4773/4723); GenResIva lo cuenta en ambos grupos.
+- Resultado (`tpo = 999`) = Σ devengado − Σ deducible; `tpo = 902` es la compensación de periodos anteriores.
+- `liqiva` es lo presentado: registros modificados después de cerrar el trimestre hacen que los apuntes ya no reproduzcan la liquidación (ver ADR-0019).
