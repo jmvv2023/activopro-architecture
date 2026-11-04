@@ -28,6 +28,7 @@ ERP/contabilidad SaaS multi-tenant de Enumbers Digital Solutions SLU (Sabadell).
 | Cómo se construye un micro, gotchas de GeneXus | `conventions/` |
 | Migraciones de clientes (proceso y lecciones) | `clients/` |
 | Inventarios y análisis puntuales (fotos fechadas del estado) | `analysis/` |
+| Mejoras posibles sobre lo que hace hoy GeneXus (no decididas) | `EVOLUTIVOS.md` |
 
 Regla para decidir dónde va un documento: si la decisión cambiaría al reescribir solo un
 micro, va en el repo de ese micro. Si afecta a dos o más micros, o al núcleo, va aquí.
