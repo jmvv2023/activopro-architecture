@@ -107,7 +107,7 @@ Los tres canarios tienen las dos declaraciones, y en el 415 hay más claves A qu
 ## Decisión
 
 Decidido por José María el 2026-11-05 (ficha de terceros mínima, que se completará con facturación y cartera):
-1. Entidad `tercero` mínima, propia (no columnas de la cuenta) y enlazada a la cuenta, cargada desde las fichas de GeneXus: una por ficha, sin fusionar por NIF (GeneXus tiene duplicados; el 347 agrupa por NIF).
+1. ~~Entidad `tercero` mínima, una por ficha de GeneXus, sin fusionar por NIF.~~ **Sustituida por el [ADR-0024](0024-terceros-unicos-con-roles.md)**: un tercero por NIF con roles, y la cuenta enlaza el rol.
 2. 347 y 415 por atributos (no por diarios), con las exclusiones legales.
 3. Resultado por versiones con ajustes por tercero.
 4. Umbral y parámetros como norma central versionada.
@@ -125,7 +125,7 @@ Decidido por José María el 2026-11-05 (ficha de terceros mínima, que se compl
 
 ## Consecuencias
 
-- **Datos nuevos:** `tercero` (y `cuenta.tercero_id`); en ejercicios futuros, cobros en metálico por tercero (cartera) y referencias catastrales de los locales arrendados.
+- **Datos nuevos:** `tercero`, `tercero_rol` y `cuenta.tercero_rol_id` (ADR-0024); en ejercicios futuros, cobros en metálico por tercero (cartera) y referencias catastrales de los locales arrendados.
 - **Export:** `etl/legacy-export/exportar-terceros.cmd` (fichas de terceros, países, `tmp347`, límites, conceptos). Contiene datos personales de terceros: solo en local, nunca en el repositorio.
 - **Pendiente de documentación oficial:**
   - diseño de registro del 347 vigente (AEAT);
