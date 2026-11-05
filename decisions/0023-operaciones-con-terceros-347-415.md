@@ -1,7 +1,7 @@
 ---
 id: 0023
 title: Operaciones con terceros (347 y 415) desde los apuntes, con terceros en la plataforma y declaración por versiones
-status: proposed
+status: accepted
 date: 2026-11-05
 services: [core]
 supersedes: null
@@ -106,8 +106,8 @@ Los tres canarios tienen las dos declaraciones, y en el 415 hay más claves A qu
 
 ## Decisión
 
-Propuesta, pendiente de José María:
-1. Entidad `tercero` mínima, enlazada a la cuenta, cargada desde las fichas de GeneXus.
+Decidido por José María el 2026-11-05 (ficha de terceros mínima, que se completará con facturación y cartera):
+1. Entidad `tercero` mínima, propia (no columnas de la cuenta) y enlazada a la cuenta, cargada desde las fichas de GeneXus: una por ficha, sin fusionar por NIF (GeneXus tiene duplicados; el 347 agrupa por NIF).
 2. 347 y 415 por atributos (no por diarios), con las exclusiones legales.
 3. Resultado por versiones con ajustes por tercero.
 4. Umbral y parámetros como norma central versionada.
