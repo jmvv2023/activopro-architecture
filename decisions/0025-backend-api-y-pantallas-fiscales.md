@@ -74,6 +74,7 @@ Decidido por José María el 2026-11-05:
 - **Pendiente:**
   - plataforma gestionada donde desplegar el backend (ADR-0013);
   - migración de usuarios desde GeneXus (ADR-0014): con la base del backend se puede cargar, sin contraseñas.
+  - limpieza en Supabase cuando se despliegue: decidir si la plataforma va a un proyecto nuevo o al `activopro` actual, y retirar lo que sobre del modelo antiguo (schema `activoprobase`, RPCs `fiscal_*`…). Hasta ahora la plataforma solo ha corrido en local; en Supabase no se ha cambiado nada.
 
 ## Origen
 
