@@ -50,6 +50,59 @@ superseded_by: null
 
 Las cuotas deducibles se consignan ya prorrateadas: la cuota deducible del ADR-0021.
 
+### Cotejo con los documentos oficiales (2026-11-05)
+
+Fuentes: modelo 420 e instrucciones (Resolución de 15/01/2020, BOC n.º 16 de 24/01/2020); instrucciones del 425 (Resolución de 18/11/2024, BOC n.º 241); documentación del plugin `erseco/facturascripts-plugin-ModelosIGIC` (AGPL-3.0, solo como referencia, sin reutilizar código).
+
+**420**
+- **Numeración de casillas:** confirmada la de arriba.
+- **Tipos de devengado:** 6 filas de base / tipo / cuota (01–18). El programa de ayuda de 2026 añade las filas 16b–18c, porque en 2026 hay 8 tipos (0, 1, 3, 5, 7, 9,5, 15 y 20 %; el 1 % existe desde el 01/01/2026). Ninguna resolución del BOC ampara todavía ese cambio.
+- **Prorrata:**
+  - las bases van sin prorratear;
+  - las cuotas deducibles (27–36) van después de aplicar la prorrata, que es la `cuota_deducible` del ADR-0021;
+  - la casilla 39 solo se rellena en el último periodo del año o en el cese.
+- **No hay rectificativa; hay autoliquidación complementaria:**
+  - se marca y lleva el justificante de 13 dígitos de la anterior;
+  - en la casilla 44 va lo ingresado en la anterior (positivo) o lo devuelto de más (negativo);
+  - solo procede si el resultado es un mayor ingreso o una menor devolución o compensación. Si no, se pide la rectificación a la ATC.
+- **Encaje en la plataforma:** las versiones de `liquidacion_impuesto` encajan si en el 420 la nueva versión de un periodo presentado sale como complementaria y la 44 se propone desde la versión anterior, como la 110 del 303.
+- **Resultado:** I, C, D (solo en el 4T) o «sin actividad».
+- **Presentación telemática obligatoria** (Resolución de 22/03/2024), salvo personas físicas que solo arriendan inmuebles hasta 50.000 €.
+
+**425**
+- **Quién la presenta:** como el 390, no la presentan quienes llevan los libros por el SII (salvo sin autoliquidación del último periodo).
+- **Datos estadísticos:**
+  - por actividad, la clave 1–5;
+  - el **régimen aplicable 1–11**;
+  - la **prorrata general provisional (E) y definitiva (F) y la especial (G)**, que salen de `empresa_prorrata`.
+- **Liquidación:**
+  - régimen ordinario por tipo (01–18 bis). Las instrucciones no dan la numeración de la fila «bis» y el impreso no está entre los documentos;
+  - deducciones 80–93, con la **regularización de la prorrata en la 93**;
+  - resultado 95;
+  - compensación del ejercicio anterior 114;
+  - resultado de las autoliquidaciones 116–119.
+- **Volumen de operaciones (120–137)** por clase de operación:
+
+  | Casilla | Operaciones |
+  |---|---|
+  | 120 | régimen general |
+  | 122 | exportaciones (arts. 11–12) |
+  | 123 | áreas exentas (art. 13) |
+  | 124 | exentas art. 25 Ley 19/1994 |
+  | 125 | otras exentas con derecho a deducción |
+  | 126 | exentas sin derecho a deducción |
+  | 128 | no sujetas por localización y con inversión del sujeto pasivo |
+  | 132 | inmuebles y financieras no habituales |
+  | 133 | bienes de inversión del transmitente |
+  | 136 | soportado no deducible por exclusiones del art. 30 (no la parte de prorrata) |
+
+  Son las mismas clases que separan numerador, denominador y exclusiones de la prorrata definitiva.
+- **Programa de ayuda:** solo existe el de 2025 (`m425v631e25`) y todavía no el de 2026.
+
+**Normativa:** desde el 21/10/2025 el IGIC está en el texto refundido del Decreto Legislativo 1/2025 (deroga la parte del IGIC de la Ley 4/2012).
+
+**Fichero:** el `.atc` se importa en el programa de ayuda del mismo ejercicio, no en la sede. Su formato está en el XSD de dentro del programa y el plugin lo ha comprobado byte a byte con el codificador oficial, pero no con una declaración real presentada. Cada ejercicio trae programa y versión nuevos.
+
 ## Opciones consideradas
 
 **A. Un motor de liquidación por modelo sobre lo ya construido.**
@@ -75,13 +128,14 @@ Las cuotas deducibles se consignan ya prorrateadas: la cuota deducible del ADR-0
 - **Regularización:** Σ cuota entera del año × definitiva − Σ deducido. Va a la casilla 39 del 420 o la 44 del 303 como propuesta del programa, editable con lápiz y aviso, como la 110.
 - **Asiento de la parte no deducida:** a la cuenta de gasto de prorrata (`IVAPROR` en GeneXus).
 - **Lo que necesita el modelo de registros:**
-  - distinguir las exentas con derecho a deducción (exportaciones…) de las exentas sin derecho (alquiler de vivienda, sanidad…), porque cambian la definitiva;
-  - poder excluir operaciones del cálculo.
+  - no basta con «exenta con o sin derecho»: hace falta una **clase de operación** con las claves del volumen del 425 (122–126, 128, 132 y 133);
+  - esa clase sirve a la vez para el volumen del 425, para la definitiva y para el 390, que tiene el mismo concepto en sus casillas de volumen;
+  - las exclusiones de la prorrata salen de esa clase, sin una marca aparte.
 
 ## Decisión
 
 Propuesta, pendiente de José María:
-1. Opción A (motor por modelo).
+1. Opción A (motor por modelo), con complementaria en el 420 (casilla 44 propuesta desde la versión anterior) en lugar de rectificativa.
 2. Para la salida del 420/425, el borrador primero y pedir el formato a la ATC; el fichero `.atc` solo con formato oficial.
 3. Prorrata con porcentajes por año en la plataforma, deducible automática con la provisional y regularización propuesta en el último periodo.
 4. Validación con los tres clientes canarios y el 4T2025 de mconta0013.
