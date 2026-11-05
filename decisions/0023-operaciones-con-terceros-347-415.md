@@ -131,6 +131,15 @@ Decidido por José María el 2026-11-05 (ficha de terceros mínima, que se compl
   - diseño de registro del 347 vigente (AEAT);
   - instrucciones y, si existe, diseño del 415 (ATC).
 
+## Implementación
+
+- **Cálculo** (activopro-platform #37): `app.operaciones_terceros` y `app.declaracion_terceros`.
+- **Modo sombra frente a `tmp347`**, por NIF, clave y trimestre:
+  - mconta0037 2025: 1.070/1.071 filas iguales;
+  - mconta0086 2025: el 347 y el 415 cuadran enteros;
+  - mconta0032 2025, mconta0124 2024 y mconta0013 2025: las diferencias se explican por los huecos de GeneXus (EVOLUTIVOS) o por asientos modificados después de generar.
+- **Sin explicar:** 8 filas de compras de mconta0013. Sus apuntes en GeneXus coinciden con la plataforma, así que parece que `tmp347` se editó a mano.
+
 ## Origen
 
 Conversación con José María, 2026-11-05.
