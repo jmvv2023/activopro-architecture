@@ -40,6 +40,41 @@ superseded_by: null
 
 **La plataforma** tiene los apuntes, los registros de impuesto (con operación, clase y retenciones) y las cuentas, pero no los terceros: ni ficha, ni NIF, ni país o provincia.
 
+### Lo comprobado con la documentación y los datos (2026-11-05)
+
+**Diseño de registro del 347 (AEAT, «ejercicio 2025 y siguientes», aportado por José María).** Registros de 500 posiciones, ISO-8859-1, de tres tipos:
+- **Tipo 1 (declarante):** totales de declarados y de inmuebles, complementaria o sustitutiva con justificante, y representante legal.
+- **Tipo 2 (declarado):**
+  - NIF, nombre, provincia (99 para no residentes) y país;
+  - clave A–G e importe anual con signo;
+  - marca de seguro y de arrendamiento de local;
+  - metálico y transmisiones de inmuebles;
+  - desglose trimestral;
+  - NIF de operador comunitario, marca de ISP (solo el destinatario) y marca de depósito distinto del aduanero;
+  - importe por criterio de caja y convocatoria BDNS (clave E).
+- **Tipo 2 (inmueble):** NIF del arrendatario, importe, situación, referencia catastral y dirección.
+
+**415 (ATC).**
+- **Contenido:**
+  - es el equivalente canario del 347, pero solo con las operaciones de IGIC; el 347 recoge también las de IGIC, así que una empresa canaria presenta los dos;
+  - incluye operaciones con retención y arrendamientos (igual que GeneXus);
+  - excluye importaciones y bienes de inversión (van al 416).
+- **Umbrales:** 3.005,06 €, y 300,51 € en los casos especiales.
+- **Obligados:** no están obligados quienes llevan los libros por el SII.
+- **Presentación:** por la sede de la ATC. Existe un diseño lógico para soporte informático (Resolución publicada en el BOC n.º 41 de 2015, anexo II), pero no se ha podido descargar.
+
+**Base de comparación en GeneXus (`tmp347`):**
+
+| Cliente | 347 | 415 |
+|---|---|---|
+| mconta0037 | 2025: 363 filas | — |
+| mconta0124 | 2024: 137 filas | — |
+| mconta0013 | 2025 | 2025 |
+| mconta0032 | 2025 | 2025 |
+| mconta0086 | 2025 | 2025 |
+
+Los tres canarios tienen las dos declaraciones, y en el 415 hay más claves A que en el 347 (retenciones y arrendamientos). Hay filas con NIF ficticio y filas sin importe.
+
 ## Opciones consideradas
 
 **Terceros**
@@ -67,7 +102,7 @@ superseded_by: null
 
 **Salida**
 - **347:** fichero según el diseño de registro oficial de la AEAT, cotejado campo a campo como el 303 y el 390.
-- **415:** borrador como el 420 y el 425, salvo que la ATC publique un diseño.
+- **415:** borrador como el 420 y el 425. El fichero, cuando se disponga del anexo II de la Resolución de 2015 (BOC n.º 41) y se confirme que la sede lo acepta.
 
 ## Decisión
 
@@ -76,11 +111,17 @@ Propuesta, pendiente de José María:
 2. 347 y 415 por atributos (no por diarios), con las exclusiones legales.
 3. Resultado por versiones con ajustes por tercero.
 4. Umbral y parámetros como norma central versionada.
-5. **No replicar los huecos de GeneXus:**
+5. **Campos del diseño 2025 desde los atributos que ya existen:**
+   - marca de ISP en las compras con inversión del sujeto pasivo;
+   - NIF de operador comunitario: no aplica, porque las intracomunitarias van al 349;
+   - importe de caja y BDNS a cero mientras no haya criterio de caja ni subvenciones.
+
+   Las reglas de exclusión del 415 (bienes de inversión, importaciones) se aplican por los atributos del registro.
+6. **No replicar los huecos de GeneXus:**
    - cobros en metálico;
    - arrendamientos de locales con referencia catastral (hoja de inmuebles);
    - marcas de inversión del sujeto pasivo y criterio de caja por tercero.
-6. **Validación** en modo sombra frente a `tmp347` de GeneXus por NIF, clave y trimestre.
+7. **Validación** en modo sombra frente a `tmp347` de GeneXus por NIF, clave y trimestre.
 
 ## Consecuencias
 
