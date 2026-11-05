@@ -16,6 +16,7 @@ Ninguna está decidida: entrar en la lista no es un compromiso. Cada una indica 
 | **390: marca de declaración del 347 automática** (página 01, «Declaración anual de operaciones con terceras personas»). | GeneXus la escribe siempre a «0» («No en AP»). | Configurable por empresa y sin marcar por defecto; se rellenará sola cuando el 347 esté en la plataforma. |
 | **Ventas al 0 % registradas como exentas** (mconta0037, de 1T2023 a 3T2024). | Las clasifica el cliente; afectaría a lo presentado en esos trimestres. | Para revisar con el cliente; no es de la plataforma. |
 | **Prorrata en ISP e importaciones (IGIC/IVA)**: la parte no deducida no aparece en el resumen (`&pornodedu` sin asignar en `GenResIgic`/`GenResIva`), y un ejercicio en prorrata sin porcentaje dado de alta deduce al 0 % sin avisar (mconta0032, 1T2025: 341,32 €). | Corrección en GeneXus; lo segundo afecta a lo que el cliente presentó y debe revisarlo él. | Sí: cuota entera y deducible por registro (ADR-0021); el 0 % queda como anomalía en la carga. |
+| **Regularización por la prorrata definitiva del IGIC automática** (420 [39], 425 [93]). | En GeneXus la definitiva y el importe se teclean a mano en el resumen del 4T (`GenResIvaExtras`, línea 903); solo para el IVA hay cálculo (`PorrataDef`). | Sí: `app.prorrata_definitiva` la propone en el último periodo, editable con lápiz y aviso (ADR-0022). |
 | **Compensación de periodos anteriores automática** (casilla 110 a partir de la liquidación anterior). | Se teclea a mano en GeneXus. | Próximo paso del hilo IVA (ADR-0019). |
 
 ## Seguridad
