@@ -1,7 +1,7 @@
 ---
 id: 0022
 title: IGIC (420/425) sobre el mismo modelo de liquidación, y prorrata común a IVA e IGIC
-status: proposed
+status: accepted
 date: 2026-11-05
 services: [core]
 supersedes: null
@@ -134,11 +134,30 @@ Fuentes: modelo 420 e instrucciones (Resolución de 15/01/2020, BOC n.º 16 de 2
 
 ## Decisión
 
-Propuesta, pendiente de José María:
-1. Opción A (motor por modelo), con complementaria en el 420 (casilla 44 propuesta desde la versión anterior) en lugar de rectificativa.
-2. Para la salida del 420/425, el borrador primero y pedir el formato a la ATC; el fichero `.atc` solo con formato oficial.
-3. Prorrata con porcentajes por año en la plataforma, deducible automática con la provisional y regularización propuesta en el último periodo.
-4. Validación con los tres clientes canarios y el 4T2025 de mconta0013.
+Decidido por José María el 2026-11-05:
+
+1. **Un solo motor de liquidación por modelo para el 303 y el 420** (opción A). En el 420, la nueva versión de un periodo presentado es una autoliquidación complementaria, con la casilla 44 propuesta desde la versión anterior (como la 110 del 303).
+2. **Salida del 420/425 como hoy:** borrador con las casillas para teclearlas en la sede. El fichero `.atc` queda como mejora, a ser posible con formato oficial de la ATC.
+3. **Prorrata automática y editable donde la ley lo permite:**
+   - **Prorrata general:** un único porcentaje para todo el soportado del año, sin editar la deducción por factura.
+     - Lo que se corrige es el porcentaje; al cambiarlo se recalculan los registros de los periodos abiertos.
+     - La regularización del último periodo (420 [39], 303 [44]) la propone el programa y se edita con lápiz y aviso, como la 110.
+   - **Prorrata especial:** cada compra se asigna a un sector con derecho (100 %), sin derecho (0 %) o común (porcentaje general). Esa asignación es editable por registro.
+   - **Ejercicio en prorrata sin porcentaje vigente:** error que se avisa, nunca un 0 % silencioso.
+4. **Configuración en dos niveles, con vigencias:**
+   - **La norma**, igual para todos los clientes y mantenida centralmente (no la gestiona cada empresa). Versionada por fecha de vigencia, como `parametro_plataforma`, porque cambia dentro de un ejercicio (p. ej. el 1 % del IGIC desde el 01/01/2026). Incluye:
+     - tipos de gravamen;
+     - correspondencia operación → casilla de cada modelo;
+     - clases de operación.
+   - **La empresa**, en su pantalla de configuración, con desde/hasta:
+     - régimen de deducción (total, prorrata general o especial);
+     - sectores diferenciados;
+     - porcentaje provisional, con fecha desde dentro del ejercicio, porque puede cambiar por inicio o cese de una actividad, alta a mitad de año o un provisional distinto autorizado;
+     - porcentaje definitivo, uno por ejercicio, calculado en el último periodo.
+
+Validación con los tres clientes canarios (mconta0013, mconta0032, mconta0086) y con la regularización del 4T2025 de mconta0013.
+
+Sin confirmar en la ley del IGIC: el umbral por el que la prorrata especial es obligatoria. No se aplica como regla hasta verificarlo.
 
 ## Consecuencias
 
