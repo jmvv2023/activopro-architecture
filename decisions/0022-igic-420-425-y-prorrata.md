@@ -159,11 +159,10 @@ Validación con los tres clientes canarios (mconta0013, mconta0032, mconta0086) 
 
 Sin confirmar en la ley del IGIC: el umbral por el que la prorrata especial es obligatoria. No se aplica como regla hasta verificarlo.
 
-**Pendiente de confirmar: las rectificativas de ventas en la prorrata definitiva.**
-- La plataforma (PR #27 de activopro-platform) sigue a GeneXus (`PorrataDef`): las modificaciones de bases del año no computan en el numerador ni en el denominador.
-- Con ese criterio las definitivas de mconta0013 de 2022 a 2025 coinciden con las que tecleó el cliente (85, 86, 87 y 86 %).
-- Si se restaran las rectificativas, la de 2024 saldría al 86 %, sin regularización en vez de 94,15 €.
-- Es una decisión fiscal; hasta confirmarla se mantiene el criterio de GeneXus.
+**Rectificativas de ventas en la prorrata definitiva (decidido por José María, 2026-11-05).**
+- Computan en el numerador y el denominador, como en el volumen de operaciones (390, 425 y página 04 del 303).
+- GeneXus (`PorrataDef`) las deja fuera; es un hueco suyo y la plataforma no lo replica.
+- En mconta0013, 2024 pasa del 87 % al 86 % (igual que la provisional), así que no hay regularización. Con GeneXus se presentaron 94,28 € a favor del cliente.
 
 ## Consecuencias
 
