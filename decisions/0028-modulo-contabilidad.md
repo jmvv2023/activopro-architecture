@@ -101,10 +101,92 @@ La plataforma hoy hace otra cosa: con el mes contable cerrado no deja hacer nada
 
 ### C. Estados de asiento (borrador, contabilizado, anulado) del front antiguo
 
-1. **Mantenerlos.**
-2. **Quitarlos**: como en GeneXus, un asiento existe o no. Borrar queda en el audit log. Lo pendiente de contabilizar vive en su documento (factura, extracto bancario), no en un asiento a medias.
+1. **Mantenerlos tal cual**: el asiento nace en borrador y pasa a contabilizado o anulado.
+2. **Quitarlos**: como en GeneXus, un asiento existe o no, y el borrado queda en el audit log.
+3. **Separar lo que resuelve cada estado** (análisis en la decisión): «anulado» como estado del asiento; «borrador» fuera del libro; «pendiente de revisar» en el documento de origen.
 
-## Decisión (propuesta)
+## Decisión
+
+Puntos confirmados por José María el 06/11/2026: A, B (con la lectura de abajo), numeración y mostrar eliminados. Los estados (C) los deja a análisis; la propuesta está más abajo.
+
+### Cómo nacen los asientos
+
+| Origen | Cómo | Editable |
+|---|---|---|
+| **Facturas** (emitidas y recibidas) | Automático y sin intervención: el documento genera su asiento con las cuentas que le corresponden (tercero, gasto o ingreso, impuesto, retención) | No. Se corrige el documento y el asiento se regenera (como la facturación hoy) |
+| **Asientos múltiples y varios** (gastos varios, ajustes…) | Formulario: el editor genérico de asientos | Sí |
+| **Banco, caja, nóminas, amortizaciones** | Asistentes y procesos de cada módulo | Sí (como hoy, ADR-0018) |
+
+**La factura recibida es un documento**, no un asiento tecleado. Llega por tres vías:
+
+- **a) Buzón de facturas**: llegan al sistema y quedan pendientes de revisar.
+- **b) Papel**: el usuario la digitaliza o la teclea en un formulario.
+  - Búsqueda rápida de proveedor o acreedor (nombre, NIF, código).
+  - Al elegirlo, el formulario carga lo que ese tercero tiene definido: cuenta de gasto, tipo de IVA o IGIC, retención, forma de pago.
+  - En GeneXus ya existe: `AcrCtaCodGasto`, `AcrIvaTpoCod`, `AcrIgicTpoCod`, `AcrIRPF`/`TipIrpfCod`, `ForPagCod` en la ficha del acreedor. En la plataforma va en la configuración por rol del tercero (`tercero_rol`, ADR-0024).
+- **c) PDF o imagen**: `ms-activopro-ocr` lee el documento y rellena el mismo formulario. Se deja para la integración final de los micros.
+
+Las tres vías acaban en el mismo formulario y el mismo documento. Al confirmarlo, el asiento se genera solo.
+
+**Consecuencia para ADR-0018.** El catálogo de orígenes tiene `factura_recibida` y `factura_emitida` (contabilidad) como editables, porque en GeneXus se teclean como asientos (`IngFRI`, `IngFEN`).
+- Los asientos de los documentos nuevos tienen orígenes propios, **no editables**.
+- Los migrados de GeneXus, que no tienen documento, conservan su origen editable.
+- Pendiente: si el ETL debe crear el documento de factura a partir de esos asientos (ver «Pendiente»).
+
+### Periodos cerrados: la regla de GeneXus (B1)
+
+| Mes contable | Mes de IVA | Se puede |
+|---|---|---|
+| abierto | abierto | todo |
+| abierto | cerrado | asientos sin IVA |
+| cerrado | abierto | solo asientos con IVA |
+| cerrado | cerrado | nada |
+
+- **«Con IVA»**: el asiento tiene algún registro de IVA o algún apunte a una cuenta de impuesto (las de liquidación y las de los tipos impositivos).
+- Un asiento no cambia de ejercicio.
+- El asiento de liquidación del IVA deja de exigir el mes contable abierto: entra por la tercera fila, como en GeneXus.
+
+### Numeración y eliminados
+
+- **Número**: correlativo por orden de alta dentro del ejercicio (máximo + 1 con bloqueo), sin renumerar. El diario ordena por fecha y número.
+- **Mostrar eliminados en el mayor**: sí, en la fase 2. Con la propuesta de estados de abajo, es un filtro sobre los anulados.
+
+### Estados del asiento: análisis y propuesta (C3)
+
+El front antiguo tiene tres estados: borrador, contabilizado y anulado. GeneXus no tiene ninguno. Cada uno resuelve un problema distinto, así que conviene separarlos.
+
+**Anulado.** Es lo que GeneXus hace al borrar, pero mejor guardado.
+- GeneXus borra la fila y la guarda en `movctasupd`; su opción «mostrar eliminados» la reconstruye desde ahí.
+- Con un estado `anulado`:
+  - el asiento conserva su número, así que el diario no tiene huecos sin explicación;
+  - queda visible con un filtro;
+  - sale de saldos, libros y modelos.
+- Anular exige motivo, el periodo abierto (según la regla de B) y un origen editable.
+- Los de documento se anulan anulando el documento.
+- Para el usuario es lo mismo que hoy (el asiento deja de contar); por debajo, la trazabilidad es mejor.
+- **Se adopta.**
+
+**Borrador.** Tiene un uso real, pero no debe vivir en el libro.
+- El uso real: alguien empieza un asiento múltiple largo (gastos varios) y quiere guardarlo a medias.
+- Si el borrador fuera un asiento:
+  - habría que eximirlo del cuadre;
+  - habría que excluirlo de saldos y modelos;
+  - habría que decidir qué número lleva;
+  - y los borradores olvidados descuadrarían lo que el usuario ve con lo que cuenta el sistema.
+- Es justo la puerta que ADR-0018 quiere cerrar: los descuadres que llegan al cierre.
+- **Propuesta**: un **asiento en preparación** fuera del libro (tabla propia, del usuario que lo crea).
+  - No tiene número, no cuenta en nada y puede estar descuadrado.
+  - La portada de Contabilidad avisa de los que hay.
+  - Al guardarlo pasa por todas las reglas y se convierte en asiento.
+
+**Contabilizado.** Es simplemente el asiento: no hace falta como estado.
+
+**Pendiente de revisar.** Vive en el documento, no en el asiento.
+- Las facturas del buzón o del OCR están pendientes hasta que alguien las confirma.
+- Ese estado es de la factura recibida (pendiente → contabilizada → anulada).
+- El asiento solo existe cuando la factura está confirmada.
+
+Si con el uso hace falta otra cosa (como reconoce José María, algunas decisiones cambiarán), estos estados se pueden ampliar sin tocar el libro.
 
 ### Alcance y fases
 
@@ -116,14 +198,17 @@ Fase 1: **consulta.** Es de solo lectura y verificable contra GeneXus con los cl
 - Balance de sumas y saldos.
 
 Fase 2: **asiento manual y periodos.**
-- **Editor genérico** de asientos (opción A3, primera pieza).
+- **Editor genérico** de asientos: el formulario de los asientos múltiples y varios.
+- Asientos en preparación.
 - Número automático.
-- Edición y borrado según el `editable` del origen.
-- Cerrar y abrir meses con la regla que se decida en B.
+- Edición y anulación según el `editable` del origen.
+- Cerrar y abrir meses con la regla de GeneXus.
 
-Fase 3: **asistentes.**
-- Factura recibida, factura emitida, banco y caja.
-- Plantillas de asiento (las `AsiDefinicion` de GeneXus: se migran las que difieren del estándar, como los informes del ADR-0017).
+Fase 3: **documentos y asistentes.**
+- Factura recibida como documento: formulario con búsqueda rápida y datos por defecto del tercero, buzón, asiento automático. El OCR se integra al final, con los micros.
+- Factura emitida registrada en contabilidad (la ola 1 no factura en ActivoPro), con el mismo patrón.
+- Asistentes de banco y caja.
+- Plantillas de asiento: las `AsiDefinicion` de GeneXus; se migran las que difieren del estándar, como los informes del ADR-0017.
 
 Fase 4: **ejercicio y plan de cuentas.**
 - Alta de ejercicio, cierre (regularización y cierre), apertura y su retirada, recálculo de saldos.
@@ -180,8 +265,8 @@ Con el sistema de diseño de `apps/web/src/ui`. El código de cuenta sale siempr
 ### Lo que no se replica de GeneXus
 
 - **Cuenta puente `999 000000`** en apertura y cierre (ya en ADR-0018).
-- **Tolerancia de descuadre** (`TOLDESC`): los asientos nuevos cuadran al céntimo (ADR-0018). El asistente de factura avisa de la diferencia y propone dónde llevarla; no la acepta en silencio.
-- **Estados borrador, contabilizado y anulado** del front antiguo (opción C2): no existen en GeneXus y serían una puerta nueva.
+- **Tolerancia de descuadre** (`TOLDESC`): los asientos nuevos cuadran al céntimo (ADR-0018). El formulario de factura avisa de la diferencia y propone dónde llevarla; no la acepta en silencio.
+- **Borrar asientos**: se anulan (conservan el número). El borrador del front antiguo pasa a ser un asiento en preparación, fuera del libro.
 
 ### Coexistencia con el front antiguo
 
@@ -189,23 +274,24 @@ Con el sistema de diseño de `apps/web/src/ui`. El código de cuenta sale siempr
 - La cuenta de resultados antigua sigue hasta que llegue ADR-0017.
 - El formulario antiguo se retira con la fase 2.
 
-## Pendiente de decidir (José María)
+## Pendiente
 
-1. **Introducción de asientos (A).** Propuesta: A3, editor primero y asistentes en la fase 3. ¿De acuerdo? ¿Qué asistentes primero: factura recibida y banco?
-2. **Periodos cerrados (B).** Propuesta: **B1, replicar GeneXus**. Es la puerta que existe hoy, explica cómo se contabilizan la liquidación y las facturas tardías, y B2 obligaría a reabrir meses que hoy no se reabren.
-   - Lo que exige: la plataforma tiene que saber cuándo un asiento «tiene IVA o facturas». Propuesta: tiene algún registro de IVA o algún apunte a una cuenta de impuesto (las cuentas de liquidación y las de los tipos impositivos, ADR-0022).
-   - ¿Se replica también el bloqueo SII (`SIILIMIT`) ya en la fase 2, o va con el módulo del SII?
-3. **Estados del front antiguo (C).** Propuesta: C2, quitarlos.
-4. **Numeración.** GeneXus numera por orden de alta dentro del ejercicio, sin renumerar, y borrar deja huecos. Propuesta: lo mismo (número = máximo + 1 del ejercicio, con bloqueo). El diario impreso ordena por fecha y número. ¿Algún cliente pide renumerar por fecha al cierre?
-5. **Mostrar eliminados en el mayor** (opción de `VerMovimientos`). Propuesta: sí, desde el audit log, en la fase 2.
+1. **Bloqueo del SII** (`SIILIMIT`, asientos con IVA de meses anteriores a partir del día límite). Lectura de «todo lo demás de acuerdo»: va con el módulo del SII, no en la fase 2. Confirmar.
+2. **Facturas migradas de GeneXus.** Los asientos de facturas recibidas y emitidas tecleados en GeneXus (diarios 3, 11, 21…) no tienen documento. Opciones:
+   - migrarlos como asientos editables, como están: simple, pero conviven dos formas de factura;
+   - que el ETL cree también el documento: un único libro de facturas, pero cada asiento migrado tiene que reconstruirse como factura, y el modo sombra lo tiene que verificar.
+   - Se decide al abordar la fase 3, con datos de cuántos se dejan reconstruir.
+3. **Datos por defecto del tercero.** Qué se guarda por rol (cuenta de gasto o ingreso, tipo de impuesto, retención, forma de pago, último concepto) y cómo se aprende: GeneXus guarda el último concepto usado (`AcrConIdUlt`). Al diseñar la fase 3.
+4. **Buzón de facturas.** Cómo llegan: correo, carpeta, plataforma de factura electrónica (ADR-0006, SPFE). Con el módulo de factura electrónica.
 
 ## Consecuencias
 
 - La fase 1 sirve también como comprobación de paridad: con un cliente cargado, el mayor y las sumas y saldos se pueden comparar a ojo con GeneXus antes de escribir nada.
 - Las reglas de periodos y de qué se puede editar quedan en la base. El editor y los asistentes no pueden saltárselas.
-- Si se elige B1, hay que revisar la función de cierre de la liquidación (hoy exige el mes contable abierto para reabrir) y escribir los tests de las cuatro combinaciones.
+- La regla de GeneXus para los periodos obliga a revisar el cierre y la reapertura de la liquidación (hoy exigen el mes contable abierto) y a escribir los tests de las cuatro combinaciones.
+- La factura recibida como documento adelanta parte del modelo de facturas al módulo de Contabilidad: se diseña para que sirva luego a facturación (ola 2) y a la factura electrónica (ADR-0006).
 - El editor de asientos es la pieza de UI más exigente del módulo. Se diseña con capturas y se revisa contigo antes de dar por cerrada la fase 2.
 
 ## Origen
 
-Conversación con José María del 06/11/2026; análisis de la KB (`Valfechacon`, `CerrarPeriodo`, `IngVarios`, programas de contabilidad) y de los exports locales de mconta0013, 0032, 0037, 0048, 0086 y 0124.
+Conversación con José María del 06/11/2026 (respuestas sobre facturas, formularios, periodos y estados); análisis de la KB (`Valfechacon`, `CerrarPeriodo`, `IngVarios`, programas de contabilidad) y de los exports locales de mconta0013, 0032, 0037, 0048, 0086 y 0124.
