@@ -1,7 +1,7 @@
 ---
 id: 0028
 title: Módulo de Contabilidad en la plataforma — alcance, fases, pantallas y reglas de periodos
-status: proposed
+status: accepted
 date: 2026-11-06
 services: [core]
 supersedes: null
@@ -107,7 +107,7 @@ La plataforma hoy hace otra cosa: con el mes contable cerrado no deja hacer nada
 
 ## Decisión
 
-Puntos confirmados por José María el 06/11/2026: A, B (con la lectura de abajo), numeración y mostrar eliminados. Los estados (C) los deja a análisis; la propuesta está más abajo.
+Aceptado por José María el 06/11/2026: A, B (con la lectura de abajo), numeración, mostrar eliminados y la propuesta de estados (C3).
 
 ### Cómo nacen los asientos
 
@@ -276,7 +276,7 @@ Con el sistema de diseño de `apps/web/src/ui`. El código de cuenta sale siempr
 
 ## Pendiente
 
-1. **Bloqueo del SII** (`SIILIMIT`, asientos con IVA de meses anteriores a partir del día límite). Lectura de «todo lo demás de acuerdo»: va con el módulo del SII, no en la fase 2. Confirmar.
+1. **SII**, incluido el bloqueo de asientos con IVA de meses anteriores a partir del día límite (`SIILIMIT`): se trata aparte, con su propio ADR, para que evolucione de forma independiente (José María, 06/11/2026). La fase 2 no lo incluye.
 2. **Facturas migradas de GeneXus.** Los asientos de facturas recibidas y emitidas tecleados en GeneXus (diarios 3, 11, 21…) no tienen documento. Opciones:
    - migrarlos como asientos editables, como están: simple, pero conviven dos formas de factura;
    - que el ETL cree también el documento: un único libro de facturas, pero cada asiento migrado tiene que reconstruirse como factura, y el modo sombra lo tiene que verificar.
