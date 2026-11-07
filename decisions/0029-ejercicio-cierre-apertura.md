@@ -1,7 +1,7 @@
 ---
 id: 0029
 title: Ejercicio contable — alta, cierre, reapertura y apertura del siguiente; IVA en ejercicios no naturales; alta de cuentas
-status: proposed
+status: accepted
 date: 2026-11-07
 services: [core]
 supersedes: null
@@ -65,6 +65,8 @@ Lo que falta: las operaciones, su historial y el alta de ejercicios y de cuentas
 2. **Automática, dentro del cierre de N.** Avisa y pide motivo si enero de N+1 ya está cerrado.
 
 ## Decisión
+
+**Principio:** el programa propone y automatiza, pero no impone. Cada empresa y cada asesor aplica su criterio. Por eso hay asistentes con propuestas y avisos, y solo se bloquea lo que rompería la contabilidad: la 129 a mano, el cierre descuadrado y lo ya declarado.
 
 Se eligen A2, B2, C2, D2 y E2 (confirmadas D2 y E2 por José María). D2 sustituye la regla de la 129 que ADR-0018 conservaba de GeneXus.
 
@@ -184,4 +186,4 @@ Con D2 la 129 abre como 129. Repartirla es un acuerdo de la junta (normalmente e
 
 ## Origen
 
-Conversación del 2026-11-07 con José María sobre el cierre y la apertura del ejercicio. Partía del flujo de GeneXus (cuatro operaciones secuenciales) y de su propuesta de flujo (corrección en N, nuevo cierre, actualización de la apertura). Se eligen A2, B2 y C2; D2 y E2 se proponen a la espera de confirmación.
+Conversación del 2026-11-07 con José María sobre el cierre y la apertura del ejercicio. Partía del flujo de GeneXus (cuatro operaciones secuenciales) y de su propuesta de flujo (corrección en N, nuevo cierre, actualización de la apertura). José María confirmó D2 y E2, el asistente de aplicación del resultado y el principio de proponer sin imponer, y aceptó el ADR el 2026-11-08.
