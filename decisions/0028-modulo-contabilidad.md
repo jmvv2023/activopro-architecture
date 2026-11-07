@@ -210,7 +210,7 @@ Fase 3: **documentos y asistentes.**
 - Asistentes de banco y caja.
 - Plantillas de asiento: las `AsiDefinicion` de GeneXus; se migran las que difieren del estándar, como los informes del ADR-0017.
 
-Fase 4: **ejercicio y plan de cuentas.**
+Fase 4: **ejercicio y plan de cuentas** (detalle en ADR-0029; se adelanta a la fase 3).
 - Alta de ejercicio, cierre (regularización y cierre), apertura y su retirada, recálculo de saldos.
 - Alta y edición de cuentas y cambio de cuenta en los apuntes.
 
