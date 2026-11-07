@@ -66,7 +66,7 @@ Lo que falta: las operaciones, su historial y el alta de ejercicios y de cuentas
 
 ## Decisión
 
-Se eligen A2, B2, C2, D2 y E2. D2 y E2 se proponen a la espera de confirmación: D2 cambia una regla que ADR-0018 conservaba de GeneXus.
+Se eligen A2, B2, C2, D2 y E2 (confirmadas D2 y E2 por José María). D2 sustituye la regla de la 129 que ADR-0018 conservaba de GeneXus.
 
 ### Alta de ejercicio
 
@@ -118,6 +118,26 @@ Antes de confirmar, la pantalla enseña el resultado del ejercicio.
 - **Primer ejercicio de la empresa** (sin ejercicio anterior en la plataforma): su apertura se puede escribir en el editor, solo con cuentas de los grupos 1 a 5. Sirve para los saldos iniciales de un cliente que viene de otro programa o para el asiento de constitución.
 - **Historial.** Cada cierre, reapertura y actualización de la apertura queda en `ejercicio_evento`: tipo, usuario, fecha, motivo y el contenido anterior de los asientos (como `anulado_contenido`).
 
+### Aplicación del resultado
+
+Con D2 la 129 abre como 129. Repartirla es un acuerdo de la junta (normalmente en los seis meses siguientes al cierre, LSC art. 164) o, en un empresario individual, del titular. Por eso el programa no lo hace solo: lo propone, el usuario lo confirma y queda en su propio asiento.
+
+**Asistente «Aplicación del resultado»**, para el ejercicio N ya cerrado y aperturado N+1:
+- **Datos:** fecha del acuerdo, que cae en N+1.
+- **Con pérdidas:** propone el 100 % a la 121, con un clic. Opcionalmente las compensa con reservas (113 → 121) o con aportaciones de socios (118 → 121).
+- **Con beneficios:** reparte entre la 112 (reserva legal), la 113, la 1141 (estatutarias), la 121 (compensar pérdidas anteriores), la 120 (remanente) y la 526 (dividendo).
+  - Avisa de la dotación mínima de la reserva legal: el 10 % del beneficio hasta que llegue al 20 % del capital (LSC art. 274).
+  - Avisa si se reparten dividendos con pérdidas pendientes y un patrimonio neto inferior al capital (LSC art. 273).
+  - Son avisos, no bloqueos: lo decide la junta.
+- **Empresario individual:** la 129 va contra la cuenta del titular.
+- **Control:** el reparto tiene que sumar el saldo de la 129 al céntimo.
+- **Asiento:** origen nuevo `aplicacion_resultado`, uno por ejercicio (`ejercicio.asiento_aplicacion_id`), en N+1. Si se rehace con el asistente, conserva su número y su historial, como los demás asientos de proceso. Si al volver a cerrar N la 129 cambia, el cierre avisa de que la aplicación ya no cuadra y propone rehacerla.
+
+**Reglas sobre el patrimonio neto:**
+- **La 129 solo se mueve** con la regularización, el cierre, la apertura y la aplicación del resultado. El editor no deja usarla, salvo en la apertura del primer ejercicio de la empresa.
+- **Las cuentas 120 y 121 y los subgrupos 11 y 10** pueden moverse legítimamente fuera de la aplicación del resultado: compensaciones, ampliaciones y reducciones de capital, corrección de errores de ejercicios anteriores contra reservas (PGC, NRV 22). Por eso solo se avisa. Al usarlas en el editor aparece: «Los movimientos de patrimonio neto suelen venir de un acuerdo de la junta; si es la aplicación del resultado, usa el asistente».
+- **Resultado pendiente de aplicar:** la portada y la lista de ejercicios avisan si la 129 de N−1 sigue con saldo pasados seis meses del fin de N−1. La comprobación previa al cierre de N también lo señala, como aviso.
+
 ### IVA en ejercicios no naturales
 
 - Los meses de un periodo de IVA se resuelven por fecha. El 3T de 2026 es julio, agosto y septiembre de 2026, sea cual sea el ejercicio contable que los contiene. Si el ejercicio cierra el 31 de julio, ese trimestre sella julio en N y agosto y septiembre en N+1.
@@ -141,7 +161,7 @@ Antes de confirmar, la pantalla enseña el resultado del ejercicio.
 - **Permisos:**
   - `contabilidad.cerrar`: meses, cerrar y reabrir el ejercicio, alta y eliminación de ejercicios;
   - `contabilidad.configurar`: títulos y cuenta de resultados (solo administrador);
-  - `contabilidad.preparar`: alta de subcuentas.
+  - `contabilidad.preparar`: alta de subcuentas y asistente de aplicación del resultado.
 
 ### Clientes migrados
 
@@ -154,11 +174,10 @@ Antes de confirmar, la pantalla enseña el resultado del ejercicio.
 - **Para el usuario.** Dos acciones en lugar de cuatro, y un orden que el programa explica en vez de exigir que se sepa. N+1 nunca se queda sin saldos iniciales. La apertura es siempre el asiento 1 y no hay duplicados. Los informes de N+1 se actualizan en cuanto se vuelve a cerrar N.
 - **Auditoría.** Rehacer en el sitio no pierde información: cada versión de los asientos de proceso queda en `ejercicio_evento`.
 - **Lo declarado.** El IVA declarado sigue protegido por el sellado de meses y la regla B1. La apertura de N+1 puede cambiar con su contabilidad cerrada, y por eso se avisa y se registra.
-- **D2 cambia el comportamiento respecto a GeneXus.** Hasta que exista el asistente de «Aplicación del resultado», la 129 se aplica con un asiento manual.
+- **D2 cambia el comportamiento respecto a GeneXus.** El asistente de «Aplicación del resultado» sustituye al traspaso automático: el reparto lo decide la junta, y el programa lo propone, lo comprueba y lo registra.
 - **Hay que tocar el motor de liquidación** (búsqueda por fecha) y el ETL (enlace de los asientos de proceso).
 
 **Pendiente:**
-- el asistente de aplicación del resultado;
 - la regularización de los grupos 8 y 9;
 - comprobar las amortizaciones cuando exista el módulo;
 - los informes de balance y cuenta de pérdidas y ganancias (ADR-0017).
