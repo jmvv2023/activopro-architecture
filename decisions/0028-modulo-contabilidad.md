@@ -204,7 +204,7 @@ Fase 2: **asiento manual y periodos.**
 - Edición y anulación según el `editable` del origen.
 - Cerrar y abrir meses con la regla de GeneXus.
 
-Fase 3: **documentos y asistentes.**
+Fase 3: **documentos y asistentes** (registro de facturas en ADR-0030).
 - Factura recibida como documento: formulario con búsqueda rápida y datos por defecto del tercero, buzón, asiento automático. El OCR se integra al final, con los micros.
 - Factura emitida registrada en contabilidad (la ola 1 no factura en ActivoPro), con el mismo patrón.
 - Asistentes de banco y caja.
@@ -280,8 +280,8 @@ Con el sistema de diseño de `apps/web/src/ui`. El código de cuenta sale siempr
 2. **Facturas migradas de GeneXus.** Los asientos de facturas recibidas y emitidas tecleados en GeneXus (diarios 3, 11, 21…) no tienen documento. Opciones:
    - migrarlos como asientos editables, como están: simple, pero conviven dos formas de factura;
    - que el ETL cree también el documento: un único libro de facturas, pero cada asiento migrado tiene que reconstruirse como factura, y el modo sombra lo tiene que verificar.
-   - Se decide al abordar la fase 3, con datos de cuántos se dejan reconstruir.
-3. **Datos por defecto del tercero.** Qué se guarda por rol (cuenta de gasto o ingreso, tipo de impuesto, retención, forma de pago, último concepto) y cómo se aprende: GeneXus guarda el último concepto usado (`AcrConIdUlt`). Al diseñar la fase 3.
+   - Se decide al abordar la fase 3, con datos de cuántos se dejan reconstruir (planteado en ADR-0030).
+3. **Datos por defecto del tercero.** Qué se guarda por rol (cuenta de gasto o ingreso, tipo de impuesto, retención, forma de pago, último concepto) y cómo se aprende: GeneXus guarda el último concepto usado (`AcrConIdUlt`). Resuelto en ADR-0030.
 4. **Buzón de facturas.** Cómo llegan: correo, carpeta, plataforma de factura electrónica (ADR-0006, SPFE). Con el módulo de factura electrónica.
 
 ## Consecuencias
