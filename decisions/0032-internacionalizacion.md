@@ -91,7 +91,13 @@ Cuanto más tarde se prepare la arquitectura, más pantallas y mensajes habrá q
    - `app.error` y el formato de error de la API.
    - Regla de ESLint y tests del catálogo.
 2. **Módulo a módulo:** Facturación, Contabilidad y Fiscal. Cada uno pasa sus pantallas a claves y sus funciones a códigos en el mismo PR, con tests.
-3. **Traducciones:** catalán primero, después gallego, francés, portugués e inglés. Las hace Claude a partir del castellano. ActivoPro sigue la contabilidad y la fiscalidad **españolas** en todos los idiomas: el idioma es una comodidad para el usuario y para las comunicaciones con clientes, no otro marco contable. Por eso se traducen los conceptos del PGC español y de la normativa española; no se sustituyen por los de otro país (ni SNC portugués ni PCG francés). Un glosario por idioma en el paquete fija cada término (cuenta del PGC, modelo, casilla, figura fiscal) para que siempre se traduzca igual. Donde no hay equivalente claro, el término español va entre paréntesis («reverse charge (inversión del sujeto pasivo)»), y los nombres de los modelos (303, 390, 347) no se traducen. Las observaciones de los usuarios corrigen el glosario.
+3. **Traducciones**, por prioridad (José María, 08/11/2026: hay clientes en castellano, catalán e inglés; los otros tres idiomas están en GeneXus, pero no son prioritarios):
+   - **Castellano, catalán e inglés:** todo módulo nuevo nace traducido a los tres en el mismo PR.
+   - **Gallego, francés y portugués:** se traducen todos juntos en un repaso final. Mientras tanto, lo que falta cae al castellano.
+   - **Lo existente** se pasa a claves cuando se toca. Las piezas comunes (menú lateral, cabecera, selector de ejercicio, buscador de cuentas) se pasan en cuanto se toquen.
+   - Antes de migrar a los clientes que usan catalán o inglés, se hace un repaso para que esos idiomas estén completos. El primer usuario de la plataforma trabaja en castellano.
+
+   Las hace Claude a partir del castellano. ActivoPro sigue la contabilidad y la fiscalidad **españolas** en todos los idiomas: el idioma es una comodidad para el usuario y para las comunicaciones con clientes, no otro marco contable. Por eso se traducen los conceptos del PGC español y de la normativa española; no se sustituyen por los de otro país (ni SNC portugués ni PCG francés). Un glosario por idioma en el paquete fija cada término (cuenta del PGC, modelo, casilla, figura fiscal) para que siempre se traduzca igual. Donde no hay equivalente claro, el término español va entre paréntesis («reverse charge (inversión del sujeto pasivo)»), y los nombres de los modelos (303, 390, 347) no se traducen. Las observaciones de los usuarios corrigen el glosario.
 4. **Documentos para terceros** en su idioma, cuando lleguen el PDF de la factura (módulo de productos, ADR-0031 punto 6) y las comunicaciones.
 
 ## Consecuencias
