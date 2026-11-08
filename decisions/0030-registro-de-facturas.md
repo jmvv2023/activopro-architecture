@@ -1,7 +1,7 @@
 ---
 id: 0030
 title: Registro de facturas — la factura recibida y la emitida registrada como documento, base de la facturación futura
-status: proposed
+status: accepted
 date: 2026-11-08
 services: [core]
 supersedes: null
@@ -35,19 +35,13 @@ Es el arranque de la fase 3 de ADR-0028 (documentos y asistentes). ADR-0028 deci
 
 1. **El registro de facturas es también el documento de venta**, con sus líneas de artículo, albaranes y presupuestos. Mezcla lo comercial (artículos, cantidades, stock, entregas parciales) con lo fiscal y contable. Un presupuesto o un albarán no son facturas y no deben estar en el libro.
 2. **Dos capas.**
-   - **Documento comercial** (ola 2): presupuesto, albarán, factura comercial con líneas de artículo y la plantilla de facturación recurrente.
+   - **Documento comercial** (ola 2): presupuesto, albarán, factura comercial con líneas de artículo y la plantilla de facturación recurrente, y que las simplificadas se registren sin dar de alta al cliente, contra la cuenta de clientes varios. Aceptó el ADR con el boceto del formulario.
    - **Registro de factura** (este ADR): lo fiscal y contable.
    - Solo la factura comercial, al emitirse, crea su registro (y su registro VeriFactu). El presupuesto y el albarán nunca crean registro ni asiento. La recurrente genera facturas comerciales, y estas sus registros.
 
 ## Decisión
 
-José María confirmó el 08/11/2026 la **opción A2** (registro único) y el orden de trabajo de abajo. Lo demás se propone para revisarlo antes de implementar:
-- la opción B2 (dos capas);
-- el modelo;
-- el asiento;
-- los datos por defecto del tercero;
-- el alta del tercero desde el formulario;
-- las facturas migradas.
+Aceptado por José María el 08/11/2026: registro único (A2), dos capas (B2), el modelo, el asiento, los datos por defecto del tercero, el alta desde el formulario, las simplificadas sin tercero, las facturas migradas y el orden de trabajo.
 
 ### Modelo
 
@@ -157,7 +151,7 @@ José María, 08/11/2026: el cliente de un ticket no está dado de alta ni se va
 - Con ese dato se decide si el ETL crea los registros (origen `migrada`).
 - Hasta entonces, los migrados siguen siendo asientos editables, como hoy.
 
-### Orden de trabajo (confirmado)
+### Orden de trabajo
 
 1. Factura recibida manual: formulario, tercero, asiento automático y libro de facturas recibidas.
 2. Factura emitida registrada, con el mismo patrón.
@@ -182,4 +176,4 @@ José María, 08/11/2026: el cliente de un ticket no está dado de alta ni se va
 
 ## Origen
 
-Conversación del 2026-11-08 con José María al empezar la fase 3 de ADR-0028. Confirmó el registro único (A2) y el orden de trabajo, y pidió que el modelo pueda absorber más adelante rectificativas, albaranes, presupuestos y facturación periódica o recurrente.
+Conversación del 2026-11-08 con José María al empezar la fase 3 de ADR-0028. Confirmó el registro único (A2) y el orden de trabajo; pidió que el modelo pueda absorber más adelante rectificativas, albaranes, presupuestos y facturación periódica o recurrente, y que las simplificadas se registren sin dar de alta al cliente, contra la cuenta de clientes varios. Aceptó el ADR con el boceto del formulario.
