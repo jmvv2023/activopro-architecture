@@ -165,7 +165,7 @@ Es la prueba de que la traducción de los grupos y las fórmulas es fiel.
 - **Código:** las plantillas tienen sus tablas, funciones y pantallas, y solo comparten con el editor el camino de guardar el asiento.
 - **Decidido por José María (08/11/2026):**
   1. Los controles bloquean, como en GeneXus.
-  2. Pendiente: comprobar si hay líneas a 472/477 en las plantillas (consulta en los 11 schemas).
+  2. En los 11 schemas ninguna plantilla tiene líneas a 472/477, ni fórmulas o controles con `*` o `/` (consultas del 08/11/2026). El aviso de cuenta de impuesto y la anomalía del ETL se mantienen como salvaguarda, sin casos hoy.
   3. Se migran solo las plantillas usadas. Las demás se pueden cargar más adelante con el ETL si se necesitan.
   4. Definir plantillas es solo del administrador (`contabilidad.configurar`).
 - **Pendiente:**
