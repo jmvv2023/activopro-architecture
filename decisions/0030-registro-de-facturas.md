@@ -123,7 +123,33 @@ Si el NIF no existe:
 - se crea el tercero y su rol;
 - se propone la siguiente subcuenta libre de la 400 (proveedor), la 410 (acreedor) o la 430 (cliente), que el usuario puede cambiar (`app.alta_cuenta`, ADR-0029).
 
-Una simplificada (F2) se registra sin tercero. Sin NIF, la factura no va al 347 (ADR-0023).
+### Facturas simplificadas (F2) sin tercero
+
+José María, 08/11/2026: el cliente de un ticket no está dado de alta ni se va a dar. Se registran unos datos mínimos, ninguno obligatorio, y la factura va contra la cuenta genérica de clientes varios. En GeneXus es el parámetro `CGENFAC`, `4300 999999` (`domain/verifactu.md`): una factura contra esa cuenta es F2.
+
+**Sin tercero.**
+- La F2 y su rectificativa (R5) son las únicas facturas que se registran sin `tercero_rol_id`.
+- Llevan en la propia factura el nombre, el NIF y el domicilio, todos opcionales.
+- No se crea ficha ni subcuenta.
+
+**Cuenta genérica.**
+- La de clientes varios se configura por empresa en `empresa_config_contable`. Por defecto es `430 999999`, y el ETL la carga de `CGENFAC`.
+- En recibidas hay una de acreedores varios para los tickets de gasto. Por simetría se propone `410 999999`, que el usuario puede cambiar.
+- El asiento va contra esa cuenta en lugar de la subcuenta del tercero.
+
+**Límite** (art. 4 del Reglamento de facturación).
+- La simplificada se admite hasta 400 € con IVA incluido, o hasta 3.000 € en las actividades del art. 4.1.b (comercio minorista, hostelería, transporte de personas…).
+- Los dos importes van como parámetros de la plataforma (`parametro_plataforma`, versionados).
+- Pasar del límite es un aviso, no un bloqueo: proponer sin imponer.
+
+**Simplificada cualificada** (art. 7.2 del Reglamento de facturación).
+- Si el destinatario es empresario y pide su NIF y domicilio en la factura, sigue siendo F2.
+- Si la factura la registra quien la recibe, la cuota solo es deducible con ese NIF y la cuota separada (art. 97 LIVA). Una F2 recibida sin el NIF de la empresa propone el IVA como no deducible, con aviso.
+
+**347 y VeriFactu.**
+- Sin NIF, o con un NIF de relleno, la factura no va al 347 (ADR-0023).
+- En VeriFactu, la F2 y la R5 no llevan destinatarios (error AEAT 1190).
+- Las emitidas de la ola 2 tienen su serie propia de simplificadas (`SERSIMPL` en GeneXus).
 
 ### Facturas migradas de GeneXus (pendiente 2 de ADR-0028)
 
