@@ -55,11 +55,19 @@ Decidido por José María el 08/11/2026.
 - Vencimientos, condiciones de cobro y pago, recargo de equivalencia y cuenta se arrastrarán de la ficha del cliente, proveedor o acreedor.
 - Se aborda con el alta de terceros. Entonces se revisará lo que había en ActivoPro (GeneXus y el front anterior) y se limpiará lo viejo para pasar al modelo nuevo.
 
+**6. Líneas de las emitidas: pendiente del módulo de productos.**
+- Hoy la línea de la factura es a la vez la línea del documento y el desglose contable y fiscal del asiento (cuenta, base, tipo). Para las recibidas basta; en las emitidas la línea tiene que ser lo que se vende.
+- Con el módulo de productos habrá dos capas:
+  - una **línea comercial** (artículo, descripción, cantidad, precio de tarifa, descuento, tipo impositivo), común a presupuesto, albarán y factura (la capa comercial de ADR-0030), que arrastra del catálogo los precios, tarifas y stock (en GeneXus `articulos`, `artiprecio`, `artistock`, `artitarifas`, `artitarifasimporte`);
+  - el **desglose contable y fiscal** (base por tipo, cuenta de ingreso del artículo o su familia, cuotas, asiento), calculado de las líneas comerciales. Es lo que hoy es `factura_linea`, y el registro de IVA y el asiento no cambian.
+- Hasta entonces las emitidas no llevan descripción por línea. La exige el art. 6.1.f del RD 1619/2012 para la factura como documento (el PDF), así que entra con las líneas del producto. Decidido por José María el 08/11/2026.
+
 ## Consecuencias
 
 - La factura emitida por la plataforma queda lista para VeriFactu (ms verifactu): número correlativo, fecha del sistema e inmutable.
 - La pantalla de Configuración de la empresa tiene una pestaña nueva de series, que habla con la API nueva.
 - Los vencimientos siguen fuera hasta la ficha de terceros, como en ADR-0030.
+- La factura emitida en PDF espera a las líneas comerciales del módulo de productos (punto 6).
 
 ## Origen
 
