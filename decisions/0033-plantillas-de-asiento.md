@@ -141,7 +141,7 @@ Si un control no se cumple, **no se guarda**, como en GeneXus. El formulario mue
 
 ### ETL
 
-Migra las plantillas usadas (con asientos del diario 33) y traduce:
+Migra las plantillas usadas (con asientos del diario 33) y traduce lo siguiente. Si más adelante se necesita otra, se carga con el mismo comando indicando su código:
 - **líneas:**
   - orden > 0 → `tecleada`;
   - orden 0 con fórmula → `calculada`;
@@ -163,11 +163,11 @@ Es la prueba de que la traducción de los grupos y las fórmulas es fiel.
 - **Controles:** los de GeneXus se conservan y siguen bloqueando, ahora con mensaje traducido e importes visibles. Uno mal configurado sigue impidiendo guardar: se corrige en la plantilla, nunca quitándolo en la migración.
 - **Formulario:** desaparecen las reglas implícitas (grupos, líneas ocultas, cuentas que se caen del formulario sin aviso). Todo lo que genera apunte se ve en el formulario.
 - **Código:** las plantillas tienen sus tablas, funciones y pantallas, y solo comparten con el editor el camino de guardar el asiento.
-- **Para José María:**
-  1. ¿Bloquear con los controles (propuesto, como GeneXus) o avisar y pedir aceptación?
-  2. ¿Hay líneas a 472/477 en las plantillas de farmacias? Consulta en cada uno de los 11 schemas: `select AsiDefCod, AsiDefCtaTit, AsiDefCtaCod from asideflineas where AsiDefCod > 2 and (AsiDefCtaTit like '472%' or AsiDefCtaTit like '477%')`.
-  3. ¿Migrar solo las usadas (propuesto) o todas las definidas por encima del código 2?
-  4. ¿Definir plantillas es de administrador (`contabilidad.configurar`, propuesto, porque los controles protegen la entrada de datos) o de cualquiera que prepare asientos?
+- **Decidido por José María (08/11/2026):**
+  1. Los controles bloquean, como en GeneXus.
+  2. Pendiente: comprobar si hay líneas a 472/477 en las plantillas (consulta en los 11 schemas).
+  3. Se migran solo las plantillas usadas. Las demás se pueden cargar más adelante con el ETL si se necesitan.
+  4. Definir plantillas es solo del administrador (`contabilidad.configurar`).
 - **Pendiente:**
   - el modelo 111 y las retenciones de nómina (ADR propio, cuando llegue);
   - las líneas con «cuenta a elegir al usar» (p. ej. el banco), si se piden.
