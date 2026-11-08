@@ -1,7 +1,7 @@
 ---
 id: 0032
 title: Internacionalización — idioma por usuario e idioma del tercero, catálogo único y mensajes con código
-status: proposed
+status: accepted
 date: 2026-11-08
 services: [core]
 supersedes: null
@@ -91,7 +91,7 @@ Cuanto más tarde se prepare la arquitectura, más pantallas y mensajes habrá q
    - `app.error` y el formato de error de la API.
    - Regla de ESLint y tests del catálogo.
 2. **Módulo a módulo:** Facturación, Contabilidad y Fiscal. Cada uno pasa sus pantallas a claves y sus funciones a códigos en el mismo PR, con tests.
-3. **Traducciones:** catalán primero, después gallego, francés, portugués e inglés. Las hace Claude a partir del castellano, con un glosario contable y fiscal por idioma en el paquete. El glosario recoge los términos fijados y su fuente (terminología oficial de la AEAT y de la ATC en castellano, y equivalentes asentados en cada idioma), para que un mismo concepto se traduzca siempre igual. Las observaciones de los usuarios de cada idioma corrigen el glosario.
+3. **Traducciones:** catalán primero, después gallego, francés, portugués e inglés. Las hace Claude a partir del castellano. ActivoPro sigue la contabilidad y la fiscalidad **españolas** en todos los idiomas: el idioma es una comodidad para el usuario y para las comunicaciones con clientes, no otro marco contable. Por eso se traducen los conceptos del PGC español y de la normativa española; no se sustituyen por los de otro país (ni SNC portugués ni PCG francés). Un glosario por idioma en el paquete fija cada término (cuenta del PGC, modelo, casilla, figura fiscal) para que siempre se traduzca igual. Donde no hay equivalente claro, el término español va entre paréntesis («reverse charge (inversión del sujeto pasivo)»), y los nombres de los modelos (303, 390, 347) no se traducen. Las observaciones de los usuarios corrigen el glosario.
 4. **Documentos para terceros** en su idioma, cuando lleguen el PDF de la factura (módulo de productos, ADR-0031 punto 6) y las comunicaciones.
 
 ## Consecuencias
@@ -103,4 +103,4 @@ Cuanto más tarde se prepare la arquitectura, más pantallas y mensajes habrá q
 
 ## Origen
 
-Conversación del 08/11/2026 con José María al plantear las plantillas de asiento. Pidió preparar la arquitectura para varios idiomas y confirmó los seis idiomas, el idioma por usuario (no por empresa) y el idioma del tercero para sus facturas y comunicaciones, definido en la ficha con `es` por defecto al crearla. Las traducciones las hace Claude.
+Conversación del 08/11/2026 con José María al plantear las plantillas de asiento. Pidió preparar la arquitectura para varios idiomas y confirmó los seis idiomas, el idioma por usuario (no por empresa) y el idioma del tercero para sus facturas y comunicaciones, definido en la ficha con `es` por defecto al crearla. Las traducciones las hace Claude, manteniendo la contabilidad y la fiscalidad españolas en todos los idiomas. Aceptado por José María el 08/11/2026.
