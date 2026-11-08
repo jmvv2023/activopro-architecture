@@ -1,7 +1,7 @@
 ---
 id: 0033
 title: Plantillas de asiento — líneas tecleadas, fijas, calculadas y de cuadre, con controles por idioma
-status: proposed
+status: accepted
 date: 2026-11-08
 services: [core]
 supersedes: null
@@ -177,3 +177,5 @@ Es la prueba de que la traducción de los grupos y las fórmulas es fiel.
 Conversación del 08/11/2026 con José María:
 - análisis del uso real de las plantillas (11 schemas, 16 plantillas) y de la nómina de mconta0126 con sus controles;
 - pidió mantener los controles, separar bien el código e incluir la internacionalización (ADR-0032).
+
+Aceptado por José María el 08/11/2026.
