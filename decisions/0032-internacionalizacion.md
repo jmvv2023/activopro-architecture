@@ -43,7 +43,7 @@ Cuanto más tarde se prepare la arquitectura, más pantallas y mensajes habrá q
 
 **2. Dos idiomas distintos.**
 - **Idioma del usuario** (`usuario.idioma`). Lo elige el usuario y decide las pantallas, los mensajes, los formatos y los informes que consulta. En el primer acceso se toma el del navegador si es uno de los seis; si no, castellano. La empresa no tiene idioma.
-- **Idioma del tercero** (`tercero.idioma`). Decide los documentos y las comunicaciones que se le envían: factura en PDF, correos y recordatorios. No depende de quién los emita.
+- **Idioma del tercero** (`tercero.idioma`, obligatorio). Se define en la ficha y al crearla se propone `es`. Decide los documentos y las comunicaciones que se le envían: factura en PDF, correos y recordatorios. No depende de quién los emita.
 
 **3. Un catálogo único: paquete `@activopro/i18n`.**
 - Ficheros JSON por idioma y por módulo (`comun`, `contabilidad`, `fiscal`, `facturacion`…), con claves semánticas (`facturacion.serie.no_vigente`) y mensajes ICU (plurales, fechas e importes como parámetros).
@@ -91,7 +91,7 @@ Cuanto más tarde se prepare la arquitectura, más pantallas y mensajes habrá q
    - `app.error` y el formato de error de la API.
    - Regla de ESLint y tests del catálogo.
 2. **Módulo a módulo:** Facturación, Contabilidad y Fiscal. Cada uno pasa sus pantallas a claves y sus funciones a códigos en el mismo PR, con tests.
-3. **Traducciones:** catalán primero, después gallego, francés, portugués e inglés. Las redacta Claude a partir del castellano y las revisa una persona nativa antes de publicarlas.
+3. **Traducciones:** catalán primero, después gallego, francés, portugués e inglés. Las hace Claude a partir del castellano, con un glosario contable y fiscal por idioma en el paquete. El glosario recoge los términos fijados y su fuente (terminología oficial de la AEAT y de la ATC en castellano, y equivalentes asentados en cada idioma), para que un mismo concepto se traduzca siempre igual. Las observaciones de los usuarios de cada idioma corrigen el glosario.
 4. **Documentos para terceros** en su idioma, cuando lleguen el PDF de la factura (módulo de productos, ADR-0031 punto 6) y las comunicaciones.
 
 ## Consecuencias
@@ -101,11 +101,6 @@ Cuanto más tarde se prepare la arquitectura, más pantallas y mensajes habrá q
 - Se reescriben, por módulos, unos 400 mensajes de error y 85 avisos, y los textos de 21 pantallas. Las pantallas antiguas (`LEGADO`) no se traducen: se sustituyen.
 - Las plantillas de asiento (ADR-0033) nacen con `textos jsonb` y mensajes de control por idioma.
 
-## Pendiente
-
-- Idioma por defecto de un tercero sin idioma (propuesta: castellano) y si el alta de tercero lo propone según el país.
-- Quién revisa cada idioma antes de publicarlo.
-
 ## Origen
 
-Conversación del 08/11/2026 con José María al plantear las plantillas de asiento. Pidió preparar la arquitectura para varios idiomas y confirmó los seis idiomas, el idioma por usuario (no por empresa) y el idioma del tercero para sus facturas y comunicaciones.
+Conversación del 08/11/2026 con José María al plantear las plantillas de asiento. Pidió preparar la arquitectura para varios idiomas y confirmó los seis idiomas, el idioma por usuario (no por empresa) y el idioma del tercero para sus facturas y comunicaciones, definido en la ficha con `es` por defecto al crearla. Las traducciones las hace Claude.
