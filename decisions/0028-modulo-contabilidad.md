@@ -207,7 +207,7 @@ Fase 2: **asiento manual y periodos.**
 Fase 3: **documentos y asistentes** (registro de facturas en ADR-0030).
 - Factura recibida como documento: formulario con búsqueda rápida y datos por defecto del tercero, buzón, asiento automático. El OCR se integra al final, con los micros.
 - Factura emitida registrada en contabilidad (la ola 1 no factura en ActivoPro), con el mismo patrón.
-- Asistentes de banco y caja.
+- Asistentes de banco y caja: pasan detrás de terceros y cartera, como movimiento de tesorería (ADR-0034, orden de los módulos).
 - Plantillas de asiento: las `AsiDefinicion` de GeneXus (detalle en ADR-0033).
 
 Fase 4: **ejercicio y plan de cuentas** (detalle en ADR-0029; se adelanta a la fase 3).
