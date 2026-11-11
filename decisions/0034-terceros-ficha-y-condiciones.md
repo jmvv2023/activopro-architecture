@@ -71,7 +71,7 @@ Lo hacen `AltaPrevC` / `AltaPrevP` al contabilizar la factura; el manual lo expl
 
 **4. Datos laborales del empleado.**
 - a) No migrarlos hasta que exista un módulo de nóminas (minimización de datos personales).
-- b) **Migrarlos en una tabla aparte con permiso propio y auditoría de accesos.** No se pierde lo que tienen los clientes y quedan listos para unas nóminas futuras, sin que los vea quien solo lleva la contabilidad. **Propuesta**; decide José María.
+- b) **Migrarlos en una tabla aparte con permiso propio y auditoría de accesos.** No se pierde lo que tienen los clientes y quedan listos para unas nóminas futuras, sin que los vea quien solo lleva la contabilidad. **Elegida** (José María, 11/11/2026: «la más rigurosa»).
 
 ## Decisión
 
@@ -131,7 +131,7 @@ Lo hacen `AltaPrevC` / `AltaPrevP` al contabilizar la factura; el manual lo expl
 
 ### Datos laborales del empleado: `empleado_laboral`
 
-- Si se elige la opción 4b, contiene: número de la Seguridad Social, fecha de nacimiento, estado civil, hijos, categoría, tipo de contrato, fechas de alta y baja laboral, salario bruto y porcentaje de IRPF.
+- Contiene: número de la Seguridad Social, fecha de nacimiento, estado civil, hijos, categoría, tipo de contrato, fechas de alta y baja laboral, salario bruto y porcentaje de IRPF.
 - **Solo se leen con `app.datos_laborales`**, con el permiso `terceros.datos_laborales` (del administrador por defecto), y cada lectura queda registrada.
 - La aplicación no puede leer la tabla directamente.
 
@@ -166,7 +166,6 @@ Carga las seis fichas, sus direcciones, cobros y mandatos y los catálogos `forc
 - **Facturas existentes:** la factura de ADR-0030 deja de llevar la forma de pago como texto: apunta al catálogo, y los textos actuales se convierten.
 - **Vencimientos:** la cartera ya tendrá todo lo que necesita para generarlos.
 - **Un tercero, varios papeles:** cliente y proveedor a la vez comparten identidad, contactos y cuentas bancarias, sin datos que se contradigan.
-- **Pendiente de José María:** opción 4 (datos laborales).
 
 ## Origen
 
@@ -174,5 +173,5 @@ Conversación del 11/11/2026 con José María:
 - una sola identidad;
 - condiciones en la ficha y por dirección de cobro (TORRO);
 - «otros» como un rol más;
-- los datos laborales, con permiso especial;
+- los datos laborales, en tabla aparte con permiso propio y lecturas registradas (opción 4b);
 - el apartado 3.2 del manual (https://jmvazquez.eu/activopro.html).
