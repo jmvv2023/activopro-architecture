@@ -114,7 +114,7 @@ Las dos no se excluyen: toda línea con importe tiene su descripción, y además
 
 ## Decisión
 
-José María confirmó los ocho puntos el 11/11/2026.
+José María confirmó el 11/11/2026 los cinco puntos que se le plantearon (2 a 6); el resto sigue lo ya decidido en ADR-0031.
 
 1. **Dos capas, como fijó ADR-0031.**
    - `factura_linea_comercial` solo en emitidas de la plataforma: orden, tipo `articulo` / `texto`, descripción, cantidad, precio, % de descuento, impuesto y tipo, operación, recargo, cuenta de ingreso y retención.
