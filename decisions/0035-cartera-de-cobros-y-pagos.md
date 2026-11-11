@@ -1,7 +1,7 @@
 ---
 id: 0035
 title: Cartera de cobros y pagos — vencimientos de la factura, cobros y pagos como documento con aplicaciones, efectos y riesgo
-status: proposed
+status: accepted
 date: 2026-11-11
 services: [core]
 supersedes: null
@@ -52,22 +52,22 @@ Los efectos y los importes pendientes de aplicar se usan casi tanto como la prop
 
 **1. Qué es un cobro o un pago.**
 - a) Como en GeneXus: una línea por vencimiento, y lo que sobra, en el último vencimiento o en una tabla aparte de pendientes.
-- b) **Un documento (`cobro_pago`) con su asiento y sus aplicaciones a vencimientos.** Lo que no se aplica queda en el propio documento como pendiente de aplicar, sin tabla aparte. La tesorería (el siguiente ADR) cobrará y pagará creando este mismo documento desde un movimiento de banco o caja, sin rehacerlo. **Propuesta.**
+- b) **Un documento (`cobro_pago`) con su asiento y sus aplicaciones a vencimientos.** Lo que no se aplica queda en el propio documento como pendiente de aplicar, sin tabla aparte. La tesorería (el siguiente ADR) cobrará y pagará creando este mismo documento desde un movimiento de banco o caja, sin rehacerlo. **Elegida.**
 
 **2. Generación desde la factura.**
 - a) Solo a mano.
-- b) **Automática al contabilizar.** Toma las condiciones de la dirección de cobro de la factura (si tiene condiciones propias) o las del rol, y la forma de pago de la factura. Usa `app.vencimientos_propuestos` y el total a cobrar de la factura (con la retención ya restada). **Propuesta.**
+- b) **Automática al contabilizar.** Toma las condiciones de la dirección de cobro de la factura (si tiene condiciones propias) o las del rol, y la forma de pago de la factura. Usa `app.vencimientos_propuestos` y el total a cobrar de la factura (con la retención ya restada). **Elegida.**
 
 **3. Factura modificada con algo cobrado.**
 - a) Como GeneXus: no se recalcula y la cartera puede quedar distinta de la factura sin que nadie lo vea.
-- b) **No se recalcula, pero queda el aviso `CARTERA_DESCUADRADA`** (suma de vencimientos ≠ total de la factura) en la factura y en la cartera, hasta que el usuario ajuste los vencimientos pendientes. **Propuesta.**
+- b) **No se recalcula, pero queda el aviso `CARTERA_DESCUADRADA`** (suma de vencimientos ≠ total de la factura) en la factura y en la cartera, hasta que el usuario ajuste los vencimientos pendientes. **Elegida.**
 - c) Bloquear la modificación.
 
 **4. Efectos.**
 - a) Dejarlos para el ADR de remesas.
-- b) **Incluirlos aquí: el efecto es un estado del cobro**, con su ciclo y sus asientos. Los usan 68 schemas, y sin ellos un cobro con pagaré no se puede registrar bien. **Propuesta.** El descuento y la gestión de cobro por remesa se quedan para el ADR de remesas.
+- b) **Incluirlos aquí: el efecto es un estado del cobro**, con su ciclo y sus asientos. Los usan 68 schemas, y sin ellos un cobro con pagaré no se puede registrar bien. **Elegida.** El descuento y la gestión de cobro por remesa se quedan para el ADR de remesas.
 
-## Decisión (propuesta)
+## Decisión
 
 ### Vencimientos: `vencimiento`
 
@@ -143,11 +143,11 @@ Los efectos y los importes pendientes de aplicar se usan casi tanto como la prop
   - los días de riesgo de `forcob`.
 - **Modo sombra:** lo pendiente por tercero frente a lo que da GeneXus.
 
-## Preguntas abiertas para José María
+## Decisiones de José María (11/11/2026)
 
-1. **¿Cobro y pago como documento que la tesorería reutiliza (opción 1b)?** El movimiento de banco que cobra una factura sería ese mismo documento.
-2. **¿Efectos en este ADR (opción 4b)?** El descuento y la remesa irían al ADR de remesas.
-3. **¿Aviso, y no bloqueo, cuando se modifica una factura con cobros (opción 3b)?**
+1. Cobro y pago como documento que la tesorería reutiliza (1b).
+2. Efectos en este ADR; descuento y remesas en el de remesas (4b).
+3. Factura modificada con cobros: aviso `CARTERA_DESCUADRADA`, sin bloquear (3b).
 
 ## Consecuencias
 
@@ -157,4 +157,4 @@ Los efectos y los importes pendientes de aplicar se usan casi tanto como la prop
 
 ## Origen
 
-Conversación del 11/11/2026 con José María (orden de los módulos, ADR-0034). Análisis de la KB de GeneXus: `Cobros`, `Actuacob`, `Comosecobro`, `Altaefeacob`, `Actuaefe`, `RebajaRiesgo`, `CyPaltapdte`, `AltaPrevC` / `AltaPrevP`. Manual de ActivoPro, apartados 3.1, 3.2 y 4.3.
+Conversación del 11/11/2026 con José María (orden de los módulos, ADR-0034). Aceptado por José María el 11/11/2026 («comparto tus decisiones con las tres preguntas»). Análisis de la KB de GeneXus: `Cobros`, `Actuacob`, `Comosecobro`, `Altaefeacob`, `Actuaefe`, `RebajaRiesgo`, `CyPaltapdte`, `AltaPrevC` / `AltaPrevP`. Manual de ActivoPro, apartados 3.1, 3.2 y 4.3.
