@@ -1,7 +1,7 @@
 ---
 id: 0037
 title: Tesorería — cuentas de caja y banco, movimiento como documento, extracto bancario, conciliación y previsión
-status: proposed
+status: accepted
 date: 2026-11-11
 services: [core]
 supersedes: null
@@ -116,7 +116,9 @@ De 162 schemas:
    - Los vencimientos manuales sin factura (ADR-0035) ya sirven para lo previsto que no tiene factura: nóminas, impuestos.
 2. **Tabla de previsiones aparte.** Duplica lo que ya hacen los vencimientos manuales.
 
-## Decisión (propuesta, pendiente de José María)
+## Decisión
+
+José María confirmó los seis puntos el 11/11/2026, con las opciones recomendadas.
 
 1. **`cuenta_tesoreria`** para las cuentas de caja y banco de la empresa, con IBAN, BIC, banco, datos SEPA y numeradores.
 2. **El movimiento agrupa documentos.**
