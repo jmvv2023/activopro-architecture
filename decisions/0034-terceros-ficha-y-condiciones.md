@@ -1,7 +1,7 @@
 ---
 id: 0034
 title: Terceros — una identidad con varios roles, condiciones de pago en la ficha y cálculo de vencimientos
-status: proposed
+status: accepted
 date: 2026-11-11
 services: [core]
 supersedes: null
@@ -175,3 +175,5 @@ Conversación del 11/11/2026 con José María:
 - «otros» como un rol más;
 - los datos laborales, en tabla aparte con permiso propio y lecturas registradas (opción 4b);
 - el apartado 3.2 del manual (https://jmvazquez.eu/activopro.html).
+
+Aceptado por José María el 11/11/2026.
