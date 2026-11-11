@@ -28,7 +28,7 @@ De 162 schemas:
 |---|---|---|---|
 | `bancos` / `bancosbcta` | Banco (ficha de tercero) y sus cuentas: IBAN, cuenta contable, numeradores de cheques y pagarés, sufijos de las normas 19/34/58 | 47 / 45 | 171 / 201 |
 | `prgama`, `prgctascab`, `prgcontrapartidas` | «Programas» de asiento (CAJA, BANCO, VARIOS, REMESAEF, IMPAGADO, TARJCOB…): qué cuentas valen en la cabecera y en la contrapartida, serie y numeración del documento | 162 | ~29.000 cada una |
-| `cuadreban` | Copia de cada apunte de una cuenta de banco, con la marca de punteado (`CuaVinc`) y la fecha del extracto | 134 | 630.337 |
+| `cuadreban` | Copia de cada apunte de una cuenta de banco, con la marca de punteado (`CuaVinc`) y la fecha del extracto. Se llena sola; en los schemas revisados no se puntea desde 2020–2023 | 134 | 630.337 |
 | `tmpficban`, `tmpficban1` | Extracto norma 43 cargado (temporal: se borra en cada carga) | 16 / 149 | 66.960 / 614 |
 | `tplann43`, `tmpficbanconceptos`, `tmpficbanoperacion` | «Plan N43»: por cuenta, operación común y concepto propio del banco, la cuenta de contrapartida, la clave y el centro | 153 | 22.301 / 18.874 / 24.732 |
 | `conbanco` | Conciliación automática (líneas del extracto vinculadas a apuntes) | 3 | 21.736 |
@@ -146,10 +146,13 @@ Pantallas:
 - **Cartera.** `cobro_pago.origen = 'tesoreria'` ya está previsto. El cobro de la pantalla de cartera sigue igual y puede asociarse después a un movimiento al conciliar.
 - **ETL.**
   - Cuentas de `bancosbcta` y de los programas BANCO y CAJA (`prgctascab`).
-  - Punteos de `cuadreban` (`CuaVinc = 'S'`), como conciliación sin extracto.
   - Plan N43 como reglas.
+  - Los punteos de `cuadreban` no se cargan. José María contó `CuaVinc` el 11/11/2026 en mconta001, mconta0037 y mconta0071, y no hay punteos en los últimos ejercicios:
+    - en mconta001 y mconta0071, nada desde 2020;
+    - en mconta0037, se puntearon 351 de 2.334 apuntes en 2023 y ninguno desde 2024.
+
+    La conciliación empieza limpia con el primer extracto que se cargue.
   - `tmpficban` no se carga: es temporal.
-  - Antes conviene saber cuántos clientes puntean de verdad. `cuadreban` se llena solo con cada apunte de banco; hace falta el recuento de `CuaVinc` por schema.
 - **ms-activopro-import.** Sigue para GeneXus. La plataforma no depende de él.
 - **Remesas** (el ADR siguiente) usarán `cuenta_tesoreria` (IBAN, identificador SEPA, sufijos) y el movimiento para el abono o cargo de la remesa.
 - **Caja** (el último) añadirá arqueos y cierres sobre las cuentas de clase caja.
