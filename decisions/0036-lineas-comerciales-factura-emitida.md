@@ -1,7 +1,7 @@
 ---
 id: 0036
 title: Líneas comerciales de la factura emitida — concepto libre, descuento por línea y descuentos y cargos a pie, con el desglose fiscal calculado
-status: proposed
+status: accepted
 date: 2026-11-11
 services: [core]
 supersedes: null
@@ -112,7 +112,9 @@ Las dos no se excluyen: toda línea con importe tiene su descripción, y además
 1. **Catálogo por empresa** (`descuento_cargo`): código, nombre por idioma, tipo, porcentaje propuesto, modo y cuenta opcional. Como `dtocarfac`, con el patrón de las formas de pago.
 2. **Sin catálogo:** se teclean en cada factura.
 
-## Decisión (propuesta, pendiente de José María)
+## Decisión
+
+José María confirmó los ocho puntos el 11/11/2026.
 
 1. **Dos capas, como fijó ADR-0031.**
    - `factura_linea_comercial` solo en emitidas de la plataforma: orden, tipo `articulo` / `texto`, descripción, cantidad, precio, % de descuento, impuesto y tipo, operación, recargo, cuenta de ingreso y retención.
