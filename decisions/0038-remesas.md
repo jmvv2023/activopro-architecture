@@ -1,7 +1,7 @@
 ---
 id: 0038
 title: Remesas — cobro por adeudo directo SEPA y pago por transferencia SEPA, como documento que agrupa vencimientos de la cartera
-status: proposed
+status: accepted
 date: 2026-11-12
 services: [core]
 supersedes: null
@@ -93,13 +93,13 @@ Las normas 19 y 34 de texto de la AEB dejaron de admitirse con SEPA (2014–2016
 
 ## Decisión
 
-Decidido por José María el 12/11/2026:
+Decidido por José María el 12/11/2026, todo:
 
 - **4.1 Descuento ahora**, como segundo modo de la liquidación.
 - **2.1 Solo SEPA XML.**
 - **Recurrencias en un ADR propio**, después de este.
 
-Propuesto, pendiente de su confirmación:
+Y, confirmado después del razonamiento:
 
 - 1.1 Remesa como documento.
 - 3.1 Cobro en la fecha de cargo, sin cuenta puente (razonamiento abajo).
