@@ -315,6 +315,24 @@ Y con la recomendación del análisis:
   factura que rectifica; sin línea original ni lote elegido, un producto con lote no se puede devolver.
 - **Coste**: la salida va al PMP del momento (fase 2); la devolución vuelve al PMP del momento, sin cambiarlo.
 
+### Decisiones de la fase 4 (13/11/2026)
+
+- **Asiento de variación de existencias**: a cualquier fin de mes, uno por mes como mucho. Lleva cada cuenta de existencias al
+  valor del almacén a esa fecha: el importe es la diferencia entre la valoración y el saldo de la cuenta, así que se corrige solo
+  aunque falte algún mes. El del cierre es el del último mes del ejercicio. Origen no editable; se rehace en el sitio, conservando
+  su número, mientras el mes esté abierto. Si después cambia el almacén o el asiento de un mes anterior, el mes se ve desfasado.
+- **Cuentas**: de la familia del producto (heredadas de sus padres, como las cuentas de venta); sin ellas, las de la empresa, y si
+  no, 300 000000 y 610 000000.
+- **Entrada y factura recibida**: una o varias entradas del proveedor se enlazan con su factura. Se compara lo entrado con la base
+  de compras (60x) de la factura. «Ajustar el coste» reparte la diferencia en las líneas de las entradas en proporción a su
+  importe, como ajuste de factura visible, y rehace el PMP desde la fecha de la entrada. Con el periodo cerrado no se puede: la
+  diferencia queda solo en la contabilidad. Desenlazar o anular la factura quita el ajuste.
+- **Mercancía sin factura**: cuenta en el valor del almacén. El asiento avisa con la lista de entradas sin factura a la fecha y su
+  importe. El asiento provisional a la 4009 queda para más adelante.
+- **Precios (11.1)**: la tarifa del cliente y la de cada dirección tienen vigencia desde–hasta, con historial. El precio pactado
+  puede ser de una dirección y puede ser «la tarifa X». Orden a la fecha: pactado de la dirección, pactado del cliente, tarifa de
+  la dirección, tarifa del cliente y tarifa general.
+
 ### Lo que enseñan TORRO (`mconta0037`) y sus incidencias
 
 Datos de la empresa 1 (export del 13/11/2026, 2020–2026):
