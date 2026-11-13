@@ -1,7 +1,7 @@
 ---
 id: 0041
 title: Almacén (existencias, lotes, entradas, inventario y coste) y documentos de venta (presupuestos, albaranes y devoluciones)
-status: proposed
+status: accepted
 date: 2026-11-13
 services: [core]
 supersedes: null
@@ -241,7 +241,7 @@ Los mínimos y máximos por producto y almacén sí entran, solo como aviso de r
 
 ## Decisión
 
-Respondido por José María el 13/11/2026 (pendiente de aceptar el ADR completo):
+Decidido por José María el 13/11/2026 (7 bis incluido):
 
 - **1.1** Presupuestos y albaranes son documentos de Facturación, con sus estados y su conversión en factura o no, para todos los
   clientes. Con Almacén contratado, además mueven existencias.
@@ -287,6 +287,34 @@ Y con la recomendación del análisis:
 5. **Después**: ETL de TORRO, con modo sombra de existencias por artículo y lote frente a `artistock` y los lotes, y lo del
    punto 12 cuando haga falta.
 
+### Lo que enseñan TORRO (`mconta0037`) y sus incidencias
+
+Datos de la empresa 1 (export del 13/11/2026, 2020–2026):
+
+- 69.091 facturas contabilizadas, casi todas desde albarán (68.813; 1,4 albaranes por factura, hasta 63) y 4.954 rectificativas.
+  1,2 millones de líneas; 1,05 millones de líneas de lote servidas (11.938 en rectificativas).
+- 1.241 artículos, 1.180 con lote; unidades KG 533, U 477, C 148. 64 sin unidades por caja (se venden a peso): es legítimo.
+- 5.826 entradas de género (unas 900 al año, 140 proveedores), 4 líneas de media; 5.723 con su factura de proveedor. Caducidad
+  en el 71 % de las líneas y lote del proveedor en el 77 %; ubicación, tara y palés sin uso. Sin gastos de compra.
+- 16.428 regularizaciones: 13.711 nacen de rectificativas («Rectificación de la factura…», entradas negativas o positivas),
+  unas 2.400 de inventario (texto libre, sin tipo) y solo 210 mermas y 116 devoluciones de unidades.
+- Pactados: 477 precios de 85 clientes, con vigencia (normalmente anual) y el 29 % por dirección de envío; solo uno referencia
+  una tarifa. 7 tarifas de la empresa.
+- Sin centros (todo `9999`): un almacén.
+
+Incidencias resueltas en GeneXus que este diseño evita:
+
+- Dos verdades del stock: la ficha (`ArtStockCan`) dejó de bajar con las ventas en 2019 y no coincide con los lotes. → 2.1: una
+  sola fuente, los movimientos.
+- El abono que agrupa líneas de otras facturas no encontraba el lote y la devolución se perdía sin aviso (corregido el
+  28/10/2026 buscando en el albarán de origen). → la línea rectificativa referencia la línea y sus lotes; sin lote, error.
+- Signo de las cajas mal en abonos y colisiones del contador de líneas de regularización que se perdían en silencio. → cajas
+  derivadas de la cantidad y nada se descarta sin error.
+- En el almacén consultan el stock antes y después de cada abono, y la trazabilidad por lote es la que piden las inspecciones y
+  las alertas alimentarias: consulta de un lote hacia adelante (a qué clientes fue) y hacia atrás (de qué proveedor y factura).
+- La regularización por inventario es la habitual: recuento por lote con motivo tipificado (inventario, merma, caducado, rotura),
+  no solo texto.
+
 ## Consecuencias
 
 - Una sola fuente de las existencias: lo que se ve sale de los movimientos y se puede recalcular.
@@ -302,4 +330,6 @@ Y con la recomendación del análisis:
 
 Conversación del 13/11/2026 («vamos con la gestión de stocks… albaranes, abonos, tarifarios, tarifa por cliente y durante
 determinado periodo»). Análisis sobre la KB de GeneXus (`PStockActualiza`, `TLote`, `TLotArtReg`, `FacAlbaran`,
-`IngExistencia`, `AlbaranTer`, `StkRegularizaStkLot`), la estructura de `mconta0037` y sus parámetros (`pdefecto`).
+`IngExistencia`, `AlbaranTer`, `StkRegularizaStkLot`), la estructura de `mconta0037` y sus parámetros (`pdefecto`), su export
+(`exportar-almacen.cmd`) y las conversaciones de las incidencias de TORRO (albaranes, facturación de albaranes y regularización
+de existencias). Aceptado con 7 bis el 13/11/2026.
