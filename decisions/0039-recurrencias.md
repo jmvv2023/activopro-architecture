@@ -1,7 +1,7 @@
 ---
 id: 0039
 title: Recurrencias — facturación periódica de clientes y previsiones periódicas de pagos y cobros sin factura
-status: proposed
+status: accepted
 date: 2026-11-13
 services: [core]
 supersedes: null
@@ -111,9 +111,14 @@ Decidido por José María el 13/11/2026:
 - **6.1 Previsiones periódicas en la cartera** para pagos y cobros sin factura. Los asientos periódicos (6.2) no entran en este ADR.
 - **8.1 Recurrencias ahora, con líneas libres.** El catálogo va después y añadirá el producto a la línea.
 
-Pendiente de confirmar, con la propuesta: 2.1 (precio en la línea y cambios programados), 4.1 (anticipado o vencido, periodo en la factura, variables en los textos), 5.1 (periodicidades y día fijo o fin de mes, sin prorrateo) y 7.1 (ejecución manual con aviso; la automática cuando haya tareas programadas).
+Y, confirmado después:
 
-## Consecuencias (si se acepta la propuesta)
+- **2.1 Precio en la línea y cambios programados** (por línea o en bloque por %), aplicados desde el primer periodo que empiece en su fecha.
+- **4.1 Anticipado o vencido por recurrencia**, con el periodo en la factura y variables en los textos.
+- **5.1 Periodicidades** mensual a anual y pago único, con día fijo o fin de mes y sin prorrateo.
+- **7.1 Ejecución manual** con aviso; la automática, cuando haya tareas programadas.
+
+## Consecuencias
 
 - **Modelo.**
   - `recurrencia`: empresa, tipo (`factura` o `prevision`), sentido (cobro o pago; las de factura, cobro), tercero o cuenta, serie, forma de pago, dirección de cobro, periodicidad, día (o fin de mes), momento (anticipado o vencido), inicio, fin, siguiente fecha, estado, nombre, concepto con variables y horizonte de las previsiones.
