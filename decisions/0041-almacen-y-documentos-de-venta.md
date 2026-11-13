@@ -1,6 +1,6 @@
 ---
 id: 0041
-title: Almacén (existencias, lotes, entradas, inventario y coste) y documentos de venta (albaranes y devoluciones)
+title: Almacén (existencias, lotes, entradas, inventario y coste) y documentos de venta (presupuestos, albaranes y devoluciones)
 status: proposed
 date: 2026-11-13
 services: [core]
@@ -77,8 +77,8 @@ GeneXus en octubre de 2026 (`PStockActualiza`, marcas «NUEVO 20102026 / 2810202
 ### 1. Alcance y empaquetado
 
 1. **Documentos de venta en Facturación, existencias en Almacén** (recomendada).
-   - El albarán de venta (y después el presupuesto) es un documento de Facturación: se usa aunque no haya almacén, por ejemplo
-     para servicios entregados o partes de trabajo.
+   - El presupuesto y el albarán son documentos de Facturación: los usan clientes sin almacén. Cada uno tiene sus estados y
+     puede convertirse en factura o no (ver el punto 7 bis).
    - Con el módulo Almacén contratado, el albarán, la factura sin albarán y el abono mueven existencias de los productos con
      control de stock.
    - Almacén son las existencias, los almacenes, los lotes, las entradas, el inventario y el coste.
@@ -160,6 +160,26 @@ GeneXus en octubre de 2026 (`PStockActualiza`, marcas «NUEVO 20102026 / 2810202
      - También hay albarán de devolución, para devolver sin abonar todavía.
 2. **Sin albarán:** el stock solo se mueve con la factura. Deja fuera a TORRO.
 
+### 7 bis. Presupuestos y conversión de documentos
+
+Lo decidido en GeneXus (ADR-0009) se mantiene como flujo, sin sus estados en clave (H, I, K, L, J):
+
+- **Presupuesto**, con su serie:
+  - borrador → enviado → aceptado, no aceptado o caducado (por fecha de validez);
+  - se puede hacer sin cliente dado de alta, pero para aceptarlo hace falta el cliente;
+  - no mueve stock.
+- **Desde un presupuesto aceptado:**
+  - **albaranes**, con entregas parciales: cada línea lleva lo entregado y lo pendiente, y el presupuesto queda «pendiente de
+    entrega» hasta servirlo todo o darlo por terminado;
+  - o **la factura directamente** (borrador), si no hay entrega.
+  - Una vez convertido, no vuelve atrás: para rehacerlo se anula lo generado.
+- **Albarán**:
+  - confirmado → facturado, o «no se factura» (entregas sin cargo, que quedan registradas);
+  - se puede anular mientras no esté facturado.
+- **Factura**: de uno o varios albaranes, de un presupuesto o directa. Siempre por el camino de la emitida (borrador → emitida
+  con VeriFactu): no hay ningún camino de facturación fuera de él, que es el fallo que ADR-0009 cerró en GeneXus.
+- Cada documento sabe de dónde viene y en qué se convirtió (presupuesto → albaranes → factura → abono), y se ve en su ficha.
+
 ### 8. Stock insuficiente
 
 1. **Política por empresa: avisar (por defecto, como TORRO) o bloquear** (recomendada).
@@ -203,7 +223,6 @@ dirección, sin fechas. GeneXus permite además pactar por dirección y que lo p
 
 - Pedidos de cliente con reserva de stock.
 - Pedidos a proveedor y propuesta de compra por mínimos.
-- Presupuestos con entregas parciales (ADR-0009 en la plataforma).
 - Varias divisas en tarifas.
 - Ubicaciones como entidad (pasillo, estante).
 - Números de serie por unidad.
@@ -222,40 +241,50 @@ Los mínimos y máximos por producto y almacén sí entran, solo como aviso de r
 
 ## Decisión
 
-Pendiente (`proposed`). Recomendación:
+Respondido por José María el 13/11/2026 (pendiente de aceptar el ADR completo):
 
-- 1.1 Albaranes en Facturación; existencias en Almacén.
+- **1.1** Presupuestos y albaranes son documentos de Facturación, con sus estados y su conversión en factura o no, para todos los
+  clientes. Con Almacén contratado, además mueven existencias.
+- **5.1** PMP móvil por producto y almacén, con los gastos de compra.
+- **6.1** Entrada de género propia, enlazable con la factura recibida.
+- **8.1** Stock insuficiente según la empresa: avisar (por defecto) o bloquear.
+
+Y con la recomendación del análisis:
+
 - 2.1 Libro de movimientos con existencias por trigger y recalculables.
 - 3.1 Almacén propio, con traspasos.
 - 4.1 Lotes y caducidad opcionales por producto; FIFO o FEFO por empresa y selección manual.
-- 5.1 PMP móvil por producto y almacén, con gastos de compra.
-- 6.1 Entrada de género propia, enlazable con la factura recibida.
 - 7.1 Albarán con facturación de albaranes; el abono devuelve al lote original.
-- 8.1 Stock insuficiente: avisar o bloquear según la empresa.
+- 7 bis. Presupuesto con aceptación, entregas parciales y conversión a albarán o factura, como ADR-0009.
 - 9.1 Regularizaciones, recuento y asiento de existencias propuesto.
 - 10.1 Unidades por caja.
 - 11.1 Tarifa del cliente con vigencia y pactado por dirección o con tarifa.
 
-### Fases propuestas
+### Fases
 
-1. **Almacén base**:
+1. **Documentos de venta** (sin Almacén):
+   - presupuesto, albarán y albarán de devolución, con sus series y estados;
+   - aceptación y entregas parciales;
+   - facturar uno o varios albaranes y factura desde presupuesto;
+   - trazabilidad entre documentos.
+2. **Almacén base**:
    - almacenes y ficha de Almacén del producto;
    - libro de movimientos y existencias;
    - lotes y caducidad;
    - entradas de género con gastos;
    - traspasos, regularizaciones y recuento;
    - PMP;
-   - consulta de existencias, movimientos y trazabilidad.
-2. **Venta con stock**:
-   - albarán de venta y facturar albaranes;
-   - salida en la factura sin albarán;
-   - devoluciones en el abono y albarán de devolución;
-   - asignación de lotes e impresión del lote en el documento.
-3. **Contabilidad y precios**:
+   - consulta de existencias, movimientos y trazabilidad de lotes.
+3. **Venta con stock**:
+   - salida en el albarán y en la factura sin albarán;
+   - devolución en el abono y en el albarán de devolución;
+   - asignación de lotes FIFO o FEFO o a mano, con su impresión en el documento;
+   - política de stock insuficiente.
+4. **Contabilidad y precios**:
    - valoración y asiento de variación de existencias;
    - enlace de la entrada con la factura recibida y corrección de coste;
    - precios del punto 11.
-4. **Después**: ETL de TORRO, con modo sombra de existencias por artículo y lote frente a `artistock` y los lotes, y lo del
+5. **Después**: ETL de TORRO, con modo sombra de existencias por artículo y lote frente a `artistock` y los lotes, y lo del
    punto 12 cuando haga falta.
 
 ## Consecuencias
