@@ -333,6 +333,25 @@ Y con la recomendación del análisis:
   puede ser de una dirección y puede ser «la tarifa X». Orden a la fecha: pactado de la dirección, pactado del cliente, tarifa de
   la dirección, tarifa del cliente y tarifa general.
 
+### Decisiones de la fase 5, ETL de TORRO (13/11/2026)
+
+- **Apertura a 31/12/2025** (`FCHEXIST`, fecha de su inventario): las existencias de cada lote a esa fecha entran como apertura,
+  al precio de compra del lote, conservando el lote con su proveedor, su número de lote del proveedor, su caducidad y su entrada
+  de origen. Desde el 1/1/2026 se cargan todos los movimientos: entradas de género, salidas de albaranes y facturas directas,
+  devoluciones de los abonos y regularizaciones. Lo anterior no se carga como movimientos (queda en `etl.legacy_*`), así que
+  los descuadres antiguos de GeneXus no pasan a la plataforma.
+- **Stock de un lote en GeneXus** (fórmula de `LotArtStock`): entrada − salidas − mermas − unidades devueltas − regularizaciones
+  (`LotArtRegEnt`, que en un abono es negativa: suma). Las salidas son las líneas de `faclinlote` con artículo (las de la factura
+  hecha desde albaranes son una copia para imprimir, sin artículo); en los abonos los lotes no restan salidas: la devolución es
+  una regularización con la factura (`LotArtFacCod`).
+- **Documentos**: los albaranes y las devoluciones de 2026 se cargan como documentos confirmados, con su número de GeneXus, sus
+  líneas y sus lotes. Los ya facturados en GeneXus llevan la referencia de su factura (serie, número y fecha) y cuentan como
+  facturados: no se facturan otra vez ni se modifican. Los pendientes se podrán facturar en la plataforma. Las facturas no se
+  duplican como factura emitida (siguen en la contabilidad cargada); las facturas directas y los abonos mueven stock con la
+  referencia del documento de GeneXus y su cliente, que entra en la trazabilidad del lote.
+- **Modo sombra**: existencias por artículo y lote de la plataforma frente a la fórmula de GeneXus; `artistock` solo como
+  referencia (su cantidad dejó de bajar con las ventas en 2019).
+
 ### Lo que enseñan TORRO (`mconta0037`) y sus incidencias
 
 Datos de la empresa 1 (export del 13/11/2026, 2020–2026):
