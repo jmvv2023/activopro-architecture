@@ -287,6 +287,19 @@ Y con la recomendación del análisis:
 5. **Después**: ETL de TORRO, con modo sombra de existencias por artículo y lote frente a `artistock` y los lotes, y lo del
    punto 12 cuando haga falta.
 
+### Decisiones de la fase 2 (13/11/2026)
+
+- **Coste con movimientos de fecha anterior**: un movimiento con fecha anterior a otros (una entrada registrada tarde o corregida)
+  rehace el coste de las salidas posteriores a su fecha, y solo de esas. Nunca dentro de un periodo cerrado: no se admite un
+  movimiento de almacén con fecha en un mes contable o un ejercicio cerrado, ni anterior a uno. Lo ya contabilizado o declarado no
+  cambia. El coste solo llega a la contabilidad con el asiento de existencias de la fase 4.
+- **Gastos de compra**: por defecto se reparten en proporción al importe de cada línea. En cada entrada se puede elegir repartirlos
+  por cantidad.
+- **Entrada confirmada**: se corrige en el sitio, rehaciendo sus movimientos y el coste de lo posterior. No se puede si un lote
+  quedaría por debajo de lo que ya ha salido de él.
+- **Recuento**: por lote en los productos con lote, porque la trazabilidad (alimentación, farmacia) tiene que llegar al lote. Por
+  producto en los demás.
+
 ### Lo que enseñan TORRO (`mconta0037`) y sus incidencias
 
 Datos de la empresa 1 (export del 13/11/2026, 2020–2026):
