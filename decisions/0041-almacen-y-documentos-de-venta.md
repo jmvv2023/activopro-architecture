@@ -300,6 +300,21 @@ Y con la recomendación del análisis:
 - **Recuento**: por lote en los productos con lote, porque la trazabilidad (alimentación, farmacia) tiene que llegar al lote. Por
   producto en los demás.
 
+### Decisiones de la fase 3 (13/11/2026)
+
+- **Almacén**: uno por documento (albarán, devolución o factura sin albarán), el principal por defecto; la devolución, el de su
+  albarán. Para servir de dos almacenes, dos albaranes o un traspaso antes.
+- **Lotes**: en el borrador se ve la propuesta (FIFO o FEFO según la empresa) y el disponible; al confirmar el albarán o emitir la
+  factura se fijan. Se pueden elegir a mano antes y, en el albarán, también después de confirmar mientras no esté facturado; al
+  modificar un albarán confirmado, cada línea conserva los lotes que ya tenía. Lo que ningún lote cubre (con la política de aviso)
+  queda «pendiente de lote» y lo cubre sola la siguiente entrada de ese producto en el almacén.
+- **Caducados**: no se proponen nunca; se pueden elegir a mano, con el aviso «lote caducado».
+- **Abonos y devoluciones**: cada línea que devuelve (cantidad negativa en la factura, o línea de la devolución) lleva su destino:
+  «vuelve a stock» (por defecto, al lote de la línea original), «no vuelve» (roto o caducado: entra y sale como merma, y queda en
+  la trazabilidad del lote) o «solo importe» (abono de precio, sin mercancía). La línea de la rectificativa referencia la línea de la
+  factura que rectifica; sin línea original ni lote elegido, un producto con lote no se puede devolver.
+- **Coste**: la salida va al PMP del momento (fase 2); la devolución vuelve al PMP del momento, sin cambiarlo.
+
 ### Lo que enseñan TORRO (`mconta0037`) y sus incidencias
 
 Datos de la empresa 1 (export del 13/11/2026, 2020–2026):
