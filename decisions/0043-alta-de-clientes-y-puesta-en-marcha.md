@@ -117,6 +117,16 @@ Concreción de la fase 2 (activopro-platform #113):
 - Permisos `empresa.consultar` y `empresa.configurar`, del administrador, sin módulo contratado detrás.
 - El domicilio aún no lo usan las facturas ni la página 01 del 390: queda para cuando se pasen a estos datos.
 
+Concreción de la fase 3, acceso de soporte (decisiones del 15/11/2026, activopro-platform #116):
+
+- Lo abre el operador desde la consola, con motivo (lo ve el cliente), sin autorización previa del cliente.
+- A todo el cliente (todas sus empresas), 1, 2 o 4 horas; caduca solo y se puede cerrar antes.
+- Durante el acceso el operador es administrador de esas empresas, con lectura y escritura, solo con MFA y sin ocupar plaza.
+  También con el cliente bloqueado.
+- Cada cambio queda en el audit log a nombre del operador y ligado al acceso; la apertura y el cierre, en el historial de la consola.
+- El administrador del cliente ve el acceso abierto en Inicio y el historial, con los cambios de cada acceso, en Datos de la empresa.
+- Mientras dura, un aviso en todas las pantallas recuerda al operador de quién son los datos y hasta cuándo.
+
 ## Fases
 
 1. Consola: operadores con MFA, auditoría, alta de cliente y empresa, territorio fiscal, plan modelo, módulos y usuarios
@@ -152,4 +162,4 @@ Concreción de la fase 2 (activopro-platform #113):
 Conversación con José María del 15/11/2026. Decisiones: consola en la misma aplicación, plan modelo más cuentas creadas al usarse,
 usuarios por invitación por email y puesta en marcha como lista en la portada. El mismo día, con los schemas `moperbase` y
 `moperbase_ser`, se concretó el plan modelo (el catálogo completo de GeneXus) y se implementó la fase 1 (activopro-platform #110). Después se añadieron los operadores desde la consola (#112) y la fase 2
-(#113): portada Inicio y datos de la empresa.
+(#113): portada Inicio y datos de la empresa. La fase 3, el acceso de soporte, en #116.
