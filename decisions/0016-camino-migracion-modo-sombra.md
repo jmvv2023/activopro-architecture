@@ -86,6 +86,10 @@ Se adopta la opción 3. Es una estrategia, no un calendario: las olas y los mome
 
 El orden de construcción del nuevo ActivoPro se alinea con la ola 1: contabilidad, IVA y modelos, cartera, inmovilizado, conciliación bancaria e informes, antes que facturación.
 
+Estado a 15/11/2026: hechos contabilidad, IVA y modelos, cartera y conciliación bancaria (Tesorería), y buena parte de la ola 2.
+Faltan para la ola 1 el **inmovilizado** (108 clientes en GeneXus) y los informes configurables (ADR-0017). El inmovilizado queda
+apuntado para abordarlo con su ADR cuando toque.
+
 ## Consecuencias
 
 - Hay criterio objetivo para migrar a un cliente.

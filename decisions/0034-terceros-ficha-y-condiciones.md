@@ -83,6 +83,22 @@ Lo hacen `AltaPrevC` / `AltaPrevP` al contabilizar la factura; el manual lo expl
   - NIF-IVA, pasaporte, documento oficial del país de residencia, certificado de residencia, otro, no censado.
 
   Son los códigos que usan el 349, el SII y la factura electrónica.
+
+  Concreción del 15/11/2026 (activopro-platform #114), con las reglas de país de VeriFactu y el SII (rechazos 1111, 1122, 1126, 1131
+  y 1255 de la AEAT):
+
+  | Tipo | Contenido | País |
+  |---|---|---|
+  | NIF | carácter de control | cualquiera |
+  | NIF-IVA | prefijo del país (EL Grecia, XI Irlanda del Norte) y estructura de VIES | otro país de la UE |
+  | Pasaporte | sin control | cualquiera |
+  | Documento del país, certificado de residencia, otro | sin control | distinto de España |
+  | No censado | NIF de persona física | España |
+
+  - Un tipo que el país no admite no se guarda. Un identificador que no cuadra se avisa y se puede guardar.
+  - Sin tipo, se propone por el identificador y el país.
+  - Uno por identificador en la empresa; los documentos extranjeros, por país e identificador.
+  - Al 347 / 415 solo van el NIF español y el NIF-IVA de la UE; el resto queda como no declarable.
 - Nombre fiscal y comercial.
 - Dirección fiscal: vía, código postal, localidad, provincia INE y país.
 - Teléfono, correo, web, idioma (ADR-0032) y observaciones.
