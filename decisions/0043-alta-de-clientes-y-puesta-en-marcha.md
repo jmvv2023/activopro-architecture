@@ -46,7 +46,8 @@ Lo que falta:
 
 ### 2. Alta de cliente y de empresa
 
-El operador da de alta el **cliente** (tenant): nombre, módulos contratados y número de usuarios contratados. Después, una o varias
+El operador da de alta el **cliente** (tenant): nombre, módulos contratados y número de usuarios contratados. Un cliente se puede
+**bloquear** con motivo: sus usuarios no entran y sus datos no se tocan. Después, una o varias
 **empresas**, cada una con:
 
 - nombre o razón social, NIF y si es persona física o jurídica;
@@ -55,26 +56,33 @@ El operador da de alta el **cliente** (tenant): nombre, módulos contratados y n
   plataforma y se avisa;
 - **plan contable**: PGC o PGC de pymes;
 - **primer ejercicio**: fecha de inicio, natural por defecto, creado con `app.alta_ejercicio`;
-- periodicidad del IVA: trimestral, o mensual si está en devolución mensual o en el SII.
+- periodicidad del impuesto: trimestral, o mensual si está en devolución mensual o en el SII (se guarda en la configuración fiscal);
+- persona física: apellidos y nombre, que piden los modelos.
 
 Al crear la empresa se copia el **plan modelo** (punto 3) y se ejecutan los triggers de siempre.
 
 ### 3. Plan modelo de la plataforma
 
-- Tabla global de solo lectura `plan_modelo_cuenta`: modelo (`pgc`, `pymes`), título de 3–4 dígitos, subcuenta opcional y nombre.
-- Lleva los títulos del cuadro de cuentas y solo las subcuentas que toda empresa necesita: capital, resultado 129, liquidación del
-  impuesto, ventas y compras genéricas, caja. El resto se crea al usarse, como ya hacen las facturas, la tesorería y la caja.
-- `app.copiar_plan_modelo(empresa, modelo)` lo copia al crear la empresa. Después el plan es de la empresa y evoluciona con ella.
-- El contenido sale del plan con el que GeneXus crea los clientes nuevos, para que una empresa nueva y una cargada de GeneXus tengan
-  el mismo plan.
+- Catálogo global de solo lectura `plan_modelo` / `plan_modelo_cuenta`: el plan con el que GeneXus crea las empresas nuevas (schema
+  `moperbase`), **completo**: títulos y subcuentas de los 12 planes, en castellano, catalán e inglés (normal y pymes, persona física,
+  fundaciones de Cataluña, entidades sin fines lucrativos). El plan 52 (THEOS, de un cliente) no se ofrece. El de Canarias
+  (`moperbase_ser`) es el mismo salvo dos títulos de IVA que no usa: no hace falta un catálogo aparte.
+- `app.copiar_plan_modelo(empresa, plan)` lo copia al crear la empresa. Después el plan es de la empresa y evoluciona con ella. Las
+  cuentas que no están en el plan (impuestos por tipo, terceros, bancos…) se siguen creando al usarse.
+- El ETL ya no sobrescribe el catálogo con el plan del export de un cliente; un plan del cliente que no está en el catálogo queda guardado
+  sin ofrecer.
 
 ### 4. Usuarios por invitación
 
 - El operador escribe el email, las empresas y el rol en cada una. La API invita con Supabase Auth: el usuario recibe un enlace y
   pone su contraseña, como en la migración (ADR-0014).
 - `usuario` queda pendiente hasta el primer acceso. El operador puede reenviar la invitación o retirarla.
-- No se pueden tener más usuarios activos que los contratados por el cliente. Un usuario con acceso a varios clientes (asesorías)
-  cuenta en cada cliente.
+- No se pueden tener más usuarios activos que los contratados por el cliente. Ocupa plaza quien tiene un acceso vigente a alguna empresa
+  del cliente, también el invitado que aún no ha entrado. Un usuario con acceso a varios clientes (asesorías) cuenta en cada cliente.
+  La plaza se comprueba antes de mandar el correo. Un cliente cargado antes de la consola, sin número, no tiene límite.
+- Quien ya tiene login (otro cliente, la migración) no recibe correo: se le da el acceso.
+- El primer acceso lo registra la plataforma al entrar el usuario. El enlace del correo lleva a una pantalla del front para poner la
+  contraseña.
 - Dar de baja un acceso pone fecha `hasta`. Un usuario no se borra.
 - La invitación necesita la clave de servicio de Supabase en la API. Va en el `.env`, nunca en Git, y solo la usan las rutas de la
   consola.
@@ -122,10 +130,11 @@ Al crear la empresa se copia el **plan modelo** (punto 3) y se ejecutan los trig
 
 ## Pendiente
 
-- El origen exacto del plan modelo: el plan con el que GeneXus crea un cliente nuevo.
+- El alta y la baja de operadores desde la consola (en la fase 1, a mano en la base).
 - Facturación a clientes por usuarios y módulos (fuera de la plataforma).
 
 ## Origen
 
 Conversación con José María del 15/11/2026. Decisiones: consola en la misma aplicación, plan modelo más cuentas creadas al usarse,
-usuarios por invitación por email y puesta en marcha como lista en la portada.
+usuarios por invitación por email y puesta en marcha como lista en la portada. El mismo día, con los schemas `moperbase` y
+`moperbase_ser`, se concretó el plan modelo (el catálogo completo de GeneXus) y se implementó la fase 1 (activopro-platform #110).
