@@ -102,6 +102,21 @@ Al crear la empresa se copia el **plan modelo** (punto 3) y se ejecutan los trig
 - La lista no bloquea trabajar y desaparece al completarse o al descartarla.
 - Cada punto se calcula de los datos (`app.puesta_en_marcha(empresa)`), no se marca a mano. Si algo se deshace, vuelve a aparecer.
 
+Concreción de la fase 2 (activopro-platform #113):
+
+- La lista vive en una portada nueva, **Inicio** (`/inicio`), la primera del menú. Muestra la lista al administrador y, a todos,
+  los módulos contratados. Un usuario que solo tiene la plataforma nueva entra en ella.
+- **Datos de la empresa** (`/empresa/datos`) recoge el domicilio y el contacto (columnas nuevas en `empresa`), las actividades
+  (seis como mucho, la primera es la principal) y los representantes (tres, con NIF válido). En persona física recoge además los
+  apellidos y el nombre. El nombre, el NIF y el territorio solo los cambia la consola.
+- Puntos, solo los que aplican: datos, ejercicio que incluye hoy, cuentas de liquidación (si liquida IVA o IGIC), serie ordinaria
+  vigente (si tiene Facturación), cuenta de banco, apuntes en la apertura del primer ejercicio y algún cliente o proveedor. Las
+  formas de pago salen de serie (`app.formas_pago_iniciales`) y no son un punto.
+- Se pueden marcar «No aplica» las series, los bancos, la apertura y los terceros, y ocultar la lista entera
+  (`app.descartar_puesta_en_marcha`). Los datos, el ejercicio y el impuesto no: hacen falta siempre.
+- Permisos `empresa.consultar` y `empresa.configurar`, del administrador, sin módulo contratado detrás.
+- El domicilio aún no lo usan las facturas ni la página 01 del 390: queda para cuando se pasen a estos datos.
+
 ## Fases
 
 1. Consola: operadores con MFA, auditoría, alta de cliente y empresa, territorio fiscal, plan modelo, módulos y usuarios
@@ -130,11 +145,11 @@ Al crear la empresa se copia el **plan modelo** (punto 3) y se ejecutan los trig
 
 ## Pendiente
 
-- El alta y la baja de operadores desde la consola (en la fase 1, a mano en la base).
 - Facturación a clientes por usuarios y módulos (fuera de la plataforma).
 
 ## Origen
 
 Conversación con José María del 15/11/2026. Decisiones: consola en la misma aplicación, plan modelo más cuentas creadas al usarse,
 usuarios por invitación por email y puesta en marcha como lista en la portada. El mismo día, con los schemas `moperbase` y
-`moperbase_ser`, se concretó el plan modelo (el catálogo completo de GeneXus) y se implementó la fase 1 (activopro-platform #110).
+`moperbase_ser`, se concretó el plan modelo (el catálogo completo de GeneXus) y se implementó la fase 1 (activopro-platform #110). Después se añadieron los operadores desde la consola (#112) y la fase 2
+(#113): portada Inicio y datos de la empresa.
