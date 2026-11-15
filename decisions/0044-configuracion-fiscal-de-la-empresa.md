@@ -116,3 +116,28 @@ vaya en un ADR propio para tener juntas todas sus decisiones. Los valores de `Em
 del código de la KB.
 
 Aceptado por José María el 15/11/2026.
+
+## Ampliación: retención de IRPF de las facturas emitidas (16/11/2026)
+
+Un profesional (persona física o atribución de rentas) emite facturas a las que sus clientes empresarios le practican retención de
+IRPF. En GeneXus solo se llegaba poniéndola a mano o en cada producto, sin vigencias.
+
+### Decisión
+
+- **La retención se define en la empresa, con vigencias:** porcentaje, clave (G01, actividades profesionales, por defecto) y
+  desde–hasta, sin solapes (por ejemplo, 7 % los tres primeros años de actividad y 15 % después). Va en Datos de la empresa → Fiscal.
+  Se descartó dejarla solo en el producto: al pasar del 7 % al 15 % habría que cambiar todos los productos.
+- **Cada cliente dice si se la practica**, con una marca en su relación de cliente («Me practica retención de IRPF»). Sin marcar, la
+  que corresponde a su NIF: sí una entidad española (NIF que empieza por letra de persona jurídica), no un particular ni un
+  extranjero. Se descartó proponerla a todos y quitarla a mano.
+- **La factura emitida la propone** al elegir el cliente: el porcentaje vigente en la fecha de la factura, la clave, la base de la
+  factura y la cuenta 473. Si la ficha del cliente o su última factura llevan otra retención, se propone esa.
+
+### Consecuencias
+
+- La retención queda en `factura_retencion` con su clave, como cualquier otra: el 130 del profesional la tomará de la 473.
+- Pendiente: que un producto pueda decir «sin retención» (venta de bienes) y que las facturas periódicas y la facturación de
+  albaranes propongan la retención.
+
+Decidido por José María el 16/11/2026 (implementado en `activopro-platform`, PR #122).
+
