@@ -1,7 +1,7 @@
 ---
 id: 0044
 title: Configuración fiscal y contable de la empresa — lo que se trae de GeneXus y dónde vive
-status: proposed
+status: accepted
 date: 2026-11-15
 services: [core]
 supersedes: null
@@ -114,3 +114,5 @@ regímenes, cuentas de Hacienda, diferimiento), Actividades, Representantes y co
 Conversación con José María del 15/11/2026: los atributos de la ficha de empresa de GeneXus, y que la configuración de la empresa
 vaya en un ADR propio para tener juntas todas sus decisiones. Los valores de `EmpGrpo` y `EmpRegIva`, de los combos de `TEmpresas` y
 del código de la KB.
+
+Aceptado por José María el 15/11/2026.
