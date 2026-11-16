@@ -243,6 +243,9 @@ De una vez, la memoria crece con el documento: es el mismo riesgo que tenía Ope
   - el saldo anterior de cada bloque es el final del anterior;
   - los bloques se unen con `pdf-lib` y se numeran las páginas al final («página x de y»).
   - El resultado va a Storage y el usuario recibe un aviso con el enlace.
+- **Facturas en bloque** (medido el 16/11/2026, 2 CPU): 200 facturas de una o dos páginas con logo, en 16 s con un renderizado
+  a la vez (81 ms cada una, ~390 MB) y en 12 s con dos (~500 MB). Un mes con 20 clientes que emiten 200 cada uno son 4.000 PDF en
+  unos 4 minutos, en el worker y sin tocar la API. Si hace falta más, otra instancia del worker y de Gotenberg.
 - Para trabajar con muchos datos, la salida natural es la pantalla paginada y la exportación a Excel o CSV (en
   streaming, barata). El PDF es para imprimir o archivar.
 
@@ -275,6 +278,8 @@ De una vez, la memoria crece con el documento: es el mismo riesgo que tenía Ope
 - SPF, DKIM y DMARC del dominio configurados.
 - Los rebotes van a un buzón propio, que se leerá por IMAP en una fase posterior.
 - Si el volumen crece, se cambia de implementación por configuración.
+- **Varios buzones en rotación:** el correo es el cuello de botella de los envíos en bloque (4.000 facturas con un buzón son
+  unas 8 horas). El envío admite una lista de buzones y reparte el límite por hora entre ellos (4 buzones, 2.000 por hora).
 - El mismo SMTP sirve para Supabase Auth (invitaciones y contraseñas, H-032).
 
 **Registro de envíos.**
