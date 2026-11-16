@@ -202,3 +202,18 @@ del SIF: ADR-0007. Detalle técnico y estado en el `CLAUDE.md` y los issues de m
   `entorno = 'pro'`). La cadena de pruebas solo se vacía en la **copia local** de `mconta0048`:
   en producción ese schema es Enumbers, empresa real, y su cadena se **siembra** con la última
   huella del flujo nativo, nunca se borra.
+
+## En la plataforma nueva (ADR-0046)
+
+El micro sigue siendo el SIF de GeneXus (2.x, congelado salvo correcciones). La plataforma tiene el suyo, versión **3.0.0**
+(`@activopro/verifactu` en `activopro-platform`), con las mismas reglas del registro:
+
+- El registro se crea en la base **en la misma transacción que emite la factura** (`registro_facturacion`): contenido congelado,
+  huella SHA-256 y cadena por NIF. No puede haber factura emitida sin registro.
+- El envío lo hace el worker de la plataforma (`verifactu.enviar`), con el control de flujo por NIF en la base y el certificado
+  de la empresa en Supabase Vault.
+- Se activa por empresa desde una fecha (`verifactu_desde`); no con el SII.
+- **Migrar un cliente:** se siembra la cadena con el último eslabón que la AEAT tiene de su NIF (registro `semilla`, sacado de
+  `verifactu_registro` o de `FacHashData` como en la guía del micro) y, antes, se desactiva VeriFactu para esa empresa en GeneXus:
+  un NIF encadena en un solo sistema.
+- Pendiente (hueco H-074 de la plataforma): prueba de punta a punta con la preproducción de la AEAT.
