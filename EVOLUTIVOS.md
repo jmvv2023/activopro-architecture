@@ -35,6 +35,12 @@ Ninguna está decidida: entrar en la lista no es un compromiso. Cada una indica 
 |---|---|---|
 | **Saldos desfasados frente a los apuntes.** | En mconta0124 los saldos de mayo de 2026 llevan una factura de compra (2.550 + 535,50 € de IVA, proveedor 4000/000133) que ya no tiene apuntes: GeneXus no actualizó la tabla de saldos al borrarla o cambiarla. | Sí: los saldos se mantienen por trigger y se recalculan con `app.recalcular_saldos`. En GeneXus se arregla regenerando los saldos del cliente. |
 
+## Módulos nuevos
+
+| Evolutivo | Situación hoy | Preparado en la plataforma |
+|---|---|---|
+| **Registro horario con horas extra valoradas**, vendido por empleado con acceso. La norma vigente ya obliga a registrar la jornada (art. 34.9 ET), y está en tramitación un real decreto de registro digital. Análisis inicial, coste, precio y preguntas en `analysis/2026-11-registro-horario.md`. | GeneXus no lo tiene. | En parte: relación `empleado` con datos laborales protegidos (ADR-0034) y plantillas de asiento para los salarios (ADR-0033). Falta el fichaje, la jornada, las tarifas y el usuario empleado. |
+
 ## Seguridad
 
 Ver `REVISION-PENDIENTE.md`: credenciales en la KB y riesgo de inyección SQL en `cambia_usupss`.
