@@ -116,6 +116,19 @@ desde la factura, que enseña que la ha creado) y **F1** (contable y fiscal). Co
 **Fases:** 1, fichas, plan y asiento mensual; 2, altas desde la factura, bajas y cambios de vida útil; 3, informes y diferencias
 fiscales; 4, ETL y modo sombra.
 
+**Fase 2**, decidido el 16/11/2026:
+- **Altas desde la factura recibida:** una ficha por completar por cada línea a una cuenta de inmovilizado (grupos 20 a 23, menos
+  la 239), con fecha, proveedor, importe y enlace a la línea. Si la línea va a la subcuenta de una ficha que ya existe, se le añade
+  como mejora. Corregir la factura rehace el coste; anularla lo quita, y la ficha se borra si seguía por completar.
+- **Venta:** el asiento de baja lleva la amortización acumulada al debe, el inmovilizado al haber, el precio contra una cuenta del
+  cobro (propuesta la 543 000000, créditos por enajenación de inmovilizado) y la diferencia a 671 / 771. Si la venta se factura,
+  la línea de la emitida va a esa misma cuenta. Es como GeneXus (importe y cuenta).
+- **Cambio de vida útil o porcentaje** desde una fecha: es un cambio de estimación, prospectivo (PGC, NRV 22.ª). Lo pendiente a
+  esa fecha se reparte en la vida que queda con el nuevo porcentaje o los nuevos años.
+- **Amortización hasta la baja:** la baja contabiliza antes, en los asientos mensuales de siempre, los meses pendientes hasta el
+  día antes, con el último por días. El asiento de baja solo lleva coste, amortización acumulada, cobro y resultado. Con meses
+  posteriores ya contabilizados, la baja no se hace hasta anularlos.
+
 **Modelo:**
 - `grupo_inmovilizado` (títulos de inmovilizado, amortización acumulada y dotación; método, vida útil y porcentaje propuestos, del coeficiente de las tablas oficiales).
 - `activo` (la ficha, con contable y fiscal, `completa`).
