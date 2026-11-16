@@ -1,7 +1,7 @@
 ---
 id: 0046
 title: VeriFactu, documentos PDF y correo en la plataforma — registro en la base, envío por un worker, plantillas en el monorepo y renderizador aparte
-status: proposed
+status: accepted
 date: 2026-11-16
 services: [core, verifactu, docgenerator]
 supersedes: null
@@ -214,10 +214,37 @@ tests. No toca la facturación.
 
 - Contenedor junto a la API, solo en la red privada: sin puerto público y con la navegación externa denegada.
 - La API le manda el HTML y recibe el PDF.
-- Tiempos y concurrencia por configuración. PDF/A cuando haga falta archivar.
+- **La concurrencia la limita el worker**, no la petición: 2 renderizados a la vez por defecto (configurable) y el resto
+  en cola. Se suma la cola propia de Gotenberg y el reinicio periódico de Chromium para liberar memoria. Contenedor de
+  unos 1,5–2 GB. Los parámetros exactos de Gotenberg se fijan en la fase 3.
+- PDF/A cuando haga falta archivar.
 - Si un día no sirve, la alternativa es el motor del docgenerator detrás de la misma interfaz `renderizarPdf(html,
   opciones)`.
 - El docgenerator sigue sirviendo a GeneXus hasta su retirada.
+
+**Informes grandes: por bloques, nunca de una vez.**
+
+Medido el 16/11/2026: un mayor ficticio, A4, con Chromium (el mismo motor de Gotenberg), en una máquina de 2 CPU.
+
+| Líneas | De una vez | Por bloques de 2.000 líneas |
+|---|---|---|
+| 500 (8 págs) | 0,2 s, ~435 MB | — |
+| 5.000 (76 págs) | 1,8 s, ~950 MB | — |
+| 20.000 (304 págs) | 9,5 s, **~4,2 GB** | — |
+| 50.000 (775 págs) | **falla** (`Printing failed`) | 18 s, ~570 MB |
+| 100.000 (1.550 págs) | — | 37 s, ~580 MB |
+
+De una vez, la memoria crece con el documento: es el mismo riesgo que tenía OpenOffice. Por bloques, la memoria es
+**constante** y el tiempo, lineal. Por tanto:
+
+- Los documentos (factura, albarán, presupuesto) y los informes pequeños se renderizan de una vez, en la petición.
+- Un informe de más de un umbral de líneas (unas 2.000, configurable) se hace **en el worker y por bloques**:
+  - cada bloque es un HTML con su cabecera de tabla;
+  - el saldo anterior de cada bloque es el final del anterior;
+  - los bloques se unen con `pdf-lib` y se numeran las páginas al final («página x de y»).
+  - El resultado va a Storage y el usuario recibe un aviso con el enlace.
+- Para trabajar con muchos datos, la salida natural es la pantalla paginada y la exportación a Excel o CSV (en
+  streaming, barata). El PDF es para imprimir o archivar.
 
 **Almacenamiento.**
 
@@ -301,3 +328,6 @@ Conversación con José María del 16/11/2026:
 - la plataforma es una versión nueva del SIF, con la semilla de la cadena al migrar;
 - el renderizador, a criterio técnico: los documentos llevan el logo, el diseño y el color del cliente;
 - el correo, con las cuentas de IONOS.
+
+José María aprobó el ADR el 16/11/2026. El renderizador lo dejó a criterio técnico, con la condición de que los informes
+pesados no se conviertan en «un monstruo» de recursos como OpenOffice: de ahí la medición y el renderizado por bloques.
