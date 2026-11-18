@@ -12,7 +12,7 @@ superseded_by: null
 
 La empresa quiere ver su cuenta de resultados por partes: por local, departamento, obra o línea de negocio. Para eso, los gastos e
 ingresos se imputan a **centros**. Los costes comunes (la luz o el alquiler de la sede) se **reparten** después entre los demás con un
-criterio. En el programa anterior solo la tiene activada una empresa (ver «Uso medido»; H-083).
+criterio. En el programa anterior solo la usa una empresa (ver «Uso medido»; H-083).
 
 ### Cómo lo hace el programa anterior
 
@@ -166,12 +166,18 @@ criterio. En el programa anterior solo la tiene activada una empresa (ver «Uso 
 
 Consulta de `analysis/2026-11-analitica-genexus.md` en todos los schemas.
 
-**Solo mconta0050 tiene la analítica activada** (empresa 1):
+**Solo mconta0050 la usa** (empresa 1):
 - 27 centros, sin divisiones;
 - 45.941 imputaciones de 2008 a 2026, todas de los grupos 6 y 7;
 - 378 redistribuidas, con 42 filas de plantilla de reparto;
 - −1.707,05 en 9999;
 - 26 fichas de inmovilizado con centro.
+
+**mconta0109** (empresa 1) también la tiene activada, con la marca de divisiones, pero **sin ningún centro ni división**:
+- sus 8.115 imputaciones (2017–2026) están todas en 9999, «pendiente de distribuir» (4.736.541,07);
+- se activó y nunca se usó.
+
+Se migra **sin analítica**. Si el cliente la quiere, se activa en la plataforma y empieza de cero; se le confirma.
 
 La cifra de «28 schemas» de EVOLUTIVOS era de schemas con las tablas, no de uso.
 
@@ -184,6 +190,7 @@ Consecuencias para el diseño:
 ## Pendiente
 
 - Confirmar con el cliente de mconta0050 qué informes por centro usa (`GenBalCentros` con dos periodos, `MovimCen`).
+- Confirmar con el de mconta0109 que se migra sin analítica.
 
 ## Origen
 
