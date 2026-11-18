@@ -1,7 +1,7 @@
 ---
 id: 0047
 title: Bandeja de entrada de documentos — buzón por IMAP al pedirlo, factura recibida con visor y lectura automática en un servicio propio sin estado
-status: proposed
+status: accepted
 date: 2026-11-18
 services: [core, ocr]
 supersedes: null
