@@ -179,3 +179,7 @@ Prácticamente sin uso.
 
 **mconta0138, empresa 1**: sin centros ni divisiones. Tiene 2.052 imputaciones (01/01/2019 – 02/11/2026), todas en 9999, por
 1.192.183,91: activada y nunca usada.
+
+**Segunda ronda** (los 12 schemas con centros o divisiones, sin filtrar por la marca): mconta0002, 0015, 0016, 0017, 0035, 0057 y 0103
+también la usan (ver la tabla de ADR-0050), y mconta0033 tiene las tablas sin ninguna empresa activada. mconta0002 tiene divisiones
+compartidas entre sedes (CSMIJ, DOCÈNCIA, GENERAL…) con uso en 2026.
