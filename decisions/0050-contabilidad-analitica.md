@@ -12,7 +12,7 @@ superseded_by: null
 
 La empresa quiere ver su cuenta de resultados por partes: por local, departamento, obra o línea de negocio. Para eso, los gastos e
 ingresos se imputan a **centros**. Los costes comunes (la luz o el alquiler de la sede) se **reparten** después entre los demás con un
-criterio. La usan unos 28 schemas del programa anterior (EVOLUTIVOS, H-083).
+criterio. En el programa anterior solo la tiene activada una empresa (ver «Uso medido»; H-083).
 
 ### Cómo lo hace el programa anterior
 
