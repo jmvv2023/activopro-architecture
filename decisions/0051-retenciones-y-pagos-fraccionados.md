@@ -24,11 +24,10 @@ superseded_by: null
   - la factura, con `factura_retencion`: en la recibida, al haber de la 4751 (la practicamos); en la emitida, al debe de la 473 (nos la practican);
   - el asiento manual;
   - el ETL, con el código de GeneXus.
-- **Catálogo central `clave_retencion`** (`20261224000001_claves_retencion.sql`). Es obligatorio solo en la factura. Contrastado con el diseño oficial del 190 (registro de perceptor, subclaves), tiene errores:
-  - **F01 y F02 están cruzadas.** F01 son premios literarios, científicos o artísticos no exentos; F02, cursos, conferencias y similares.
-  - **La clave F no es una actividad: es rendimiento del trabajo.** En el 111 va a las casillas de trabajo.
-  - **Faltan claves:** F03–F07, G07 y K01–K03.
-  - **G04 hay que repasarla.** El diseño la define como el tipo del art. 95.1.d) del Reglamento.
+- **Catálogo central `clave_retencion`** (`20261224000001_claves_retencion.sql`). Es obligatorio solo en la factura. Contrastado con el diseño oficial del 190 y el cuadro de tipos de retención de 2026 de la AEAT:
+  - **Los nombres y porcentajes de las claves que tiene son correctos.** La norma citada en F01 no lo es (es el premio literario no exento, no el art. 12.1.g del Reglamento).
+  - **No dice a qué sección del 111 va cada clave.** La F es rendimiento del trabajo (casillas de trabajo del 111), la G, la H y la I son actividades económicas, la K01 y la K03 son premios y la K02, ganancias de aprovechamientos forestales.
+  - **Faltan claves:** F03–F07 y K01–K03.
 - **Perceptor.** La retención no lo lleva. En la factura es su tercero, pero un asiento de nóminas suele ser uno para todos los empleados.
 - **Patrón de declaraciones.** El 303/420, el 390/425 y el 347/415 ya tienen las piezas:
   - borrador calculado en la base;
@@ -79,11 +78,10 @@ superseded_by: null
 
 ### Datos (fase 1)
 
-1. **Catálogo corregido** contra el diseño oficial vigente del 190.
+1. **Catálogo completo** contra el diseño oficial vigente del 190 y el cuadro de tipos de retención.
    - Se añaden las claves que faltan y la «Trabajo» informativa.
    - Cada clave dice el modelo trimestral y anual, la clave y subclave del 190 y la sección del 111: trabajo, actividades, premios, ganancias forestales o imagen.
    - Las claves no se borran: se cierran con `hasta`.
-   - Las facturas ya guardadas con una clave mal asignada se corrigen con migración, porque es un error del catálogo, no un dato del cliente.
 2. **Clave del catálogo obligatoria en toda retención nueva o cambiada**, también la del asiento manual.
 3. **Perceptor en la retención** (`retencion.tercero_rol_id`).
    - Obligatorio en las practicadas con una clave que va a un modelo que calculamos. En la clave «Trabajo» no: obligaría a desglosar el asiento de nóminas por empleado para algo que no declaramos.
@@ -155,7 +153,6 @@ Entre la fase 1 y la 2 va el **349** como hilo propio (ADR aparte): GeneXus lo g
 - **Fase 1.** Ya cubre lo que hace hoy GeneXus, con avisos que detectan antes lo que haría salir mal un modelo.
 - **Asientos manuales.** Pedir clave y perceptor les añade un paso, solo en las retenciones que declaramos. Es lo que permite el 190, y la mayoría de las retenciones llegan por factura.
 - **Valor real de cada fichero.** El 111, el 115 y el 130 tienen pocas casillas: lo que aporta es la pantalla con el cálculo bien hecho y su detalle; el fichero es barato con el diseño como datos. El 190 y el 180 son los que más aportan con muchos perceptores y los que más mantenimiento piden.
-- **Catálogo.** Corregirlo cambia la clave de facturas ya guardadas en la demo; no hay clientes en la plataforma.
 - **Nóminas.** Una empresa con empleados sigue necesitando su programa de nóminas para el 190: la plataforma le da sus perceptores en pantalla y en Excel, pero no el fichero.
 - **Pantalla como borrador.** Una pantalla de casillas parece la declaración, y alguien puede copiarla tal cual. Por eso enseña siempre si es un borrador o una versión cerrada, y lleva los avisos a la vista, no escondidos.
 - **Pendiente** (evolutivos, si hay demanda):
