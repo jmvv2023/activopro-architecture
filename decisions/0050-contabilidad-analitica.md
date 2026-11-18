@@ -61,8 +61,9 @@ criterio. La usan unos 28 schemas del programa anterior (EVOLUTIVOS, H-083).
 4. **Centro (árbol) y división (catálogo de la empresa)**, las dos opcionales, con las combinaciones permitidas por centro. Es lo de
    hoy, sin códigos especiales.
 
-> **Por decidir.** El 18/11 se eligió el árbol (3) con la idea de que la división era interna a cada centro. Al leer el programa, no
-> lo es: está entre 3 y 4, y se decide con lo que diga la consulta de uso (`analysis/2026-11-analitica-genexus.md`).
+> **Decidido: el árbol (3).** El 18/11 se midió el uso en producción. Solo una empresa tiene la analítica activada (mconta0050:
+> 27 centros, **sin divisiones**). La opción 4 queda como ampliación futura: la imputación admitiría una segunda dimensión sin
+> rehacer el modelo.
 
 **Reparto**
 1. **Reescribir las imputaciones** con una marca, como ahora. Se pierde el «antes del reparto» y deshacer depende de que nadie haya
@@ -89,8 +90,7 @@ criterio. La usan unos 28 schemas del programa anterior (EVOLUTIVOS, H-083).
   excluir una cuenta concreta.
 
 **Centros**
-- `centro`: árbol por empresa (`padre_id`, sin ciclos), con código, nombre por idioma, activo y desde–hasta. Si se elige la opción 4,
-  además `division` (catálogo de la empresa) y `centro_division` (las permitidas), y la imputación lleva centro y división.
+- `centro`: árbol por empresa (`padre_id`, sin ciclos), con código, nombre por idioma, activo y desde–hasta.
 - Solo los centros **sin hijos** reciben imputaciones; los demás agrupan.
 - No hay códigos especiales: lo que falta por imputar se calcula y se enseña como **«Sin imputar»**.
 
@@ -162,16 +162,28 @@ criterio. La usan unos 28 schemas del programa anterior (EVOLUTIVOS, H-083).
 - La segunda dimensión (proyecto, obra…) queda fuera. Si llega, `apunte_centro` admite una columna de dimensión sin rehacer el
   modelo.
 
+## Uso medido (18/11/2026)
+
+Consulta de `analysis/2026-11-analitica-genexus.md` en todos los schemas.
+
+**Solo mconta0050 tiene la analítica activada** (empresa 1):
+- 27 centros, sin divisiones;
+- 45.941 imputaciones de 2008 a 2026, todas de los grupos 6 y 7;
+- 378 redistribuidas, con 42 filas de plantilla de reparto;
+- −1.707,05 en 9999;
+- 26 fichas de inmovilizado con centro.
+
+La cifra de «28 schemas» de EVOLUTIVOS era de schemas con las tablas, no de uso.
+
+Consecuencias para el diseño:
+- el árbol basta;
+- la migración es de una sola empresa: centros, imputaciones, plantilla de reparto como criterio y centro de las fichas de
+  inmovilizado;
+- el modo sombra se hace con ella.
+
 ## Pendiente
 
-- Medir en los 28 schemas con analítica:
-  - cuántos llevan divisiones;
-  - cuántos tienen plantillas de reparto y si las ejecutan;
-  - cuánto queda en 9999;
-  - si alguno imputa cuentas fuera de los grupos 6 y 7.
-
-  Consulta de solo lectura en `analysis/` para que la lance José María.
-- Confirmar qué informes por centro usan de verdad (`GenBalCentros` con dos periodos, `MovimCen`).
+- Confirmar con el cliente de mconta0050 qué informes por centro usa (`GenBalCentros` con dos periodos, `MovimCen`).
 
 ## Origen
 

@@ -149,3 +149,17 @@ select database() as esquema, e.EmpCod, e.EmpCenSN, e.EmpSucSN,
 from empresas e
 where e.EmpCenSN = 'S';
 ```
+
+## Resultado (18/11/2026)
+
+**Solo mconta0050, empresa 1**, tiene `EmpCenSN = 'S'`. Las dos consultas, por partes por el límite de MySQL Workbench:
+
+| Dato | Valor |
+|---|---|
+| Centros | 27 |
+| Divisiones | 0 (sin `EmpSucSN`) |
+| Imputaciones | 45.941 (02/01/2008 – 09/11/2026), ninguna fuera de 6 y 7 |
+| Redistribuidas | 378 |
+| Filas de plantilla de reparto | 42 |
+| Pendiente en 9999 | −1.707,05 |
+| Fichas de inmovilizado con centro | 26 |
