@@ -79,12 +79,15 @@ criterio. En el programa anterior la usan nueve empresas de ocho schemas (ver «
 ## Decisión
 
 **Configuración por empresa**
-- La analítica es parte de **Contabilidad**: el administrador la activa en la configuración de la empresa. No es un módulo
-  contratado.
+- La analítica es un **módulo contratado** (`analitica`): va con los planes Estándar, Premium y Asesorías, no con el Básico. Lo da
+  de alta Enumbers en la consola; dentro del cliente, el administrador la activa en cada empresa que la quiera. Sin el módulo vigente
+  no se propone ni se imputa nada, y lo ya imputado se conserva. *(Cambio del 18/11/2026, decidido por José María: en la primera
+  versión era parte de Contabilidad y no se contrataba.)*
 - Permisos:
-  - `contabilidad.configurar`: centros, cuentas analíticas y criterios de reparto;
-  - `contabilidad.preparar`: imputar;
-  - `contabilidad.cerrar`: ejecutar y deshacer repartos.
+  - `analitica.configurar`: activar, centros, líneas y cuentas analíticas (y, en la fase 2, los criterios de reparto);
+  - `analitica.preparar`: imputar, y el centro de una factura o de una ficha de inmovilizado;
+  - `analitica.consultar`: pendiente, saldos e imputación de un asiento;
+  - fase 2: ejecutar y deshacer repartos, con su permiso dentro del módulo.
 - **Cuentas analíticas:** prefijos de la empresa, por defecto 6 y 7. Se pueden añadir otros (p. ej. una 2x de inversión por obra) o
   excluir una cuenta concreta.
 
@@ -103,7 +106,10 @@ criterio. En el programa anterior la usan nueve empresas de ocho schemas (ver «
   - Lleva su `origen`: propuesta, manual o migrada.
 - Las garantías que tiene que cumplir están en «Garantías de la imputación», más abajo.
 - **Reenlazado al rehacer** (trigger diferido, como la conciliación):
-  - el apunte equivalente del mismo asiento (misma cuenta y lado) recibe la imputación;
+  - lo que era solo **propuesta** no se reenlaza: se vuelve a proponer con los datos de ahora (así un centro cambiado en la factura
+    llega al asiento);
+  - lo **puesto a mano** (o reenlazado de lo puesto a mano): el apunte equivalente del mismo asiento (misma cuenta y lado) recibe la
+    imputación;
   - si el importe cambió, se reescala en proporción;
   - si ya no hay equivalente, queda sin imputar con un aviso.
 - **Propuesta al generar el asiento**, de más a menos concreta:
