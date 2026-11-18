@@ -166,3 +166,13 @@ Dos empresas tienen `EmpCenSN = 'S'`; solo **mconta0050, empresa 1**, la usa. La
 
 **mconta0109, empresa 1**: `EmpSucSN = 'S'`, pero sin centros ni divisiones (solo los códigos especiales). Tiene 8.115 imputaciones
 (02/01/2017 – 09/11/2026), todas en 9999, por 4.736.541,07: activada y nunca usada.
+
+**mconta0072, empresa 1**: `EmpSucSN = 'S'`, 2 centros, sin divisiones. Tiene 2.487 imputaciones (07/01/2014 – 28/02/2023):
+
+| Código | Imputaciones | Saldo |
+|---|---|---|
+| 11 «PRIMER EQUIP» | 9 | 4.857,20 |
+| 9876 «(todos)» | 62 | −70.154,73 (no debería existir en `tasiimpcen`) |
+| 9999 | 2.416 | 471.465,56 |
+
+Prácticamente sin uso.

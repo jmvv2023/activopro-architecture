@@ -179,6 +179,14 @@ Consulta de `analysis/2026-11-analitica-genexus.md` en todos los schemas.
 
 Se migra **sin analítica**. Si el cliente la quiere, se activa en la plataforma y empieza de cero; se le confirma.
 
+**mconta0072** (empresa 1) la tiene activada con 2 centros, sin divisiones, y dejó de imputar en febrero de 2023. De sus 2.487
+imputaciones (2014–2023):
+- solo 9 van a un centro real («PRIMER EQUIP», 4.857,20);
+- 62 están en el código 9876 («(todos)»), que nunca debería llegar a la tabla;
+- el resto está en 9999.
+
+Se trata como mconta0109: se migra **sin analítica**, y se confirma con el cliente.
+
 La cifra de «28 schemas» de EVOLUTIVOS era de schemas con las tablas, no de uso.
 
 Consecuencias para el diseño:
@@ -190,7 +198,7 @@ Consecuencias para el diseño:
 ## Pendiente
 
 - Confirmar con el cliente de mconta0050 qué informes por centro usa (`GenBalCentros` con dos periodos, `MovimCen`).
-- Confirmar con el de mconta0109 que se migra sin analítica.
+- Confirmar con los de mconta0109 y mconta0072 que se migran sin analítica.
 
 ## Origen
 
