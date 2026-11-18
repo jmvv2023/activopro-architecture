@@ -87,7 +87,7 @@ criterio. En el programa anterior la usan nueve empresas de ocho schemas (ver «
   - `analitica.configurar`: activar, centros, líneas y cuentas analíticas (y, en la fase 2, los criterios de reparto);
   - `analitica.preparar`: imputar, y el centro de una factura o de una ficha de inmovilizado;
   - `analitica.consultar`: pendiente, saldos e imputación de un asiento;
-  - fase 2: ejecutar y deshacer repartos, con su permiso dentro del módulo.
+  - `analitica.repartir`: ejecutar, rehacer y deshacer repartos (fase 2).
 - **Cuentas analíticas:** prefijos de la empresa, por defecto 6 y 7. Se pueden añadir otros (p. ej. una 2x de inversión por obra) o
   excluir una cuenta concreta.
 
@@ -162,15 +162,24 @@ La plataforma lo impide por construcción, no por un informe de descuadres:
 - `saldo_centro_mensual` por centro, cuenta, mes y clase, mantenido por trigger y recalculable con `app.recalcular_saldos_centro`.
 - La comprobación cuadra con `saldo_mensual`: imputado + sin imputar = saldo de la cuenta.
 
-**Reparto**
-- **Criterio** `reparto_centro`: origen (centro y cuentas por prefijo, o todas las analíticas) y destinos.
-  - Los destinos van con **% fijo** o en **proporción a una base**: los ingresos o gastos de unas cuentas en cada centro en el mismo
-    periodo, o una magnitud tecleada por centro (m², personas…).
-  - Los criterios llevan orden: el reparto en cascada se hace por pasos.
-- **Ejecución** `reparto_ejecucion`: un periodo (mes, trimestre o año) y el estado del criterio en ese momento. Guarda
-  `reparto_movimiento` (cuenta, centro, importe: sale del origen, entra en los destinos; el redondeo, al de más peso).
-- Ejecutar otra vez el mismo periodo **rehace** la ejecución; **deshacer** la borra con su motivo.
-- Los informes enseñan lo imputado, los repartos y el total.
+**Reparto** (detalle decidido el 18/11/2026)
+- **Criterio** (`reparto_criterio`, con orden):
+  - **origen:** el saldo de un centro (solo lo suyo, no lo de sus hijos) **o lo sin imputar**, de unas cuentas (por el principio del
+    código) o de todas las analíticas;
+  - **destinos** (`reparto_destino`): centros de cualquier nivel, nunca el de origen;
+  - **base:** % fijo por destino (si suman menos de 100, el resto se queda en el origen), **en proporción a unas cuentas** (su saldo
+    en cada destino en el mismo periodo, con los pasos anteriores) o **en proporción a una magnitud** tecleada por centro (m²,
+    personas…; `magnitud_analitica` y `magnitud_valor` con fecha desde: vale el valor vigente al final del periodo).
+- **Ejecución por periodo** (`reparto_ejecucion`): «repartir octubre» (o un trimestre, o el año) ejecuta **todos los criterios
+  activos en su orden** (cascada: cada paso ve lo que dejaron los anteriores). Los periodos de las ejecuciones vivas no se solapan.
+  - Guarda los criterios como estaban y `reparto_movimiento` por paso, cuenta y centro (sale del origen, entra en los destinos, con su
+    signo; el redondeo, al de más peso). La imputación original no se toca.
+  - Antes de ejecutar se ve la **vista previa** (el mismo cálculo sin guardar).
+  - **Rehacer** recalcula en el sitio; **deshacer** la deja deshecha con su motivo. Nada de eso con el ejercicio cerrado.
+  - **Desfasada:** si al recalcular ya no sale lo mismo (se ha imputado o corregido algo, o se ha cambiado un criterio), se avisa
+    para rehacerla. Un criterio sin base en el periodo (todo a 0) no reparte y queda como aviso de la ejecución.
+- Permisos: `analitica.configurar` (criterios y magnitudes) y `analitica.repartir` (ejecutar, rehacer y deshacer).
+- Los saldos por centro enseñan lo imputado, los repartos y el total.
 
 **Informes**
 - Los estados de ADR-0017 por centro:
