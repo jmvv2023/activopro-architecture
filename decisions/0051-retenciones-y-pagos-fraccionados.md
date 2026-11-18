@@ -123,7 +123,7 @@ superseded_by: null
     - la amortización es la **fiscal** del inmovilizado (ADR-0045), no la contable;
     - la pantalla explica el cálculo línea a línea, del resultado contable al rendimiento neto (cuentas excluidas, ajuste de amortización, difícil justificación), no solo las casillas.
   - En simplificada, el 5 % de gastos de difícil justificación, con su límite.
-  - [05]: retenciones soportadas del año. [06]: pagos de los 130 anteriores.
+  - [05]: pagos de los 130 anteriores del año (las [07] positivas menos sus [16]). [06]: retenciones soportadas del año (corregido el 19-11-2026: estaban al revés; instrucciones oficiales del modelo 130).
   - Deducción del art. 110.3.c con el rendimiento del año anterior si está en la plataforma; si no, se teclea.
   - Dato nuevo en la ficha fiscal: estimación directa normal o simplificada.
   - Sin sellado: su base es toda la contabilidad. Control frente al recálculo y complementaria, como el 425.
