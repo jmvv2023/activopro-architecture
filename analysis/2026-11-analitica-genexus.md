@@ -152,7 +152,7 @@ where e.EmpCenSN = 'S';
 
 ## Resultado (18/11/2026)
 
-**Solo mconta0050, empresa 1**, tiene `EmpCenSN = 'S'`. Las dos consultas, por partes por el límite de MySQL Workbench:
+Dos empresas tienen `EmpCenSN = 'S'`; solo **mconta0050, empresa 1**, la usa. Las dos consultas, por partes por el límite de MySQL Workbench:
 
 | Dato | Valor |
 |---|---|
@@ -163,3 +163,6 @@ where e.EmpCenSN = 'S';
 | Filas de plantilla de reparto | 42 |
 | Pendiente en 9999 | −1.707,05 |
 | Fichas de inmovilizado con centro | 26 |
+
+**mconta0109, empresa 1**: `EmpSucSN = 'S'`, pero sin centros ni divisiones (solo los códigos especiales). Tiene 8.115 imputaciones
+(02/01/2017 – 09/11/2026), todas en 9999, por 4.736.541,07: activada y nunca usada.
