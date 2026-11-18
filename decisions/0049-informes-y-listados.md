@@ -1,7 +1,7 @@
 ---
 id: 0049
 title: Informes y listados — una salida común (pantalla, PDF, Excel, CSV) y cuatro fases
-status: proposed
+status: accepted
 date: 2026-11-18
 services: [core, reporting]
 supersedes: null
