@@ -43,6 +43,7 @@ Se adopta la opción 3:
 
 ## Pendiente
 
+- Es la fase 3 de ADR-0049 (informes y listados), que fija la salida común a PDF y Excel.
 - Medir cuántas empresas tienen informes personalizados. Requiere identificar el schema de referencia de la plantilla y comparar.
 - Valorar si el motor de `activopro-reporting`, que ya cuadra con los totales de GeneXus, sirve de base para el motor de informes de la plataforma nueva.
 - Confirmar si las cuentas asociadas a conceptos (`definfconconceptoscta`) dependen del plan de cuentas de cada empresa. Si es así, la "plantilla" incluye reglas de asignación por rango de cuentas, no cuentas concretas.

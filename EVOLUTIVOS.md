@@ -33,6 +33,7 @@ Ninguna está decidida: entrar en la lista no es un compromiso. Cada una indica 
 
 | Evolutivo | Situación hoy | Preparado en la plataforma |
 |---|---|---|
+| **Contabilidad analítica: centros y divisiones con reparto de costes.** La empresa define sus centros o divisiones (secciones, departamentos, líneas de negocio), y los costes comunes que llegan (la luz, el alquiler…) se reparten entre ellos con un criterio. Así salen la cuenta de resultados por centro y su comparación. Por tratar en un hilo propio, antes del motor de estados financieros (ADR-0049, fase 3). | GeneXus no la tiene: existen `departamento` y `empcen`, pero los apuntes (`movctas`) no llevan centro ni departamento. | No. El modelo de informes (ADR-0049) no depende de ella, y el motor de la fase 3 tendrá que admitir una dimensión más si se decide. |
 | **Saldos desfasados frente a los apuntes.** | En mconta0124 los saldos de mayo de 2026 llevan una factura de compra (2.550 + 535,50 € de IVA, proveedor 4000/000133) que ya no tiene apuntes: GeneXus no actualizó la tabla de saldos al borrarla o cambiarla. | Sí: los saldos se mantienen por trigger y se recalculan con `app.recalcular_saldos`. En GeneXus se arregla regenerando los saldos del cliente. |
 
 ## Módulos nuevos
