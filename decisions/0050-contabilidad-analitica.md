@@ -173,11 +173,13 @@ Consulta de `analysis/2026-11-analitica-genexus.md` en todos los schemas.
 - −1.707,05 en 9999;
 - 26 fichas de inmovilizado con centro.
 
-**mconta0109** (empresa 1) también la tiene activada, con la marca de divisiones, pero **sin ningún centro ni división**:
+**mconta0109** (empresa 1) la tiene activada, con la marca de divisiones, pero **sin ningún centro ni división**:
 - sus 8.115 imputaciones (2017–2026) están todas en 9999, «pendiente de distribuir» (4.736.541,07);
 - se activó y nunca se usó.
 
-Se migra **sin analítica**. Si el cliente la quiere, se activa en la plataforma y empieza de cero; se le confirma.
+**mconta0138** (empresa 1) está igual: sin centros ni divisiones, y 2.052 imputaciones (2019–2026), todas en 9999 (1.192.183,91).
+
+Las dos se migran **sin analítica**. Si el cliente la quiere, se activa en la plataforma y empieza de cero; se le confirma.
 
 **mconta0072** (empresa 1) la tiene activada con 2 centros, sin divisiones, y dejó de imputar en febrero de 2023. De sus 2.487
 imputaciones (2014–2023):
@@ -198,7 +200,7 @@ Consecuencias para el diseño:
 ## Pendiente
 
 - Confirmar con el cliente de mconta0050 qué informes por centro usa (`GenBalCentros` con dos periodos, `MovimCen`).
-- Confirmar con los de mconta0109 y mconta0072 que se migran sin analítica.
+- Confirmar con los de mconta0109, mconta0138 y mconta0072 que se migran sin analítica.
 
 ## Origen
 

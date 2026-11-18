@@ -176,3 +176,6 @@ Dos empresas tienen `EmpCenSN = 'S'`; solo **mconta0050, empresa 1**, la usa. La
 | 9999 | 2.416 | 471.465,56 |
 
 Prácticamente sin uso.
+
+**mconta0138, empresa 1**: sin centros ni divisiones. Tiene 2.052 imputaciones (01/01/2019 – 02/11/2026), todas en 9999, por
+1.192.183,91: activada y nunca usada.
