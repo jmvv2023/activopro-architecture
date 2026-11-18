@@ -102,8 +102,10 @@ No se hace un constructor libre de consultas.
 - `POST /informes/listados/:listado` con los filtros de la pantalla, la vista y el formato.
   - Llama a la misma función de la base que la lista, así que lo exportado es lo que se ve.
   - Exige el permiso de consulta del módulo del listado.
-- Por encima de un umbral (orientativo: 5.000 filas, o un PDF que pase de 50 páginas) va como trabajo `informe.generar` al worker.
-  - El fichero queda en el archivo y el usuario lo descarga de «Mis informes» (se borra a los 7 días), con aviso al terminar.
+- Lo genera siempre el worker (trabajo `informe.generar`), sin umbral: un solo camino para lo pequeño y lo grande. *(Ajuste al
+  implementar: la propuesta era generar lo pequeño en la API y lo grande en el worker.)*
+  - La pantalla espera unos segundos y lo descarga sola; si tarda más, avisa de que queda en «Mis informes».
+  - El fichero queda en el archivo 7 días y se descarga desde «Mis informes»; después se borra (la constancia se queda).
 - Las columnas de cada listado se declaran una vez en la API (`apps/api/src/informes/listados/`), con su clave de traducción.
 
 **Vistas guardadas.**
@@ -112,7 +114,8 @@ No se hace un constructor libre de consultas.
 - Las vistas son del usuario y puede compartirlas con la empresa. La compartida la ve todo el que tiene acceso al listado, y solo la cambia su propietario o un administrador.
 - Cada usuario elige su vista por defecto.
 - Se escriben con `app.guardar_vista` / `app.borrar_vista`.
-- La misma vista gobierna la tabla en pantalla y la exportación.
+- La vista gobierna lo que se exporta; la tabla de la pantalla conserva su diseño. *(Ajuste al implementar: llevar la vista también a
+  las tablas de cada pantalla queda para cuando se pida.)*
 
 **Constancia de lo exportado.** `informe_generado` guarda usuario, listado, formato, filtros, número de filas y fecha. Los listados sacan datos personales (terceros, empleados), y el RGPD pide saber quién los ha sacado. La aplicación solo lee la tabla.
 
