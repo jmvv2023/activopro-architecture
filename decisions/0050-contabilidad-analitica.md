@@ -206,7 +206,12 @@ La plataforma lo impide por construcción, no por un informe de descuadres:
   - `tplaredcen` → criterios de % fijo, sin ejecuciones.
 - **Centro como sucursal:** los parámetros de sucursal (`tempcenparcentros`) no se cargan; en la plataforma son cuentas de tesorería
   y caja. Su centro queda como centro por defecto de esa cuenta.
-- **Modo sombra:** saldos por centro frente a `sdocentros`.
+- **Modo sombra:** saldos por centro frente a `sdocentros` (`npm run etl -- comparar-analitica`).
+- **Hecho el 18/11/2026** (ETL y modo sombra, con datos sintéticos): además de lo anterior, lo temporal del reparto (`AsiImpTemp`) no se
+  carga; el lado de GeneXus contrario al del apunte resta, lo que queda con el signo contrario no se carga y lo que pasa del apunte se
+  recorta en proporción, todo como anomalía, para que la carga (sin triggers) cumpla las garantías. Se activa en la empresa con la
+  marca y algo imputado a un centro; `--sin-analitica` la carga sin activarla (mconta0109, 0138, 0072). La ficha de inmovilizado con su
+  centro espera al ETL del inmovilizado (ADR-0045, fase 4). Falta cargar las nueve empresas y revisar su modo sombra.
 
 **Fases**
 
