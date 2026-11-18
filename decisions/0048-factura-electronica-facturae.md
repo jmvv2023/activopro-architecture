@@ -1,7 +1,7 @@
 ---
 id: 0048
 title: Facturae 3.2.2 (firmada o no, a administraciones y a empresas) desde un modelo común EN 16931, generada una vez en el worker y guardada; DIR3 y formato en la relación cliente
-status: proposed
+status: accepted
 date: 2026-11-18
 services: [core, einvoice]
 supersedes: null
@@ -164,7 +164,11 @@ superseded_by: null
   de la empresa.
 - Fases:
   1. modelo, Facturae 3.2.2 firmada o sin firmar, formato en la ficha, DIR3 y referencias, descarga y adjunto al correo;
-  2. envío a FACe (servicio web con el certificado) y estados; después, e-FACT si hace falta;
+  2. envío a FACe (servicio web con el certificado) y estados; después, e-FACT si hace falta. **Es un módulo de pago**
+     (`tenant_modulo`, p. ej. `face`, «Envío a administraciones»), como lo será el SII: se contrata en la consola al dar de
+     alta o editar el cliente, y sin él la factura se sigue generando y descargando (fase 1, incluida en la cuota). El
+     precio no vive en la plataforma (se factura fuera); la consola solo dice qué está contratado. La SPFE B2B, que es
+     obligatoria, sigue incluida en la cuota (ADR-0006);
   3. UBL/SPFE (ADR-0006) y la lectura de Facturae y UBL en la bandeja (ADR-0047, fase 2).
 - Pendiente: búsqueda en el directorio DIR3; las cesiones de crédito (factoring), que Facturae admite y la plataforma no
   tiene; y Facturae para albaranes o presupuestos, que no se usa.
