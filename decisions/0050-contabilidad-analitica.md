@@ -12,7 +12,7 @@ superseded_by: null
 
 La empresa quiere ver su cuenta de resultados por partes: por local, departamento, obra o línea de negocio. Para eso, los gastos e
 ingresos se imputan a **centros**. Los costes comunes (la luz o el alquiler de la sede) se **reparten** después entre los demás con un
-criterio. En el programa anterior solo la usa una empresa (ver «Uso medido»; H-083).
+criterio. En el programa anterior la usan nueve empresas de ocho schemas (ver «Uso medido»; H-083).
 
 ### Cómo lo hace el programa anterior
 
@@ -58,12 +58,11 @@ criterio. En el programa anterior solo la usa una empresa (ver «Uso medido»; H
    cruzan. Es mucho más complejo de usar y nadie lo pide hoy.
 3. **Un árbol de centros.** Se informa a cualquier nivel. Si las divisiones de antes se hacen hijos de su centro, se pierde el total
    de una división en todos los centros, que hoy sí sale.
-4. **Centro (árbol) y división (catálogo de la empresa)**, las dos opcionales, con las combinaciones permitidas por centro. Es lo de
-   hoy, sin códigos especiales.
-
-> **Decidido: el árbol (3).** El 18/11 se midió el uso en producción. Solo una empresa tiene la analítica activada (mconta0050:
-> 27 centros, **sin divisiones**). La opción 4 queda como ampliación futura: la imputación admitiría una segunda dimensión sin
-> rehacer el modelo.
+4. **Dos dimensiones independientes:** el centro y, aparte, la línea, con las combinaciones permitidas. Es más general, pero el usuario
+   elige dos cosas en cada reparto, y los informes y el reparto de costes se complican.
+5. **Árbol con línea transversal** (elegida). Se imputa a un solo nodo. Las hojas que son una combinación sede × línea llevan el atributo
+   **línea**, de un catálogo de la empresa. Los informes salen por el árbol, por línea (todas las sedes juntas) o en matriz. Es lo que
+   el programa anterior hace con sus combinaciones centro × división, y quien no tiene líneas no lo ve.
 
 **Reparto**
 1. **Reescribir las imputaciones** con una marca, como ahora. Se pierde el «antes del reparto» y deshacer depende de que nadie haya
@@ -90,8 +89,12 @@ criterio. En el programa anterior solo la usa una empresa (ver «Uso medido»; H
   excluir una cuenta concreta.
 
 **Centros**
-- `centro`: árbol por empresa (`padre_id`, sin ciclos), con código, nombre por idioma, activo y desde–hasta.
-- Solo los centros **sin hijos** reciben imputaciones; los demás agrupan.
+- `centro`: árbol por empresa (`padre_id`, sin ciclos), con código, nombre por idioma, activo y desde–hasta, y `linea_id`
+  opcional.
+- `linea_analitica`: catálogo de la empresa (código, nombre por idioma, activa). Es la división de antes: CSMIJ, DOCÈNCIA… que se
+  repite en varias sedes.
+- **Se imputa a cualquier nivel del árbol.** Lo que se queda en un nodo con hijos es de ese nodo, y en el informe por líneas sale como
+  **«Sin detallar»**.
 - No hay códigos especiales: lo que falta por imputar se calcula y se enseña como **«Sin imputar»**.
 
 **Imputación**
@@ -128,17 +131,21 @@ criterio. En el programa anterior solo la usa una empresa (ver «Uso medido»; H
 - Los informes enseñan lo imputado, los repartos y el total.
 
 **Informes**
-- Los estados de ADR-0017 por centro: un filtro de centro o rama, y una vista con **una columna por centro** (más «Sin imputar» y el
-  total).
+- Los estados de ADR-0017 por centro:
+  - un filtro de centro, rama o línea;
+  - una vista con **una columna por centro o por línea** (más «Sin detallar», «Sin imputar» y el total);
+  - la matriz sede × línea.
 - Sumas y saldos y mayor por centro.
 - Movimientos de un centro con sus repartos.
 - Lo que hay sin imputar, para ir imputándolo: la bandeja de «pendiente de distribuir».
 - Todo exportable por ADR-0049.
 
 **Migración del programa anterior**
-- **Centros:** `empcen` → nodo; `empcenlevel1` → hijo cuando la empresa lleva divisiones. Las divisiones 0 y 999 no son centros: lo de
-  la 999 o la 0 de un centro con hijos queda en el padre, y no se imputa.
-- **Imputaciones:** `tasiimpcen` → `apunte_centro` por asiento y línea. Lo de 9999, sin imputar.
+- **Centros:** `empcen` → nodo. Con divisiones, `empdiv` → `linea_analitica`, y cada combinación de `empcenlevel1` (salvo la 0 y
+  la 999) → hoja hija de su sede con esa línea.
+- **Imputaciones:** `tasiimpcen` → `apunte_centro` por asiento y línea.
+  - Lo de la división 0 o 999 de un centro, a la sede (sin detallar).
+  - Lo de 9999 y 9876, sin imputar.
 - **Repartos:**
   - lo ya repartido (`AsiImpRedist = 'S'`) se carga como imputación de origen `migrada`, porque el programa anterior no guarda el
     antes;
@@ -148,8 +155,8 @@ criterio. En el programa anterior solo la usa una empresa (ver «Uso medido»; H
 - **Modo sombra:** saldos por centro frente a `sdocentros`.
 
 **Fases**
-1. Centros, cuentas analíticas, imputación (editor, ficha del asiento, sin imputar), propuesta desde facturas y la cuenta, saldos y
-   estados por centro.
+1. Centros y líneas, cuentas analíticas, imputación (editor, ficha del asiento, sin imputar y sin detallar), propuesta desde facturas,
+   la cuenta y la ficha de inmovilizado (la amortización por centro se usa mucho), saldos y estados por centro y por línea.
 2. Repartos (criterios, ejecución, deshacer) e informes con repartos.
 3. Propuesta desde el resto de orígenes, ETL y modo sombra.
 
@@ -159,50 +166,60 @@ criterio. En el programa anterior solo la usa una empresa (ver «Uso medido»; H
 - El reenlazado al rehacer asientos es la pieza delicada: se prueba con cada generador (factura, cobro, caja, amortización,
   existencias, liquidación).
 - La imputación no toca la contabilidad general ni el IVA: abrir la edición hasta el cierre del ejercicio no rompe la regla B1.
-- La segunda dimensión (proyecto, obra…) queda fuera. Si llega, `apunte_centro` admite una columna de dimensión sin rehacer el
-  modelo.
+- Una dimensión independiente más (proyecto, obra…) queda fuera. Si llega, `apunte_centro` admite una columna de dimensión sin
+  rehacer el modelo.
 
 ## Uso medido (18/11/2026)
 
-Consulta de `analysis/2026-11-analitica-genexus.md` en todos los schemas.
+Consultas de `analysis/2026-11-analitica-genexus.md`, lanzadas en los 12 schemas con centros o divisiones.
 
-**Solo mconta0050 la usa** (empresa 1):
-- 27 centros, sin divisiones;
-- 45.941 imputaciones de 2008 a 2026, todas de los grupos 6 y 7;
-- 378 redistribuidas, con 42 filas de plantilla de reparto;
-- −1.707,05 en 9999;
-- 26 fichas de inmovilizado con centro.
+**La usan de verdad diez empresas:**
 
-**mconta0109** (empresa 1) la tiene activada, con la marca de divisiones, pero **sin ningún centro ni división**:
-- sus 8.115 imputaciones (2017–2026) están todas en 9999, «pendiente de distribuir» (4.736.541,07);
-- se activó y nunca se usó.
+| Schema | Empresa | Centros | Líneas | Imputaciones a centro | Fichas de inmovilizado con centro | Reparto |
+|---|---|---|---|---|---|---|
+| mconta0103 | 1 | 4 | — | 54.245 | 125 | — |
+| mconta0002 | 1 | 5 | 7 | 47.822 | 475 | — |
+| mconta0050 | 1 | 27 | — | ~45.900 | 26 | 42 filas, 378 redistribuidas |
+| mconta0016 | 1 | 3 | — | 20.583 | 60 | — |
+| mconta0017 | 1 | 106 | — | 8.551 | 71 | — |
+| mconta0057 | 1 | 4 | — | 5.816 | 234 | — |
+| mconta0035 | 1 | 6 | — | 443 | — | — |
+| mconta0016 | 2 | 2 | — | 400 | — | — |
+| mconta0015 | 1 | 2 | — | 117 | 18 | — |
 
-**mconta0138** (empresa 1) está igual: sin centros ni divisiones, y 2.052 imputaciones (2019–2026), todas en 9999 (1.192.183,91).
+En ninguna hay imputaciones fuera de los grupos 6 y 7, y en las medidas el centro en las facturas emitidas es raro (48 y 26).
 
-Las dos se migran **sin analítica**. Si el cliente la quiere, se activa en la plataforma y empieza de cero; se le confirma.
+**mconta0002** es la única con divisiones, y las usa como **línea transversal**:
+- CSMIJ, DOCÈNCIA y GENERAL están en varias sedes (Gràcia, Montcada i Reixac, Sant Andreu, Sant Pau, Centre General);
+- todas tienen imputaciones en 2026;
+- además tiene unas 4.400 imputaciones en la división 0 o 999 de una sede.
 
-**mconta0072** (empresa 1) la tiene activada con 2 centros, sin divisiones, y dejó de imputar en febrero de 2023. De sus 2.487
-imputaciones (2014–2023):
-- solo 9 van a un centro real («PRIMER EQUIP», 4.857,20);
-- 62 están en el código 9876 («(todos)»), que nunca debería llegar a la tabla;
-- el resto está en 9999.
+De ahí el árbol con línea y la imputación a cualquier nivel.
 
-Se trata como mconta0109: se migra **sin analítica**, y se confirma con el cliente.
+**Activadas sin uso:**
+- **mconta0109**: sin centros; 8.115 imputaciones (2017–2026), todas en 9999 (4.736.541,07).
+- **mconta0138**: sin centros; 2.052 imputaciones (2019–2026), todas en 9999 (1.192.183,91).
+- **mconta0072**: 2 centros; de sus 2.487 imputaciones (2014–2023), 9 van a un centro, 62 al código 9876 (que no debería estar en la
+  tabla) y el resto a 9999. Dejó de imputar en febrero de 2023.
 
-La cifra de «28 schemas» de EVOLUTIVOS era de schemas con las tablas, no de uso.
+Las tres se migran **sin analítica**; si el cliente la quiere, se activa y empieza de cero. **mconta0033** tiene las tablas, pero
+ninguna empresa la activó.
 
-Consecuencias para el diseño:
-- el árbol basta;
-- la migración es de una sola empresa: centros, imputaciones, plantilla de reparto como criterio y centro de las fichas de
-  inmovilizado;
-- el modo sombra se hace con ella.
+**Otras observaciones:**
+- Los «parámetros de sucursal» salen siempre 10 por centro: los copia el programa al dar de alta un centro, desde los del 9999. No
+  indican uso como sucursal.
+- La cifra de «28 schemas» de EVOLUTIVOS era de schemas con las tablas, no de uso.
 
 ## Pendiente
 
-- Confirmar con el cliente de mconta0050 qué informes por centro usa (`GenBalCentros` con dos periodos, `MovimCen`).
+- Confirmar con los clientes que la usan qué informes por centro les importan (`GenBalCentros` con dos periodos, `MovimCen`); con
+  mconta0002, el informe por línea.
 - Confirmar con los de mconta0109, mconta0138 y mconta0072 que se migran sin analítica.
 
 ## Origen
 
-Conversación con José María del 18/11/2026. Decidido: árbol de centros, reparto en movimientos aparte, parte de Contabilidad,
-imputación editable hasta el cierre del ejercicio.
+Conversación con José María del 18/11/2026. Decidido:
+- árbol de centros con línea transversal e imputación a cualquier nivel («sin detallar»);
+- reparto en movimientos aparte;
+- parte de Contabilidad;
+- imputación editable hasta el cierre del ejercicio.
