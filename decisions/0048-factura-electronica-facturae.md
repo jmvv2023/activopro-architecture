@@ -1,6 +1,6 @@
 ---
 id: 0048
-title: Facturae 3.2.2 firmada desde un modelo común EN 16931, firmada una vez en el worker y guardada; DIR3 en la relación cliente
+title: Facturae 3.2.2 (firmada o no, a administraciones y a empresas) desde un modelo común EN 16931, generada una vez en el worker y guardada; DIR3 y formato en la relación cliente
 status: proposed
 date: 2026-11-18
 services: [core, einvoice]
@@ -17,6 +17,9 @@ superseded_by: null
   tramitadora (03); a veces, también el órgano proponente (04). Las administraciones suelen exigir además las referencias
   del **expediente**, el **contrato** o el **pedido**.
 - En la revisión del 17/11 se pidió «Generar → Facturae» en la factura emitida (hueco H-078).
+- **Facturae también se usa entre empresas.** Un cliente de hoy (mconta0037) factura así a sus clientes, sobre todo hoteles:
+  descarga el Facturae **sin firmar** y lo manda por correo o lo sube a la plataforma del hotel. De otros usos no hay datos.
+  La firma la exigen las administraciones; entre empresas depende de quien recibe.
 - La plataforma ya tiene casi todo lo que la factura necesita:
   - las líneas comerciales con descuentos de línea y de pie (paralelo y cascada, ADR-0036);
   - el desglose por tipo (`app.desglose_factura`);
@@ -46,6 +49,12 @@ superseded_by: null
 2. **En el worker, una vez, y se guarda.** El usuario pide la Facturae, la pantalla espera unos segundos y descarga. El
    fichero firmado queda en el archivo, y volver a descargarlo da el mismo fichero: es el documento que recibe la
    administración. La clave no sale del worker, como en VeriFactu. **Elegida.**
+
+### A quién y con o sin firma
+
+1. **Solo a administraciones, siempre firmada.** Deja fuera el uso real de hoy (hoteles, sin firmar).
+2. **A cualquier cliente, con el formato en la relación cliente**: sin factura electrónica, Facturae sin firmar o Facturae
+   firmada. A un cliente marcado como administración pública, siempre firmada. **Elegida.**
 
 ### DIR3 y referencias
 
@@ -94,6 +103,9 @@ superseded_by: null
 
 ### Base
 
+- **Formato de la relación cliente:** `tercero_rol.factura_electronica` (`null` = ninguna, `facturae`, `facturae_firmada`).
+  Desde la factura se puede generar en cualquier formato aunque la ficha no diga nada; la ficha decide lo que se propone y lo
+  que se adjunta solo al correo. Con `administracion_publica`, firmada siempre.
 - **Centros DIR3 de la relación cliente:**
   - `tercero_rol.administracion_publica`;
   - `rol_dir3` con el nombre del juego, oficina contable, órgano gestor, unidad tramitadora, órgano proponente opcional y
@@ -107,7 +119,7 @@ superseded_by: null
   - Avisos que no bloquean: cliente administración sin DIR3, y sin referencias.
 - **`app.datos_efactura(factura)`:** el modelo común en JSON, en el mismo punto que `app.datos_documento_factura` y con la
   misma fuente.
-- **`factura_electronica`:** factura, formato `facturae_322`, estado (pendiente, generada, error), fichero en el archivo con
+- **`factura_electronica`:** factura, formato `facturae_322` y si va firmada (una de cada por factura), estado (pendiente, generada, error), fichero en el archivo con
   su huella, firmado en, huella y titular del certificado, error.
   - Se genera **una vez**: la emitida no cambia, así que el fichero tampoco. Se puede rehacer solo tras un error, o con
     motivo si cambia el certificado.
@@ -118,9 +130,11 @@ superseded_by: null
 ### Worker y API
 
 - **Worker `efactura.generar`:**
-  - lee el modelo y el certificado (`app.certificado_envio`);
-  - genera, firma, valida contra el XSD, guarda en el archivo (`<tenant>/<empresa>/efactura/<factura>.xsig`) y termina;
-  - sin certificado o caducado, error permanente con su código, sin reintentos.
+  - lee el modelo y, si va firmada, el certificado (`app.certificado_envio`);
+  - genera, firma si toca, valida contra el XSD, guarda en el archivo (`<tenant>/<empresa>/efactura/<factura>.xsig`, o
+    `.xml` sin firmar) y termina;
+  - firmada sin certificado o con él caducado: error permanente con su código, sin reintentos. Sin firmar no necesita
+    certificado, pero va por el mismo camino (una sola forma de generar, guardar y descargar).
 - **API:**
   - `POST /facturacion/facturas/:id/facturae` pide la generación, o devuelve la que ya hay;
   - `GET …/facturae` da el estado;
@@ -128,14 +142,18 @@ superseded_by: null
 
 ### Front
 
-- **«Generar ▾ → Facturae (firmada)»** en la emitida.
+- **«Generar ▾ → Facturae»** en la emitida, con «firmada» o «sin firmar» (propuesto por la ficha; firmada fija si es
+  administración).
   - Abre un diálogo que espera mientras el worker firma (unos segundos) y descarga el fichero.
-  - Antes de generar avisa si falta el certificado o los DIR3 en un cliente administración.
-  - Después, el diálogo dice dónde subirlo (FACe o el portal autonómico) y deja volver a descargar.
-- **Relación cliente:** marca «Administración pública» y la tabla de centros DIR3.
+  - Antes de generar avisa si falta el certificado (firmada) o los DIR3 en un cliente administración.
+  - Después, el diálogo dice dónde subirlo (FACe o el portal autonómico; a una empresa, su plataforma o el correo) y deja
+    volver a descargar.
+- **Relación cliente:** «Factura electrónica» (ninguna, Facturae, Facturae firmada), marca «Administración pública» y la
+  tabla de centros DIR3.
 - **Factura:** cuando el cliente es una administración, un bloque «Administración» con el juego de DIR3 y las referencias.
-- **Correo:** la Facturae se puede adjuntar al envío de una factura a un cliente administración (después del PDF; casilla
-  en el diálogo de envío).
+- **Correo:** al cliente con Facturae en la ficha, el envío lleva **el PDF y la Facturae** (el worker la genera si aún no
+  existe); en el diálogo de envío, una casilla para añadirla o quitarla en cualquier factura. Es el uso de hoy con los
+  hoteles, sin pasos a mano.
 
 ## Consecuencias
 
@@ -145,7 +163,7 @@ superseded_by: null
 - La firma depende del certificado de la empresa. Sin certificado no hay Facturae: la pantalla lo explica y lleva a Datos
   de la empresa.
 - Fases:
-  1. modelo, Facturae 3.2.2 firmada, DIR3 y referencias, descarga y adjunto al correo;
+  1. modelo, Facturae 3.2.2 firmada o sin firmar, formato en la ficha, DIR3 y referencias, descarga y adjunto al correo;
   2. envío a FACe (servicio web con el certificado) y estados; después, e-FACT si hace falta;
   3. UBL/SPFE (ADR-0006) y la lectura de Facturae y UBL en la bandeja (ADR-0047, fase 2).
 - Pendiente: búsqueda en el directorio DIR3; las cesiones de crédito (factoring), que Facturae admite y la plataforma no
@@ -154,7 +172,7 @@ superseded_by: null
 ## Origen
 
 Revisión del 17/11 (H-078) y decisiones del 18/11/2026 en la sesión de la plataforma:
-- descargar firmada en la fase 1;
+- descargar firmada en la fase 1; a cualquier cliente y sin firmar si lo pide la ficha (uso de mconta0037 con hoteles);
 - firma en el worker, una vez, y se guarda;
 - DIR3 en la relación cliente y referencias por factura;
 - modelo común EN 16931.
