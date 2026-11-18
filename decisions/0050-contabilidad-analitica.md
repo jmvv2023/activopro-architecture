@@ -181,15 +181,18 @@ La plataforma lo impide por construcción, no por un informe de descuadres:
 - Permisos: `analitica.configurar` (criterios y magnitudes) y `analitica.repartir` (ejecutar, rehacer y deshacer).
 - Los saldos por centro enseñan lo imputado, los repartos y el total.
 
-**Informes**
-- Los estados de ADR-0017 por centro:
-  - un filtro de centro, rama o línea;
-  - una vista con **una columna por centro o por línea** (más «Sin detallar», «Sin imputar» y el total);
-  - la matriz sede × línea.
-- Sumas y saldos y mayor por centro.
-- Movimientos de un centro con sus repartos.
-- Lo que hay sin imputar, para ir imputándolo: la bandeja de «pendiente de distribuir».
-- Todo exportable por ADR-0049.
+**Informes** (hechos el 18/11/2026)
+- Los estados de ADR-0017 por centro, salvo el balance (no se reparte por centros): el motor toma los importes de lo imputado a unos
+  centros (y de los repartos vivos del tramo) en lugar de los saldos.
+  - **Una columna por centro** de un nivel del árbol (cada uno con su rama) **o por línea** (todas las sedes juntas), más «sin
+    detallar» (lo imputado a los centros de arriba) o «sin línea», **«sin imputar» = el total menos las columnas** (lo que falta por
+    imputar y las cuentas que no son analíticas) y el total, que es el estado de la contabilidad: las columnas suman siempre el total.
+  - **Un centro (su rama) o una línea**, frente al mismo tramo del ejercicio anterior, con las cuentas de cada línea.
+  - Con o sin los repartos («después de repartir»).
+- **Movimientos de un centro o una línea**: el resumen por cuenta (las sumas y saldos del centro) y apunte a apunte con el saldo de
+  la cuenta, con los repartos.
+- Todo exportable por ADR-0049 (las columnas del informe por centros salen de los centros de la empresa).
+- Pendiente: la matriz sede × línea en una sola tabla (hoy, por centros al nivel de las hojas o por líneas).
 
 **Migración del programa anterior**
 - **Centros:** `empcen` → nodo. Con divisiones, `empdiv` → `linea_analitica`, y cada combinación de `empcenlevel1` (salvo la 0 y
