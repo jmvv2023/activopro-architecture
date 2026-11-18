@@ -1,7 +1,7 @@
 ---
 id: 0050
 title: Contabilidad analítica por centros, con reparto de costes aparte
-status: proposed
+status: accepted
 date: 2026-11-18
 services: [core]
 supersedes: null
@@ -101,6 +101,7 @@ criterio. En el programa anterior la usan nueve empresas de ocho schemas (ver «
 - Tabla `apunte_centro`: apunte, centro e importe con el signo del apunte.
   - La suma de un apunte no pasa de su importe; lo que falta, sin imputar.
   - Lleva su `origen`: propuesta, manual o migrada.
+- Las garantías que tiene que cumplir están en «Garantías de la imputación», más abajo.
 - **Reenlazado al rehacer** (trigger diferido, como la conciliación):
   - el apunte equivalente del mismo asiento (misma cuenta y lado) recibe la imputación;
   - si el importe cambió, se reescala en proporción;
@@ -115,6 +116,41 @@ criterio. En el programa anterior la usan nueve empresas de ocho schemas (ver «
   puede repartir una línea entre centros por importe o por %.
 - **Cuándo se puede cambiar:** hasta **cerrar el ejercicio**, también con el mes contable cerrado. Queda auditado.
 - **Asientos fuera:** el de cierre, el de regularización y el de apertura no se imputan.
+
+**Garantías de la imputación**
+
+El programa anterior tiene errores en producción en mconta0050: incidencias «Error distribución analítica I y II», de agosto de 2026,
+que se arreglan a mano en `tasiimpcen` y regenerando saldos. Dos casos:
+- **Pendiente que se queda.** El pendiente es una fila más (9999.999 o 9999.0). Al distribuir la línea entera, a veces la fila de
+  pendiente sigue ahí, sobre todo cuando lleva el código de división que no le toca a la empresa. Entonces la línea suma más que el
+  apunte y sigue saliendo en «Pendiente de distribuir».
+- **Lado que no es el del apunte.** La imputación guarda su propio D/H, cuenta, fecha y nombres. En el asiento 945 el apunte es al debe
+  de la 631, y sus imputaciones están al haber, una de ellas duplicada en 9999. El informe «Movimientos que no cuadran» lo detecta
+  después, pero nada lo impide.
+
+La plataforma lo impide por construcción, no por un informe de descuadres:
+
+1. **El pendiente no se guarda.** «Sin imputar» = importe del apunte − suma de sus imputaciones, y se calcula siempre. No hay filas
+   de pendiente que puedan quedarse.
+2. **La imputación no copia nada del apunte.** No guarda lado, cuenta, fecha ni nombres: los toma del apunte por su clave. El importe
+   lleva el signo del apunte; un trigger rechaza el signo contrario.
+3. **Un centro, una vez por apunte:** `unique (apunte_id, centro_id)`. La suma de las imputaciones de un apunte nunca pasa de su
+   importe; lo comprueba un trigger diferido al confirmar la transacción.
+4. **Se escribe entera, en un solo paso.** `app.guardar_imputacion(empresa, apunte, lista)` sustituye la imputación completa del
+   apunte, con el apunte bloqueado (`for update`). Así no hay altas sueltas que dejen restos, ni dos usuarios pisándose. La aplicación
+   no escribe en la tabla.
+5. **Solo lo que se puede imputar:**
+   - apuntes de cuentas analíticas de la empresa;
+   - centros activos de la misma empresa;
+   - nunca los asientos de apertura, regularización o cierre, ni los anulados (al anular, la imputación se va con los apuntes).
+6. **Nada huérfano:**
+   - el apunte borrado se lleva su imputación;
+   - al rehacer un asiento en el sitio, el trigger reenlaza la imputación o la deja sin imputar con aviso;
+   - cambiar una cuenta a no analítica avisa de las imputaciones que tiene y no las borra en silencio.
+7. **Saldos por trigger, comprobables.** `saldo_centro_mensual` + sin imputar = `saldo_mensual` de las cuentas analíticas.
+   - `app.comprobar_analitica(empresa, ejercicio)` lo verifica: tiene que dar cero diferencias.
+   - Los tests lo comprueban tras cada operación (imputar, rehacer un asiento, anular, reenlazar, reparto).
+8. **Auditoría.** Cada cambio de imputación queda en el audit log con usuario y motivo, también con el mes contable cerrado.
 
 **Saldos**
 - `saldo_centro_mensual` por centro, cuenta, mes y clase, mantenido por trigger y recalculable con `app.recalcular_saldos_centro`.
@@ -155,14 +191,26 @@ criterio. En el programa anterior la usan nueve empresas de ocho schemas (ver «
 - **Modo sombra:** saldos por centro frente a `sdocentros`.
 
 **Fases**
-1. Centros y líneas, cuentas analíticas, imputación (editor, ficha del asiento, sin imputar y sin detallar), propuesta desde facturas,
-   la cuenta y la ficha de inmovilizado (la amortización por centro se usa mucho), saldos y estados por centro y por línea.
-2. Repartos (criterios, ejecución, deshacer) e informes con repartos.
-3. Propuesta desde el resto de orígenes, ETL y modo sombra.
+
+Lo primero es que la configuración y las imputaciones que haga el usuario queden bien; los informes pueden esperar (José María,
+18/11/2026).
+
+1. **Configuración e imputación:**
+   - centros y líneas, y cuentas analíticas;
+   - imputación desde el editor y la ficha del asiento;
+   - bandeja de «sin imputar» y «sin detallar» para distribuir;
+   - propuesta desde las facturas, la cuenta y la ficha de inmovilizado;
+   - reenlazado al rehacer asientos;
+   - saldos y `app.comprobar_analitica`;
+   - una consulta mínima de saldos por centro, para comprobar.
+2. **Repartos:** criterios, ejecución y deshacer.
+3. **Informes:** estados por centro y por línea, matriz, sumas y saldos y mayor por centro.
+4. **Migración:** propuesta desde el resto de orígenes, ETL y modo sombra.
 
 ## Consecuencias
 
-- Desaparecen los códigos especiales y los procesos de «arreglo» de saldos: los saldos los mantiene la base y se recalculan.
+- Desaparecen los códigos especiales y los procesos de «arreglo» de saldos y de imputaciones: los saldos los mantiene la base, y la
+  imputación no puede quedar descuadrada con su apunte.
 - El reenlazado al rehacer asientos es la pieza delicada: se prueba con cada generador (factura, cobro, caja, amortización,
   existencias, liquidación).
 - La imputación no toca la contabilidad general ni el IVA: abrir la edición hasta el cierre del ejercicio no rompe la regla B1.
