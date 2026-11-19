@@ -1,7 +1,7 @@
 ---
 id: 0055
 title: VeriFactu y SII como tramos sucesivos de la empresa, cambiados solo por Enumbers, con fecha de inicio de periodo de liquidación y sin registros en curso
-status: proposed
+status: accepted
 date: 2026-11-19
 services: [core]
 supersedes: null
@@ -34,6 +34,8 @@ periodo en dos sistemas.
 
 Opción 2, con reglas cerradas: si son claras, el sistema las aplica y no hay discusión.
 
+- **Las reglas están en la base, no en la pantalla**: la función de la consola las comprueba todas y no hay forma de saltarlas,
+  tampoco para un operador de Enumbers (sin «forzar»). La pantalla solo enseña lo que la función va a exigir antes de pedirlo.
 - **Tramos** en `empresa_sistema_facturacion` (sistema `verifactu` / `sii`, desde, hasta; sin solapes; sin tramo = ninguno). La
   aplicación solo lee. `app.verifactu_activo(empresa, fecha)` y `app.sii_activo(empresa, fecha)` salen de ahí. `verifactu_desde`,
   `sii` y `sii_desde` pasan a la tabla.
@@ -65,6 +67,10 @@ Opción 2, con reglas cerradas: si son claras, el sistema las aplica y no hay di
 - Riesgo asumido: un rechazado que no se subsanó antes del cambio queda sin subsanar por VeriFactu; se acepta de forma expresa.
 
 ## Origen
+
+Aceptado por José María el 19/11/2026, con la condición de que los controles los aplique el sistema aunque el cambio lo haga
+Enumbers.
+
 
 Conversación con José María, 19/11/2026: «una empresa con VeriFactu puede decidir pasar a SII…» y «si las reglas son claras no es
 un problema; los problemas vienen cuando, queriendo permitir todo, terminamos con contenidos inconsistentes».
