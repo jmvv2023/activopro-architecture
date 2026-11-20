@@ -223,6 +223,43 @@ La aplicación solo lee la tabla.
     nada al emitir);
   - los tests usan un simulador (`apps/worker/test/censo.test.ts`, `packages/aeat/test/censo.test.ts`).
 
+## 7 bis. Cuadre con la AEAT (ADR-0053, ampliación del 20/11/2026)
+
+- **Para qué.** Saber qué tiene de verdad la AEAT: lo que la plataforma cree enviado puede no coincidir (cargas de otro
+  programa, asientos borrados que nadie dio de baja, cálculos distintos).
+- **Consulta** (`ConsultaLRFacturasEmitidas` / `Recibidas`, mismo servicio que el envío, con preproducción): por empresa, libro,
+  ejercicio y mes, 10.000 registros por respuesta y paginada con el último registro. La pide el usuario (`sii.consultar`) o
+  Enumbers en la migración, y la hace el worker (`sii.consultar`). Una consulta nueva del mismo periodo sustituye a la anterior.
+- **Comparación en el formato de la AEAT.** Lo de la plataforma se escribe con el mismo generador del envío (desglose agrupado
+  por tipo, textos recortados) y se lee con el mismo lector que la respuesta; textos sin diferencias de mayúsculas ni espacios.
+  Por factura (NIF del emisor + número + fecha), además, si el periodo no coincide.
+- **Resultados:**
+  - **igual** — la AEAT tiene lo que la plataforma cree enviado, o lo que enviaría ahora (entonces lo pendiente se da por
+    enviado);
+  - **distinta** / **ya en la AEAT** — la AEAT la tiene con otros datos (la plataforma la daba por enviada / la tenía pendiente
+    de alta);
+  - **falta en la AEAT** — la plataforma la da por enviada (o pendiente de modificación o baja) y la AEAT no la tiene o la tiene
+    anulada;
+  - **solo en la AEAT** — la AEAT la tiene y la plataforma no;
+  - **en envío** — se estaba enviando al consultar; se vuelve a consultar.
+  - Lo pendiente de baja cuadra siempre (la baja lo resuelve).
+- **La AEAT manda:**
+  - el estado (registrada / con errores con su código), el CSV y el contraste con la otra parte (1 no contrastable … 5
+    contrastada, con el descuadre si es parcial) se toman siempre: no se envía nada;
+  - lo que difiere en el contenido queda **retenido** (`cuadre_pendiente`, estado «Distinta en la AEAT»): no sale ni con
+    «Enviar» ni en el envío automático, y un cambio en la factura no lo suelta;
+  - lo que la plataforma creía enviado se olvida en las distintas (la AEAT tiene otra cosa).
+- **Decisiones** (`sii.enviar`, con motivo de 10 caracteres, en bloque, en `sii_evento`):
+  - distinta / ya en la AEAT → **enviar la de la plataforma** (modificación pendiente) o **dejar la de la AEAT** (se da por
+    igual a lo de ahora: no sale modificación hasta que la factura cambie);
+  - falta en la AEAT → **volver a darla de alta** (alta pendiente, con su plazo original: fuera de plazo si toca) o **dejarla**
+    (queda de baja en la plataforma);
+  - solo en la AEAT → **darla de baja** (registro sin asiento solo para la baja, con la identificación, el periodo y el nombre
+    que tiene la AEAT) o **dejarla**.
+  - Lo decidido sale con «Enviar», con el aviso de fuera de plazo.
+- **Migración:** carga de `pressii` (lo que tiene CSV, registrado con lo que calcula la plataforma como enviado) y cuadre de
+  todos los meses del ejercicio del corte y del anterior; la migración no termina con diferencias sin decidir.
+
 ## 8. Avisos y pantallas
 
 - **Fiscal → SII** (`/fiscal/sii`):
@@ -242,8 +279,6 @@ La aplicación solo lee la tabla.
 
 ## 9. Pendiente (H-089)
 
-- **Consulta y cuadre** con la AEAT (fase 2, en curso; ampliación del ADR-0053 del 20/11/2026): foto de lo que tiene la
-  AEAT por mes, comparación en el formato de la AEAT, diferencias que se deciden a mano y nunca se envían solas.
 - **Cargar del programa anterior lo ya enviado (`pressii`)**, con el cuadre de los dos últimos ejercicios como parte de la
   migración de los cuatro clientes con SII (0054, 0111, 0122, 0124).
 - **Bienes de inversión y cobros en metálico** (fase 3, anuales).
