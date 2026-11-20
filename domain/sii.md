@@ -257,8 +257,18 @@ La aplicación solo lee la tabla.
   - solo en la AEAT → **darla de baja** (registro sin asiento solo para la baja, con la identificación, el periodo y el nombre
     que tiene la AEAT) o **dejarla**.
   - Lo decidido sale con «Enviar», con el aviso de fuera de plazo.
-- **Migración:** carga de `pressii` (lo que tiene CSV, registrado con lo que calcula la plataforma como enviado) y cuadre de
-  todos los meses del ejercicio del corte y del anterior; la migración no termina con diferencias sin decidir.
+- **Migración** (decidido el 20/11/2026 con mconta0124; `app.cargar_estado_sii`, `etl/src/sii.ts`):
+  - `pressii` trae por asiento el estado de la AEAT (Correcto, AceptadoConErrores o vacío si no se envió), el CSV, la fecha de
+    envío y el error, pero **no el XML enviado**;
+  - el tramo SII de la empresa empieza el día 1 del primer mes presentado (si no tiene uno);
+  - la plataforma calcula lo que enviaría de cada asiento con IVA del tramo; lo presentado queda registrado (o con errores) con su
+    CSV y lo no enviado, pendiente de alta; **todo «por cuadrar»** (`por_cuadrar`): no sale nada, ni a mano ni en automático,
+    hasta que la consulta de su mes lo compare con la AEAT; entonces lo igual queda enviado, lo que falta queda pendiente como
+    siempre y lo que difiere, para decidir;
+  - los asientos con IVA sin envío que se anulan con otro del mismo documento (asiento y contraasiento que suman cero) no se dan
+    de alta: anomalía `sii_anulados_entre_si`;
+  - se cargan todos los ejercicios; el cuadre hace falta en los meses que siguen abiertos, y la migración no termina con
+    diferencias sin decidir en ellos.
 
 ## 8. Avisos y pantallas
 
@@ -279,8 +289,8 @@ La aplicación solo lee la tabla.
 
 ## 9. Pendiente (H-089)
 
-- **Cargar del programa anterior lo ya enviado (`pressii`)**, con el cuadre de los dos últimos ejercicios como parte de la
-  migración de los cuatro clientes con SII (0054, 0111, 0122, 0124).
+- **Cuadre de la migración** de los cuatro clientes con SII (0054, 0111, 0122, 0124): la carga ya trae `pressii` (§ 7 bis);
+  falta hacerlo con el certificado de cada cliente en el modo sombra.
 - **Bienes de inversión y cobros en metálico** (fase 3, anuales).
 - **Inmuebles** (claves 12 y 13 con `DatosInmueble`): solo si alguno de los cuatro factura alquileres.
 - **SII del IGIC** (ATC): sin clientes canarios en el SII; cuando haya uno.
