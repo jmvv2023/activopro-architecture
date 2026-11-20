@@ -180,26 +180,48 @@ La aplicación solo lee la tabla.
 
 ## 7. NIF comprobado en el censo (ADR-0056, C)
 
-- **Servicio** `VNifV2` de la AEAT (NIF + nombre):
-  - `Identificado`, `No identificado`, `No identificado-similar`, `Identificado-Baja`, `Identificado-Revocado`;
-  - hasta 10.000 por petición;
-  - con el certificado de la empresa.
-  - Solo para cumplir obligaciones tributarias: se comprueba una vez por NIF y cuando cambia.
-- **Cuándo.** Terceros con NIF español de una empresa con certificado vigente:
-  - al darlos de alta o cambiar el NIF o el nombre;
-  - desde la ficha («Comprobar en la AEAT»);
-  - al emitir o registrar con uno nunca comprobado.
-
-  Trabajo `censo.comprobar` por empresa, en lote.
-- **Resultado** en el tercero (estado, NIF y nombre comprobados, fecha). Si cambia el NIF o el nombre, está desfasado.
+- **Servicio** `VNifV2` de la AEAT (servicio web masivo de calidad de datos identificativos; NIF + nombre):
+  - respuestas `Identificado`, `No identificado`, `No identificado-similar` (personas físicas), `Identificado-Baja`,
+    `Identificado-Revocado` (entidades) y `No procesado` (por encima del máximo);
+  - hasta 10.000 por petición (el esquema admite 20.000; se usa lo que dice el manual);
+  - con el certificado de la empresa (mTLS, sin firmar el mensaje): `www1` con certificado de persona física o de
+    representante, `www10` con certificado de sello (`AEAT_CENSO_SELLO=si`);
+  - el nombre se manda siempre (obligatorio en personas físicas; el esquema pide la etiqueta).
+  - Solo para cumplir obligaciones tributarias, o la AEAT bloquea el acceso: se comprueba **una vez por NIF y nombre** y
+    cuando cambian, nunca en cada factura.
+- **Qué se comprueba.** Terceros con NIF español válido (tipo `nif` o `no_censado`, país ES, no de relleno) de una empresa
+  con certificado vigente (`app.censo_aplica`). Un NIF extranjero, un pasaporte o uno no válido: `no_aplica`.
+- **Cuándo** (trabajo `censo.comprobar`, uno vivo por empresa, con un minuto de espera para juntar lo que llega seguido en
+  una sola petición; `app.programar_censo`):
+  - al dar de alta un tercero o cambiar su NIF, nombre, tipo o país (trigger `tercero_censo`);
+  - al subir el certificado (trigger `certificado_censo`: lo que estaba sin comprobar, ya);
+  - desde la ficha, «Comprobar en la AEAT» (`app.pedir_censo`: se repite aunque esté al día);
+  - al emitir o registrar con un tercero sin comprobar o desfasado (no espera a la respuesta).
+- **Dónde queda.** En el tercero: `censo_estado`, el NIF y el nombre con que se comprobó (`censo_nif`, `censo_nombre`), el
+  nombre que devuelve la AEAT (`censo_nombre_aeat`) y la fecha.
+  - Estado que se enseña (`app.estado_censo`): `no_aplica`, `sin_comprobar`, `desfasado` (el NIF o el nombre de la ficha ya
+    no son los comprobados) o el resultado.
+  - Si la ficha cambia mientras se comprueba, la respuesta no se guarda: se vuelve a comprobar con lo de ahora. «No
+    procesado» deja el tercero como estaba.
+  - Cada petición queda en `envio_aeat` (servicio `censo`).
 - **Avisos:**
-  - en la ficha y en «por revisar»;
-  - al emitir (SII o VeriFactu) o registrar una recibida en el SII con un tercero no identificado, de baja o revocado,
-    hay que aceptar el aviso para seguir (`CENSO_NIF_NO_IDENTIFICADO`). No bloquea: el censo puede ir por detrás.
+  - **Ficha:** franja **Censo de la AEAT** con el estado, la fecha y el nombre de la AEAT; avisos `CENSO_NO_IDENTIFICADO`,
+    `CENSO_BAJA`, `CENSO_REVOCADO`, `CENSO_SIMILAR`; en la portada de Terceros, **NIF no identificado** entre las fichas
+    por revisar.
+  - **Al emitir** una factura de la plataforma (SII o VeriFactu) o **registrar una recibida en el SII** con un tercero no
+    identificado, de baja o revocado (y comprobado con el NIF y el nombre de ahora): `CENSO_NIF_NO_IDENTIFICADO`, que hay
+    que confirmar (casilla «Entiendo que la AEAT puede rechazarla»; la API manda `aceptar_censo` y la base lo ve en
+    `app.censo_aceptado`). Lo comprueban triggers de `factura` (al numerar la emitida y al contabilizar la recibida), así
+    que vale para cualquier camino (factura, emisión en bloque: allí sale como error de esa factura).
+    - No bloquea: el censo puede ir por detrás (una sociedad recién constituida) y la AEAT dice que se reintente.
+    - «Similar», sin comprobar o desfasado: sin confirmación.
+    - **Las rectificativas no preguntan:** van al cliente de la original, también la de una sustitución (§6).
+    - Corregir una recibida ya contabilizada no vuelve a preguntar.
 - **Sin entorno de pruebas en la AEAT:**
-  - solo con `AEAT_CENSO=pro`;
-  - en pruebas queda «sin comprobar»;
-  - los tests usan un simulador.
+  - el worker solo registra el trabajo con `AEAT_CENSO=pro`, que pone quien despliega (nunca una sesión autónoma);
+  - sin él, las comprobaciones esperan en la cola y los terceros quedan «sin comprobar» (en preproducción no se pregunta
+    nada al emitir);
+  - los tests usan un simulador (`apps/worker/test/censo.test.ts`, `packages/aeat/test/censo.test.ts`).
 
 ## 8. Avisos y pantallas
 
