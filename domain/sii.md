@@ -242,9 +242,10 @@ La aplicación solo lee la tabla.
 
 ## 9. Pendiente (H-089)
 
-- **Cargar del programa anterior lo ya enviado (`pressii`).** Imprescindible antes de migrar los cuatro clientes con
-  SII (0054, 0111, 0122, 0124): que conste como registrado para que lo siguiente sea `A1` y no un alta duplicada.
-- **Consulta y cuadre** con la AEAT (fase 2): lo que tiene la AEAT frente a la plataforma y el contraste con la otra parte.
+- **Consulta y cuadre** con la AEAT (fase 2, en curso; ampliación del ADR-0053 del 20/11/2026): foto de lo que tiene la
+  AEAT por mes, comparación en el formato de la AEAT, diferencias que se deciden a mano y nunca se envían solas.
+- **Cargar del programa anterior lo ya enviado (`pressii`)**, con el cuadre de los dos últimos ejercicios como parte de la
+  migración de los cuatro clientes con SII (0054, 0111, 0122, 0124).
 - **Bienes de inversión y cobros en metálico** (fase 3, anuales).
 - **Inmuebles** (claves 12 y 13 con `DatosInmueble`): solo si alguno de los cuatro factura alquileres.
 - **SII del IGIC** (ATC): sin clientes canarios en el SII; cuando haya uno.
