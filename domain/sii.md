@@ -257,18 +257,19 @@ La aplicación solo lee la tabla.
   - solo en la AEAT → **darla de baja** (registro sin asiento solo para la baja, con la identificación, el periodo y el nombre
     que tiene la AEAT) o **dejarla**.
   - Lo decidido sale con «Enviar», con el aviso de fuera de plazo.
-- **Migración** (decidido el 20/11/2026 con mconta0124; `app.cargar_estado_sii`, `etl/src/sii.ts`):
-  - `pressii` trae por asiento el estado de la AEAT (Correcto, AceptadoConErrores o vacío si no se envió), el CSV, la fecha de
-    envío y el error, pero **no el XML enviado**;
+- **Migración** (`app.cargar_estado_sii`, `etl/src/sii.ts`; decidido el 20/11/2026 y revisado el 21/11/2026 al cotejar en la sede
+  tres CSV de mconta0124: existen, el estado es el de `pressii` y el XML enviado es el del programa anterior):
+  - `pressii` trae por asiento el estado de la AEAT (Correcto, AceptadoConErrores o vacío si no se envió), el CSV **del envío** (un
+    envío lleva muchas facturas), la fecha de envío y el error; no trae el XML enviado (se ve uno a uno en el cotejo de la sede);
   - el tramo SII de la empresa empieza el día 1 del primer mes presentado (si no tiene uno);
-  - la plataforma calcula lo que enviaría de cada asiento con IVA del tramo; lo presentado queda registrado (o con errores) con su
-    CSV y lo no enviado, pendiente de alta; **todo «por cuadrar»** (`por_cuadrar`): no sale nada, ni a mano ni en automático,
-    hasta que la consulta de su mes lo compare con la AEAT; entonces lo igual queda enviado, lo que falta queda pendiente como
-    siempre y lo que difiere, para decidir;
-  - los asientos con IVA sin envío que se anulan con otro del mismo documento (asiento y contraasiento que suman cero) no se dan
-    de alta: anomalía `sii_anulados_entre_si`;
-  - se cargan todos los ejercicios; el cuadre hace falta en los meses que siguen abiertos, y la migración no termina con
-    diferencias sin decidir en ellos.
+  - **lo presentado se da por bueno**: queda registrado (o con errores) con su CSV y con lo que calcula la plataforma como enviado;
+    si la factura cambia después, sale la modificación completa;
+  - lo que el programa anterior tenía sin enviar queda pendiente de alta;
+  - solo lo que la plataforma enviaría y el programa anterior no tenía queda «por cuadrar» hasta consultar su mes;
+  - los asientos con IVA sin envío que se anulan con otro del mismo documento no se dan de alta (anomalía `sii_anulados_entre_si`);
+  - el cuadre es opcional (por muestreo o donde haya dudas). El programa anterior enviaba como descripción el concepto del asiento y
+    los textos con la codificación rota («MERCADERÃAS»): en el cuadre, la descripción y el nombre de la contraparte son
+    informativos (se enseñan y no hacen distinta una factura). En `RefExterna` iba «Id:ejercicio|asiento».
 
 ## 8. Avisos y pantallas
 
@@ -289,8 +290,8 @@ La aplicación solo lee la tabla.
 
 ## 9. Pendiente (H-089)
 
-- **Cuadre de la migración** de los cuatro clientes con SII (0054, 0111, 0122, 0124): la carga ya trae `pressii` (§ 7 bis);
-  falta hacerlo con el certificado de cada cliente en el modo sombra.
+- **Cuadre por muestreo** de los cuatro clientes con SII (0054, 0111, 0122, 0124) con su certificado; la carga ya trae `pressii`
+  (§ 7 bis).
 - **Bienes de inversión y cobros en metálico** (fase 3, anuales).
 - **Inmuebles** (claves 12 y 13 con `DatosInmueble`): solo si alguno de los cuatro factura alquileres.
 - **SII del IGIC** (ATC): sin clientes canarios en el SII; cuando haya uno.
