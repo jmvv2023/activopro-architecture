@@ -67,9 +67,14 @@ el alta, no un uso real del cliente; esas se marcan «a confirmar» y no cuentan
 ### A confirmar con datos de producción
 
 - **Facturación en divisa** (`divisas` en 35 empresas, `divisasvigencia`, `monedas`): la plataforma guarda la divisa en los apuntes
-  cargados, pero no emite ni registra facturas en divisa. Comprobar si hay facturas en otra moneda:
-  `select table_schema, count(*) from information_schema.columns where column_name = 'FacDiv%'…` (consulta exacta por preparar con
-  el nombre de la columna en `facturas`).
+  cargados (`MovImpDiv`), pero no emite ni registra facturas en divisa. Para ver si hay facturas en otra moneda (`facturas.FacDivCod`),
+  en producción se genera la consulta y se ejecuta lo que devuelve:
+  ```sql
+  set session group_concat_max_len = 1000000;
+  select group_concat(concat('select ''', table_schema, ''' s, FacDivCod, count(*) n from ', table_schema,
+         '.facturas where FacDivCod not in (''EUR'', '''') group by FacDivCod') separator ' union all ')
+  from information_schema.tables where table_name = 'facturas' and table_schema like 'mconta%';
+  ```
 - **Modelos propios de factura y cartas** (`facmod`, `cartamod`, 15 por schema; `modlistados` en 95): por el recuento parecen los
   sembrados en el alta. Ver qué clientes tienen uno cambiado: la plataforma tiene tres diseños con el estilo de la empresa (ADR-0046)
   y no tiene cartas (reclamación de deuda, etc.).
