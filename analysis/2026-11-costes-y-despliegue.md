@@ -69,5 +69,5 @@ todos los clientes. Una vulnerabilidad en una aplicación no entra por SSH sino 
 
 Además de la demo de la plataforma (`activopro_platform`), en `public` están los datos de Reporting (`activopro-reporting`): saldos
 reales de producción sincronizados cada noche (~315 MB). El modelo anterior del front se retiró y quedó en cuarentena el
-20/11/2026 (esquema `retirado` y `retirado_*`, para borrar tras comprobar que Reporting sigue bien). Pendiente: sacar Reporting a su
+20/11/2026 (esquema `retirado`, para borrar tras comprobar que Reporting sigue bien). Los esquemas `activoprobase` y `activopro0000x` no se pueden renombrar ni borrar mientras estén en la lista de esquemas expuestos de la Data API: renombrarlos dejó la API en 503 (Reporting incluido) el 20/11/2026 hasta devolverles el nombre. Pendiente: sacar Reporting a su
 propio proyecto; con él dentro, el proyecto está cerca del límite de 500 MB del plan gratuito.
