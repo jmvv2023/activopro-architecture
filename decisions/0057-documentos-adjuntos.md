@@ -59,6 +59,24 @@ Opción 1. Propuesta concreta:
   `facturasadjuntos` a la factura si está cargada (H-101) y, si no, a su asiento. Se hace por cliente, con su migración, nunca en el
   proyecto de demostración.
 
+## Espacio y pantalla Documentos (ampliación del 21/11/2026)
+
+De acuerdo con José María (conversación del 21/11/2026):
+
+- **Espacio por cliente** (tenant), con el desglose por empresa: un espacio incluido (parámetro global `adjuntos.espacio_incluido`,
+  con excepción por cliente) y **espacio adicional** por bloques como módulo que da de alta Enumbers desde la consola.
+- **Cuenta solo lo que sube el cliente** (adjuntos de asiento, factura e inmovilizado y los originales de la bandeja que se conservan).
+  No cuenta lo que genera la plataforma: PDF de los envíos, Facturae, informes ni los originales de la bandeja en sus 30 días.
+- **Nunca se bloquea ni se borra lo que hay.** Pasado el espacio, solo no se sube nada a mano (`ADJUNTOS_SIN_ESPACIO`, con «Ampliar
+  espacio»); ver, descargar y conservar sigue siempre (seis años, art. 30 del Código de Comercio), y ningún proceso contable se para:
+  la bandeja sigue recibiendo.
+- **Clientes migrados**: espacio inicial = el mayor entre el incluido y lo que traen más un margen, para que nadie empiece lleno. La
+  cifra del espacio incluido se fija con el tamaño de los adjuntos por esquema de producción (consulta en
+  `analysis/2026-11-tamano-adjuntos.sql`, la lanza José María).
+- **Pantalla Documentos** (menú): árbol de contenedores fijos —empresa → ejercicio → asientos, facturas emitidas, facturas recibidas,
+  inmovilizado— con el tamaño de cada nodo y búsqueda; cada documento se abre con su asiento, factura o ficha. Sin carpetas libres: un
+  documento siempre cuelga de lo que documenta. Arriba, la tarjeta con el espacio usado y la barra, con aviso al 80 % y al 95 %.
+
 ## Consecuencias
 
 - Desbloquea la migración de los clientes que adjuntan (148 de 162 tienen algún adjunto de asiento).

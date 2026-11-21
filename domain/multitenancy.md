@@ -7,6 +7,9 @@
   login dirige a un schema u otro.
 - Algunos schemas contienen **varias empresas** (`EmpCod`). Todo lo que sea por emisor
   (cadena VeriFactu, numeración SPFE) va por **NIF / empresa, no por schema**.
+- En la plataforma, un schema es **un cliente** (tenant) y cada `EmpCod` con apuntes o NIF válido, **una empresa** de ese cliente.
+  Confirmado el 21/11/2026 que las empresas de un mismo schema son del mismo titular (mconta0001, 0003, 0015, 0025, 0029, 0051 con
+  tres, 0054 y 0057): se cargan juntas en un cliente, con los accesos por empresa.
 - GeneXus obtiene el schema de `EmpBase.EmpBase` quitando lo que va tras `$`
   (p. ej. `mconta0048$1` → `mconta0048`).
 - **Recursos compartidos aunque los schemas estén aislados:** el proceso MySQL (buffer pool,
