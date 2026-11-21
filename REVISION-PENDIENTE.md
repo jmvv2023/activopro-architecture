@@ -7,8 +7,8 @@ Borradores generados el 13/10/2026 a partir de conversaciones y notas. Solo se h
 
 1. ~~ADR-0004 — ms-verifactu, versión A o B.~~ Resuelto el 13/10/2026: el micro es el SIF y
    escribe en MySQL; Supabase se elimina.
-2. **ADR-0005 — Frente A.** ¿Se deja de archivar el PDF con VeriFactu activo? Pendiente de
-   hablar con Nestor.
+2. ~~ADR-0005 — Frente A.~~ Resuelto el 21/11/2026: ADR-0005 queda sustituido por ADR-0057; el
+   programa anterior no se toca y los adjuntos pasan al archivo de la plataforma en la migración.
 3. ~~Supabase en VeriFactu.~~ Resuelto: se mantiene (Rule Store, lotes, monitor); MySQL es la
    fuente de verdad de la cadena. Supabase es solo una copia para el monitor (ADR-0004); pendiente técnico en el issue #8 del micro.
 4. ~~ADR-0007.~~ Aceptado: SemVer, implementado en la 1.0.0.
