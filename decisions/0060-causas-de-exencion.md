@@ -1,7 +1,7 @@
 ---
 id: 0060
 title: Causa de exención por línea, de un catálogo central, heredada y obligatoria al emitir
-status: proposed
+status: accepted
 date: 2026-11-21
 services: [platform]
 supersedes: null
@@ -59,3 +59,9 @@ Opción 3.
 
 Conversación del 21/11/2026 (consulta de José María sobre «Operación exenta en base al art. 25 de la Ley 37/1992»); de acuerdo con
 la propuesta.
+
+## Implementación (21/11/2026)
+
+Aceptado por José María el 21/11/2026. En `activopro-platform`: migración `20261231000033_causas_exencion.sql` (catálogo `causa_exencion`, causa por
+línea, habitual del cliente y de la empresa, `app.lineas_con_causa`, `CAUSA_EXENCION_FALTA` al emitir, mención en el impreso), PR #219;
+aplicada en Supabase el 21/11/2026. Pendiente (H-114): producto y familia, recibidas y asientos, Facturae y la carga.
