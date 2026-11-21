@@ -1,16 +1,18 @@
 ---
 id: 0005
 title: Documentos fuera de MySQL — MinIO self-hosted y no archivar PDFs regenerables con VeriFactu
-status: proposed
+status: superseded
 date: 2026-10-07
 services: [core, docgenerator]
 supersedes: null
-superseded_by: null
+superseded_by: '0057'
 ---
 
-> **Parcialmente decidido.** MinIO self-hosted en IONOS frente a Supabase Storage o S3 externo
-> está elegido. El "Frente A" (dejar de archivar PDFs con VeriFactu activo) se propuso en la
-> conversación y queda pendiente de hablar con Nestor. Confirmar ambos puntos.
+> **Sustituido por [ADR-0057](0057-documentos-adjuntos.md) (21/11/2026).** Los documentos de los clientes no se sacan de MySQL a
+> un MinIO junto al programa anterior: van al archivo de la plataforma nueva (Supabase Storage, ADR-0046) y los adjuntos de
+> `adjmovctas`, `facturasadjuntos` y `activofijoactdoc` se cargan allí en la migración de cada cliente. Mientras tanto el programa
+> anterior se queda como está (no se toca `print_attach`): el «Frente A» no se hace, y la plataforma ya sigue ese criterio al
+> no guardar los PDF que puede regenerar (solo la copia de lo enviado, ADR-0046). Se conserva el texto original abajo.
 
 ## Contexto
 

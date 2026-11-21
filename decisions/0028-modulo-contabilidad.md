@@ -219,7 +219,7 @@ Fase 4: **ejercicio y plan de cuentas** (detalle en ADR-0029; se adelanta a la f
 - importación de diarios de otros programas;
 - analítica;
 - divisas;
-- adjuntos: dependen del almacenamiento de documentos (ADR-0005, por revisar para la plataforma).
+- adjuntos: dependen del almacenamiento de documentos (ADR-0005, por revisar para la plataforma); resuelto en ADR-0057.
 
 ### Pantallas (fase 1 y 2)
 

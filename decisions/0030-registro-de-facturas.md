@@ -171,7 +171,7 @@ José María, 08/11/2026: el cliente de un ticket no está dado de alta ni se va
 
 - La capa comercial (presupuestos, albaranes, recurrentes): su propio ADR con la ola 2.
 - El SII: su propio ADR (ADR-0028, pendiente 1). Este modelo ya lleva los datos que pide: tipo, fechas, rectificadas, número de registro.
-- Adjuntar el PDF de la factura: depende del almacenamiento de documentos (ADR-0005).
+- Adjuntar el PDF de la factura: depende del almacenamiento de documentos (ADR-0005); resuelto en ADR-0057.
 - Vencimientos y pagos: con tesorería.
 
 ## Origen
