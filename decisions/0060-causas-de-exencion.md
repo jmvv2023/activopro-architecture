@@ -64,4 +64,8 @@ la propuesta.
 
 Aceptado por José María el 21/11/2026. En `activopro-platform`: migración `20261231000033_causas_exencion.sql` (catálogo `causa_exencion`, causa por
 línea, habitual del cliente y de la empresa, `app.lineas_con_causa`, `CAUSA_EXENCION_FALTA` al emitir, mención en el impreso), PR #219;
-aplicada en Supabase el 21/11/2026. Pendiente (H-114): producto y familia, recibidas y asientos, Facturae y la carga.
+aplicada en Supabase el 21/11/2026. Segunda fase (H-114, migración `20261231000036_causas_exencion_catalogo.sql`): la causa en el
+producto y la familia (heredable; orden en la línea: operación → línea → línea rectificada → producto → cliente → empresa), en las
+líneas de las facturas periódicas, en la Facturae (motivo, clave y textos legales) y la clase de la causa habitual de la empresa en el
+cierre de caja. Recibidas y asientos conservan la clase, como decía la decisión; GeneXus no guarda la causa, no hay nada que cargar.
+E3 (art. 22) queda para cuando un cliente lo pida.

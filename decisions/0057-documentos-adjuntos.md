@@ -96,8 +96,11 @@ Hecho en `activopro-platform` #220 (migración `20261231000034_adjuntos.sql`). L
   y `tenant.bloques_adjuntos`) que cambia Enumbers en la consola con motivo; el cambio queda en el historial del cliente.
 - **Purga**: al quedarse sin enlaces se programa el trabajo `adjunto.purgar` para el día en que se puede borrar; si para entonces se
   ha vuelto a adjuntar, no hace nada.
-- **Pendiente** (H-115): el exportador y la carga por huella, la cifra definitiva del espacio y que el original conservado de la
-  bandeja quede además como adjunto de su factura (hoy cuenta en el espacio y se ve con «Ver el original»).
+- **Pendiente** (H-115): el exportador y la carga por huella y la cifra definitiva del espacio.
+- **Segunda fase** (21/11/2026, `activopro-platform` #227, migración `20261231000037_adjuntos_mas_destinos.sql`): enlace también al
+  tercero (sin ejercicio: sus documentos se quitan siempre, con motivo), a la remesa (por su fecha de cargo) y al documento de venta;
+  el original conservado de la bandeja queda además como adjunto de su factura sobre el mismo fichero (cuenta una vez; la purga de la
+  bandeja no lo borra mientras el adjunto tenga enlaces).
 
 ## Consecuencias
 
