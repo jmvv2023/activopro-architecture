@@ -173,6 +173,9 @@ archivo (decisión de José María, 17/11/2026: **guardarlo solo si la empresa l
 
 ### 3. Lectura automática: XML en un paquete; PDF e imagen en el servicio de lectura de la plataforma
 
+> El servicio con LLM de este punto lo replantea ADR-0061 (propuesto): lector sin LLM con texto y posiciones, QR,
+> plantillas por proveedor y comprobación fiscal.
+
 - **Interfaz `LectorDocumento`** en el paquete `@activopro/lectura`, sin acceso a la base. Entra un fichero, el tipo de
   documento esperado y las pistas de la empresa. Sale una `LecturaDocumento` tipada:
   - **cabecera:** emisor (NIF, nombre, país), número, fechas, total;
