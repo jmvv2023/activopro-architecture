@@ -1,7 +1,7 @@
 ---
 id: 0061
 title: Lector de documentos propio sin LLM externo — datos estructurados primero, texto con posiciones, plantillas por proveedor aprendidas y compartidas, modelo de documento ligero y local para escaneados, y comprobación fiscal
-status: proposed
+status: accepted
 date: 2026-11-22
 services: [platform, ocr]
 supersedes: null
@@ -61,7 +61,7 @@ bandeja, visor, conservar originales, fases 1, 3 y 4) no cambia.
    - Nada sale de nuestra infraestructura.
    - Hace falta GPU o tiempos de respuesta de minutos.
    - Sigue sin explicar de dónde sale cada dato. Se mantiene un modelo.
-4. **Elegida (propuesta). Lector determinista:**
+4. **Elegida. Lector determinista:**
    - primero lo estructurado (XML y QR);
    - después el texto con sus posiciones, reglas y una plantilla por proveedor aprendida de lo que el usuario registra;
    - para los escaneados y las fotos, «ojos» locales: OCR clásico o un modelo de documento ligero (opción 3 en pequeño,
@@ -69,7 +69,7 @@ bandeja, visor, conservar originales, fases 1, 3 y 4) no cambia.
    - y una comprobación fiscal que decide qué se propone como bueno.
    - Sin LLM externo. El modelo local solo convierte la imagen en texto con posiciones: no decide qué es cada dato.
 
-## Decisión (propuesta)
+## Decisión
 
 ### 1. Dos piezas: los «ojos» sin lógica y la interpretación en TypeScript
 
@@ -233,6 +233,8 @@ bandeja, visor, conservar originales, fases 1, 3 y 4) no cambia.
 4. **Tesseract frente a PaddleOCR:** sin opinión formada → Tesseract fuera; la prueba es PaddleOCR frente a un modelo de
    documento ligero (punto 1).
 5. **El micro actual no preocupa:** se reformula o se retira con la nueva estrategia; no se invierte en él.
+
+Aceptado por José María el 22/11/2026, con estos ajustes.
 
 ## Origen
 
