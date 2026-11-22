@@ -84,3 +84,18 @@ Opción 3.
 ## Origen
 
 Conversación con José María, 19/11/2026: «un cliente de una empresa de Canarias con sede en Barcelona…».
+
+## Ampliación (22/11/2026): inmuebles
+
+Caso de TEULA: venta de una vivienda nueva a un cliente belga. Un inmueble y los servicios relacionados con él tributan donde está
+el inmueble (arts. 68.Dos.1º y 70.Uno.1º LIVA, art. 31 bis del Reglamento de ejecución 282/2011; arts. 16 y 17.Uno.1º de la Ley
+20/1991), sea el cliente particular o empresario. La regla del cliente proponía entrega intracomunitaria exenta para la vivienda y
+servicio a empresa de la UE para la gestión.
+
+- Marca **Inmueble** heredable en el producto y la familia del catálogo (como la causa de exención, ADR-0060): sus líneas se
+  proponen interiores con el tipo del producto; la inversión del sujeto pasivo (art. 84.Uno.2º e y f), si la traen la línea o el
+  cliente, se mantiene. El aviso espera interior en ellas.
+- Es una marca del producto, no del cliente: en la misma factura, la vivienda al 10 %, la gestión al 21 % y un servicio sin relación
+  con el inmueble según la regla del cliente.
+- Se supone el inmueble en el territorio del impuesto de la empresa; el que está fuera es una excepción que se cambia en la línea.
+- Las líneas sin producto, las recibidas y los asientos no cambian: la operación la elige el usuario.
