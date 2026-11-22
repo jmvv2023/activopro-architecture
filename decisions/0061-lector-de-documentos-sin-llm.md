@@ -1,6 +1,6 @@
 ---
 id: 0061
-title: Lector de documentos propio sin LLM — datos estructurados primero, texto con posiciones, plantillas por proveedor aprendidas de lo registrado y comprobación fiscal
+title: Lector de documentos propio sin LLM externo — datos estructurados primero, texto con posiciones, plantillas por proveedor aprendidas y compartidas, modelo de documento ligero y local para escaneados, y comprobación fiscal
 status: proposed
 date: 2026-11-22
 services: [platform, ocr]
@@ -64,9 +64,10 @@ bandeja, visor, conservar originales, fases 1, 3 y 4) no cambia.
 4. **Elegida (propuesta). Lector determinista:**
    - primero lo estructurado (XML y QR);
    - después el texto con sus posiciones, reglas y una plantilla por proveedor aprendida de lo que el usuario registra;
-   - OCR local solo para los escaneados y las fotos;
+   - para los escaneados y las fotos, «ojos» locales: OCR clásico o un modelo de documento ligero (opción 3 en pequeño,
+     dentro del mismo motor);
    - y una comprobación fiscal que decide qué se propone como bueno.
-   - Sin LLM.
+   - Sin LLM externo. El modelo local solo convierte la imagen en texto con posiciones: no decide qué es cada dato.
 
 ## Decisión (propuesta)
 
@@ -77,7 +78,7 @@ bandeja, visor, conservar originales, fases 1, 3 y 4) no cambia.
   - Sale el **modelo de página**: palabras con su caja (página, x, y, ancho, alto) y su confianza, y el contenido de los
     QR que encuentre.
   - En los PDF con texto, las palabras con posición salen del propio PDF (`get_text("words")` de PyMuPDF): sin OCR.
-  - En los escaneados y las fotos: página a imagen, enderezado y OCR local.
+  - En los escaneados y las fotos: página a imagen, enderezado y el motor de imagen (abajo).
   - El QR se busca siempre: se rasteriza la página y se lee con zxing.
   - **No guarda nada ni llama a nadie.** Solo lo llama el worker, con una clave de servicio y en la red privada.
   - No sabe qué es una factura.
@@ -87,8 +88,25 @@ bandeja, visor, conservar originales, fases 1, 3 y 4) no cambia.
   - Devuelve la `LecturaDocumento` tipada, con cada campo así: `{valor, origen, caja, comprobado}`.
   - Toda la lógica está aquí y **se prueba en `npm test`** con modelos de página en JSON, sin contenedor ni documentos
     reales en el repo.
-- **Motor de OCR:** se elige con una prueba antes de implementar: Tesseract 5 o PaddleOCR (el del micro), sobre
-  facturas ficticias en el repo y escaneados reales solo en local. Gana el que acierte más palabras de importe y fecha.
+- **Motor de imagen** (escaneados y fotos), **dentro del mismo contenedor**: no es un proyecto aparte.
+  - Lo que hay que resolver no es «entender» la factura, sino convertir la imagen en palabras con su posición: igual que
+    lo que ya trae un PDF con texto.
+  - **Candidatos, todos de licencia abierta, en CPU y sin red:**
+    - **PaddleOCR (PP-OCRv5)**: el del micro, OCR clásico con detección de texto. Es la base.
+    - **Un modelo de documento ligero:** PaddleOCR-VL (0,9 B, 109 idiomas) o Granite-Docling (258 M, Apache 2.0).
+      Además de leer, ordenan la página y reconocen tablas, que es lo que más falla en los escaneados y lo que hará falta
+      en los albaranes.
+    - Tesseract queda fuera: rinde bien en escaneos limpios, pero peor que PaddleOCR en fotos y diseños complejos, y no
+      aporta nada que no tenga ya el micro.
+  - **Se elige con una prueba**, antes de la fase 3, sobre facturas ficticias en el repo y escaneados reales solo en
+    local. Se mide:
+    - el acierto en importes, fechas, NIF y número;
+    - el tiempo por página en el servidor que tengamos (sin GPU);
+    - y la memoria.
+  - La lectura va en segundo plano al llegar el documento. Unos segundos o un minuto por página es aceptable; si el
+    modelo no cabe en esos tiempos, se queda PaddleOCR.
+  - Si gana el modelo de documento, sigue siendo de riesgo mínimo para el Reglamento de IA, como cualquier OCR, y nada
+    sale de nuestra infraestructura.
 
 ### 2. Orden de las fuentes (lo primero que da un valor comprobado manda)
 
@@ -104,24 +122,39 @@ bandeja, visor, conservar originales, fases 1, 3 y 4) no cambia.
   - si no, de los NIF válidos del documento, quitando el de la empresa (que es el receptor);
   - si no, del remitente del correo cuando ya está asociado a un tercero.
 
-### 3. Plantillas por proveedor, aprendidas al registrar
+### 3. Plantillas por proveedor, aprendidas al registrar y compartidas entre empresas
 
 - **Al contabilizar un documento de la bandeja**, lo registrado es la verdad sin pedir nada más al usuario.
   - Por cada campo (número, fechas, bases, tipos, cuotas, total, retención) se busca su valor en el modelo de página, en
     todas sus formas escritas: `1.234,56`, `1234.56`, `01/02/2026`, `1-feb-2026`…
   - Si aparece en un solo sitio (o en uno junto a una etiqueta), se guarda el **ancla**: la etiqueta cercana, la posición
     respecto a ella y la zona de la página.
-- **`lectura_plantilla`**, por empresa y tercero:
-  - versión, anclas por campo, aciertos y fallos;
-  - la fecha del último documento.
-  - Con un documento, la plantilla queda «aprendida»; con dos que coinciden, «confirmada».
-  - Si un campo de la plantilla falla, se vuelve a aprender de ese documento. Si el proveedor cambia de diseño, la
-    plantilla nueva sustituye a la vieja.
-- **Plantillas solo dentro de cada empresa** (con RLS). Compartir el diseño de un proveedor entre clientes enseñaría a
-  quién compra cada uno. Queda como posible mejora para decidir aparte.
-- **El modelo de página se guarda con el documento** (`documento_entrada`, misma vida que el original).
-  - Así se aprende al registrar sin volver a pasar el OCR.
-  - Y el visor resalta de dónde sale cada dato.
+- **Lo que se aprende es del proveedor, no del cliente**, y sirve a todos:
+  - dónde pone el NIF (aunque sea en vertical en el margen);
+  - qué páginas no son de la factura (las tres de promociones de una operadora);
+  - dónde están el número, las fechas, el cuadro de impuestos y el total.
+  - Lo que nunca entra: importes, fechas, números de factura, el nombre o el NIF del receptor y cualquier texto que
+    dependa del cliente.
+- **Dos niveles:**
+  - **De la empresa** (`lectura_plantilla`, con RLS): lo aprendido de sus propios documentos. Manda sobre la común.
+  - **Común** (`lectura_plantilla_comun`, sin tenant):
+    - va por la huella del NIF del emisor (SHA-256 del NIF normalizado), nunca por el NIF ni por el nombre;
+    - guarda solo anclas: etiquetas del proveedor, posiciones, zonas y páginas que se ignoran;
+    - no guarda de qué empresas sale. **Ninguna empresa puede saber qué otras compran a ese proveedor**: la común solo
+      se usa por dentro al leer y no se enseña;
+    - **un ancla pasa a la común cuando la confirman documentos de al menos dos empresas distintas.** Así solo entra lo
+      que es del diseño del proveedor (un texto que se repite en receptores diferentes no puede ser del receptor), y un
+      error de una empresa no estropea la lectura de las demás;
+    - si un ancla común falla en varias empresas, se retira.
+- Con un documento, la plantilla de la empresa queda «aprendida»; con dos que coinciden, «confirmada». Si un campo falla,
+  se vuelve a aprender de ese documento. Si el proveedor cambia de diseño, la nueva sustituye a la vieja.
+- **Lo leído de cada página no se guarda** (respuesta de José María: el lector es una ayuda; el usuario revisa, completa y
+  acepta).
+  - Las palabras y sus posiciones viven solo **mientras el documento está pendiente**, para aprender al registrarlo sin
+    volver a leerlo.
+  - Al registrarlo o descartarlo se borran.
+  - Lo que queda es la lectura de cada campo (`documento_entrada.lectura`: valor, origen, caja, comprobado), que el
+    visor usa para resaltar.
 
 ### 4. Comprobación fiscal: decide qué se propone como bueno
 
@@ -143,10 +176,9 @@ bandeja, visor, conservar originales, fases 1, 3 y 4) no cambia.
   regla) y si la página tenía texto o pasó por el OCR.
 - La **consola de Enumbers** enseña el acierto por campo, por origen y por texto u OCR. Cada empresa ve el de sus
   proveedores en la bandeja.
-- **Cuándo se revisa esta decisión:** a los tres meses o 500 documentos.
-  - Si el acierto en escaneados queda por debajo de lo útil, se estudia un modelo **alojado por nosotros**, nunca un
-    servicio externo.
-  - Se decide con los números de la consola.
+- **Cuándo se revisa esta decisión:** a los tres meses o 500 documentos, con los números de la consola.
+  - Si el acierto en escaneados queda por debajo de lo útil, se vuelve a la prueba del motor de imagen con los modelos de
+    entonces: siempre alojados por nosotros, nunca un servicio externo.
 
 ### 6. Albaranes de proveedor (ADR-0047, fase 4)
 
@@ -164,37 +196,43 @@ bandeja, visor, conservar originales, fases 1, 3 y 4) no cambia.
    - Reglas generales y comprobación fiscal.
    - La lectura al llegar el documento, el formulario relleno con su estado y el visor que resalta.
    - Las correcciones guardadas.
-2. **Plantillas por proveedor** aprendidas al registrar, y las cifras de acierto en la consola.
-3. **OCR local** en el motor para escaneados y fotos, con el motor elegido en la prueba.
+2. **Plantillas por proveedor** aprendidas al registrar (de la empresa y comunes), y las cifras de acierto en la
+   consola.
+3. **Escaneados y fotos:** la prueba del motor de imagen (PaddleOCR frente al modelo de documento ligero) y el que
+   gane, en el mismo contenedor.
 4. **Líneas y albaranes de proveedor** con `producto_proveedor`.
 
 ## Consecuencias
 
-- **Nada sale de nuestra infraestructura** y no hay LLM:
+- **Nada sale de nuestra infraestructura** y no hay LLM externo:
   - ni transferencias internacionales ni encargados nuevos;
-  - ni modelos que se retiran;
-  - y el aviso de transparencia de IA solo podría tocar al OCR, que es de riesgo mínimo.
+  - ni modelos que se retiran sin aviso: el que se use va en nuestra imagen, con su versión;
+  - y lo único que entra en la definición del Reglamento de IA son los «ojos» de los escaneados (OCR o modelo de
+    documento), de riesgo mínimo.
 - **Cada dato dice de dónde sale** (XML, QR, plantilla o regla, con su caja en la página) y si cuadra. El usuario lo ve en
   el visor y el resultado se puede reproducir.
-- **Mejora con el uso de cada empresa:** a partir de la segunda factura de un proveedor, lo normal es que la lea su
-  plantilla. Lo primero de cada proveedor es lo que más cuesta.
+- **Mejora con el uso de todas las empresas:** lo que una aprende de Telefónica lo aprovechan las demás desde su primera
+  factura, sin ver nada de la otra. Lo nuevo de verdad es solo el proveedor que nadie ha registrado todavía.
 - **Precio que se paga:**
   - mantener las reglas y el motor;
   - la primera factura de un proveedor escaneada y sin QR puede quedar a medias;
   - y no hay «comprensión» de documentos raros (a mano, muy desordenados), que se registran como hoy.
-- **ms-activopro-ocr sigue para GeneXus** sin cambios de contrato. Se recomienda quitar ahí DeepSeek y los proveedores sin
-  contrato, o apagar el LLM, que según el monitor no completa nada. Va en un PR aparte en su repo.
+- **ms-activopro-ocr sigue para GeneXus** tal cual, sin más inversión, y se retira (o se reformula) con la nueva
+  estrategia.
 - **Pendiente:** la contabilización sin revisión sigue fuera (ADR-0047). Si algún día se plantea, solo para lo
   comprobado y de plantillas confirmadas.
 
-## Por decidir (José María)
+## Respuestas de José María (22/11/2026)
 
-1. **Sin LLM en la plataforma**, revisándolo solo con las cifras del punto 5, y en ese caso únicamente un modelo
-   alojado por nosotros.
-2. **Plantillas solo por empresa** (sin compartirlas entre clientes).
-3. **El modelo de página se guarda con el documento**, con la misma vida que el original.
-4. **La prueba de Tesseract frente a PaddleOCR** antes de la fase 3.
-5. **En el micro actual:** quitar DeepSeek o apagar el LLM.
+1. **Sin LLM**, sin salir de nuestra infraestructura; un modelo local y ligero sí, si ayuda a leer PDF e imágenes, sin
+   abrir un proyecto aparte → motor de imagen dentro de `lectura-motor`, elegido con la prueba (punto 1).
+2. **Lo aprendido, disponible para todos; los datos, no** → plantilla común por proveedor con solo anclas, sin decir de
+   qué empresas sale, y confirmada por dos empresas distintas (punto 3).
+3. **No guardar lo leído de cada página:** es una ayuda; el usuario revisa, completa y acepta → solo mientras está
+   pendiente, para aprender al registrar (punto 3).
+4. **Tesseract frente a PaddleOCR:** sin opinión formada → Tesseract fuera; la prueba es PaddleOCR frente a un modelo de
+   documento ligero (punto 1).
+5. **El micro actual no preocupa:** se reformula o se retira con la nueva estrategia; no se invierte en él.
 
 ## Origen
 
