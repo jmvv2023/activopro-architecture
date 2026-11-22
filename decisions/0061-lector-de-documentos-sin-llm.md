@@ -236,6 +236,15 @@ bandeja, visor, conservar originales, fases 1, 3 y 4) no cambia.
 
 Aceptado por José María el 22/11/2026, con estos ajustes.
 
+## Nota de implementación (fase 1, 22/11/2026)
+
+- **La fase 1 no necesita el contenedor `lectura-motor`.** El texto con posiciones sale de pdf.js (Apache-2.0, el mismo del visor) y
+  el QR de la página pintada con @napi-rs/canvas y zxing-wasm (MIT), dentro del worker.
+- Así se evita también PyMuPDF, que usa el micro: su licencia es AGPL-3.0, que en un servicio en la nube obliga a publicar el
+  código.
+- El contenedor llega con la fase 3 (motor de imagen) y solo para los escaneados y las fotos. La interpretación sigue en
+  `@activopro/lectura`.
+
 ## Origen
 
 Conversación del 22/11/2026 con José María sobre ms-activopro-ocr («me planteo si en la nueva plataforma es necesario o con
