@@ -168,3 +168,19 @@ Fuera, de momento:
 ## Origen
 
 Conversación del 16/11/2026 (sesión del manual de la plataforma), al terminar la ola 1 del manual.
+
+## Ampliación (22/11/2026): corregir una ficha contabilizada y amortización atrasada (H-119)
+
+Incidencia de un cliente: para cambiar fichas con 2025 contabilizado había que anular la amortización mes a mes, y una ficha dada de
+alta con meses ya contabilizados no se podía amortizar en ellos sin un asiento manual.
+
+- **Corregir la ficha es corregir un error**: al guardarla, el plan se recalcula entero y la amortización ya contabilizada de los
+  meses abiertos se rehace en el sitio (el asiento de cada mes conserva su número y solo cambia lo de esa ficha). El cambio de vida
+  útil desde un mes sigue siendo prospectivo (cambio de estimación).
+- **Los meses cerrados no se tocan**. Lo que el plan pide en ellos y no está en ningún asiento (meses sin contabilizar y el desfase
+  de una corrección) es **amortización atrasada**, que ya no se reparte en silencio al final del plan.
+- **Regularización**: un asiento en un mes abierto y no futuro con lo atrasado de cada ficha, con motivo obligatorio, **contra la
+  dotación del ejercicio (68x, por defecto) o contra reservas (113)**, a elegir en cada regularización (decisión de José María,
+  22/11/2026). Uno por mes; se anula con motivo mientras su mes esté abierto. En el 130, contra la dotación es gasto del periodo en
+  que se registra (art. 11.3 LIS); contra reservas, no.
+- **Anular desde un mes en adelante** de una vez, además de mes a mes.
