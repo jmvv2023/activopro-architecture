@@ -9,7 +9,7 @@
 -- Se lanza todo el bloque de una vez: la consulta se genera en una variable y se ejecuta con PREPARE, sin copiarla (copiada desde
 -- la rejilla salía cortada). PREPARE / EXECUTE de un SELECT no escribe nada.
 set session group_concat_max_len = 16777216;
-set @q = (select concat('select codigo, descripcion, porcentaje, clase, titulo, count(distinct esquema) schemas, sum(retenciones) retenciones, ',
+set @q = (select concat('select codigo, descripcion, porcentaje, clase, titulo, count(distinct esquema) esquemas, sum(retenciones) retenciones, ',
   'round(sum(cuota), 2) cuota from (', group_concat(concat(
   'select ''', t.table_schema, ''' esquema, upper(trim(m.MovIrpfCod)) codigo, upper(trim(coalesce(ti.TipIRPFDes, ''''))) descripcion, ',
   'm.MovIRPFPor porcentaje, m.MovIrpfClas clase, ',
