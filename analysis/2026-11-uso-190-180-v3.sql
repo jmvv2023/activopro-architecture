@@ -7,7 +7,10 @@
 -- de la línea: con ella se fija en el ETL la traducción por código (sin adivinar). Solo lectura, en producción.
 --
 -- Se lanza todo el bloque de una vez: la consulta se genera en una variable y se ejecuta con PREPARE, sin copiarla (copiada desde
--- la rejilla salía cortada). PREPARE / EXECUTE de un SELECT no escribe nada.
+-- la rejilla salía cortada). PREPARE / EXECUTE de un SELECT no escribe nada. Con todos los schemas a la vez toca más tablas de las
+-- que caben en la caché de definiciones del servidor (error 1615): se lanza por tramos de schemas, cambiando @desde / @hasta
+-- (0–50, 51–100, 101–150, 151–9998), y se pasan los cuatro resultados.
+set @desde = 0, @hasta = 50;
 set session group_concat_max_len = 16777216;
 set @q = (select concat('select codigo, descripcion, porcentaje, clase, titulo, count(distinct esquema) esquemas, sum(retenciones) retenciones, ',
   'round(sum(cuota), 2) cuota from (', group_concat(concat(
@@ -22,6 +25,7 @@ set @q = (select concat('select codigo, descripcion, porcentaje, clase, titulo, 
   separator ' union all '), ') x group by 1, 2, 3, 4, 5 order by 1, 4, 3')
   from information_schema.tables t
  where t.table_schema regexp '^mconta[0-9]{4}$' and t.table_schema <> 'mconta9999' and t.table_name = 'movctaslevel2'
+   and cast(substring(t.table_schema, 7) as unsigned) between @desde and @hasta
    and exists (select 1 from information_schema.tables x where x.table_schema = t.table_schema and x.table_name = 'tipirpf'));
 select length(@q) longitud;  -- si sale null, el group_concat no cabe: avisar
 prepare consulta from @q;
