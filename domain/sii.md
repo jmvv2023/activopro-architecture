@@ -65,7 +65,12 @@ que aplica y por qué.
   - resumen sin tickets…
 - **Avisos propios** (no impiden enviar):
   - tipo de operación supuesto;
-  - arrendamiento, que va con clave 01 mientras no haya inmuebles.
+  - arrendamiento con retención sin inmueble en sus líneas (asiento a mano o factura importada): clave 01;
+  - arrendamiento con líneas a un tipo distinto del 21 %: clave 01 (con 11, 12 o 13 como único régimen el SII solo admite el 21 %).
+- **Arrendamientos de local de negocio** (25/11/2026, ADR-0063): la emitida con líneas de un inmueble que no es vivienda, de un
+  producto servicio y con IVA lleva la clave 11 (retención ARR de todo el alquiler), 12 (sin retención) o 13 (de una parte) y
+  `DatosInmueble` con la situación del SII (1 común, 2 País Vasco o Navarra, 3 sin referencia, 4 extranjero) y la referencia;
+  la recibida del arrendatario que retiene, la clave 12 (FAQ 2.26 del SII).
 
 ## 3. Ciclo de un registro
 
@@ -293,6 +298,5 @@ La aplicación solo lee la tabla.
 - **Cuadre por muestreo** de los cuatro clientes con SII (0054, 0111, 0122, 0124) con su certificado; la carga ya trae `pressii`
   (§ 7 bis).
 - **Bienes de inversión y cobros en metálico** (fase 3, anuales).
-- **Inmuebles** (claves 12 y 13 con `DatosInmueble`): solo si alguno de los cuatro factura alquileres.
 - **SII del IGIC** (ATC): sin clientes canarios en el SII; cuando haya uno.
 - **Festivos nacionales de 2028.**
