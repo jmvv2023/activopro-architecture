@@ -34,7 +34,8 @@ conversaciones de soporte de cada incidencia.
 | Fecha | Incidencia en el programa anterior | En la plataforma | Estado |
 |---|---|---|---|
 | 13/09 | El albarán impreso sin las columnas de trazabilidad (lote) y cajas, y con vencimientos de cartera ajenos | Impreso con `mostrar.lote` y `mostrar.cajas`; el albarán no lleva vencimientos (`VarianteDocumento`) | Cubierto |
-| 20/10 | División por cero al facturar un artículo por peso con unidades por caja = 0 | La columna de cajas solo con unidades por caja > 0 | Cubierto |
+| 20/10 | División por cero al facturar un artículo por peso con unidades por caja = 0 | La columna de cajas solo con unidades por caja > 0; el impreso va aparte, en el worker, y nunca deshace la emisión | Cubierto (prueba en `packages/documentos/test/factura.test.ts`) |
+| 19/10 (26/11) | Seis números de factura saltados: la factura tomaba el número (estado `P`) antes de contabilizarse y el fallo al imprimir la dejaba a medias, sin asiento ni registro. Uno de sus albaranes volvió a quedar facturable, se rehizo a otro cliente y acabó facturado dos veces | El número se da al emitir, en la misma transacción que el asiento: si algo falla no se gasta. El albarán de un borrador no entra en otra factura hasta descartarlo | Cubierto (prueba en `db/test/venta_stock.test.ts`) |
 | 20/10 | Regularizaciones con cajas en negativo que no se podían guardar | La cantidad lleva su signo; en pantalla, un negativo es «Sale» | Cubierto |
 | 20/10 | La dirección de entrega no salía en el impreso (estaba en el nombre comercial) | Dirección de envío del documento y **Entregar en** en el impreso | Cubierto (H-106) |
 | 20/10 | La entrada de lotes no proponía el último precio de compra ni la unidad | `app.ultima_compra` (proveedor, si no cualquiera, si no el PMP) y la unidad en la línea | Cubierto (H-105) |
